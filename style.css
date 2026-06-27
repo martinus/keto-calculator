@@ -623,6 +623,11 @@ dd
 	display:none;
 }
 
+#broughttoyou
+{
+	display:none;
+}
+
 #logo
 {
 	margin-bottom:-40px;
@@ -678,7 +683,7 @@ dd
 	text-align:left;
 	float:left;
 	width:250px;
-  margin-top:75px;
+  margin-top:20px;
 }
 
 #leftbar
@@ -751,3 +756,136 @@ td.c,#footer
 .widget_button > span > img,
 .widget_button > a > img {padding:0px;margin:0px!important;border:0px;}
 .widget_button > a {text-decoration:none;}
+
+/* ==========================================================================
+   Responsive video embed (applies everywhere)
+   ========================================================================== */
+
+.videoWrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    margin: 1em 0;
+}
+.videoWrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Hide mobile-only share bar on desktop */
+.onlyonmobile {
+    display: none;
+}
+
+/* ==========================================================================
+   Mobile layout (max-width: 900px)
+   ========================================================================== */
+
+@media (max-width: 900px) {
+
+    /* Show mobile share bar, it replaces the sidebar share buttons */
+    .onlyonmobile {
+        display: block;
+    }
+
+    /* Responsive header */
+    h1 {
+        font-size: clamp(2rem, 10vw, 6.5rem);
+        padding-top: .3em;
+        padding-bottom: .3em;
+    }
+
+    #logo {
+        width: 55px;
+        height: 55px;
+        margin-bottom: -8px;
+        vertical-align: middle;
+    }
+
+    h2 {
+        white-space: normal;
+        font-size: clamp(1.4rem, 6vw, 2.4rem);
+        margin-top: 30px;
+        margin-bottom: 12px;
+    }
+
+    h3 {
+        font-size: clamp(1.1rem, 5vw, 1.9rem);
+        margin-top: 25px;
+        margin-bottom: 10px;
+    }
+
+    /* Main content area: remove fixed width and float */
+    #content {
+        padding: 0 .75em;
+        box-sizing: border-box;
+        text-align: left;
+    }
+
+    #main {
+        float: none;
+        width: 100%;
+        margin-top: 0;
+        margin-left: 0;
+        margin-right: 0;
+        box-sizing: border-box;
+    }
+
+    #sidebar {
+        float: none;
+        width: 100%;
+        margin-top: 2em;
+        box-sizing: border-box;
+    }
+
+    #leftbar {
+        display: none;
+    }
+
+    /* Prevent iOS Safari auto-zoom on input focus (triggers at < 16px) */
+    input[type=text],
+    input[type=number],
+    input[type=email],
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    /* Keep number inputs compact */
+    input[type=number] {
+        width: 4.5em;
+    }
+
+    /* Breathing room between form rows and larger radio touch targets */
+    #main table td {
+        padding: 5px 0;
+        line-height: 1.9;
+    }
+
+    input[type=radio] {
+        width: 20px;
+        height: 20px;
+        vertical-align: middle;
+    }
+
+    /* Ad containers: prevent overflow */
+    .fullwidthad {
+        overflow: hidden;
+    }
+
+    /* Bottom sections */
+    #contentbottom,
+    #aboutme {
+        padding-left: .75em;
+        padding-right: .75em;
+        box-sizing: border-box;
+    }
+
+    hr {
+        margin: 1em .5em;
+    }
+}
