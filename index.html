@@ -351,9 +351,9 @@
 				var el = d.elements[i];
 				if ((el.type == "text" || el.type == "number") && !el.disabled) {
 					if (isNaN(parseFloat(el.value))) {
-						el.style.outline = "2px solid #99cc00";
+						el.classList.add("needs-input");
 					} else {
-						el.style.outline = "";
+						el.classList.remove("needs-input");
 					}
 				}
 			}	
@@ -372,9 +372,9 @@
 				var el = d.elements[i];
 				if (el.type == "radio") {
 					if (is_selected[el.name]) {
-						el.style.outline = "";
+						el.classList.remove("needs-input");
 					} else {
-						el.style.outline = "2px solid #99cc00";
+						el.classList.add("needs-input");
 					}
 				}
 			}	
@@ -545,6 +545,28 @@
 					} else {
 						d.height.value = "";
 					}
+				}
+			} else {
+				// No event => loaded from a shared URL or cookie. The paired unit fields
+				// weren't auto-converted, so fill each empty companion from whichever side
+				// has a value. Without this, e.g. a link with kg=80 leaves lbs blank and it
+				// keeps showing the "needs input" cue even though weight is provided.
+				var kg = parseFloat(d.kg.value);
+				var lbs = parseFloat(d.lbs.value);
+				if (!isNaN(kg)) {
+					d.lbs.value = abbrNum(kg / 0.45359237, 3);
+				} else if (!isNaN(lbs)) {
+					d.kg.value = abbrNum(lbs * 0.45359237, 3);
+				}
+				var cm = parseFloat(d.height.value);
+				var feet = parseFloat(d.feet.value);
+				var inch = parseFloat(d.inch.value);
+				if (!isNaN(cm)) {
+					var f = Math.floor(0.032808399 * cm);
+					d.feet.value = f;
+					d.inch.value = Math.round((cm - (f / 0.032808399)) / 2.54);
+				} else if (!isNaN(feet) && !isNaN(inch)) {
+					d.height.value = Math.round(feet / 0.032808399 + inch * 2.54);
 				}
 			}
 
@@ -2081,20 +2103,49 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			margin-left:3em;
 		}
 
-		input[type=text], 
+		input[type=text],
 		input[type=email],
 		input[type=number]
 		{
-			outline:1px solid lightgray;
-			padding-left:3px;
-			padding-right:3px;
-			border-style:none;
-			text-align: right;
+			border:1px solid #cdd4da;
+			border-radius:7px;
+			outline:none;
+			padding:7px 10px;
+			text-align:right;
+			background:#fff;
+			color:#222;
+			box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+			vertical-align:middle;
+		}
+
+		input[type=text]:focus,
+		input[type=email]:focus,
+		input[type=number]:focus
+		{
+			border-color:#33B5E5;
+			box-shadow: 0 0 0 3px rgba(51,181,229,0.20);
 		}
 
 		input[type=number]
 		{
 			text-align:right;
+		}
+
+		/* The data-entry form: give the rows real breathing room and clean alignment
+		   so it doesn't read as a cramped 2000s table. */
+		table.userinputs {
+			border-collapse: collapse;
+			margin: 0.6em 0 1.2em;
+			width: 100%;
+		}
+		table.userinputs > tbody > tr > td {
+			padding: 11px 0;
+			vertical-align: middle;
+			border-bottom: 1px solid #eef0f2;
+			line-height: 2.1;
+		}
+		table.userinputs > tbody > tr:last-child > td {
+			border-bottom: none;
 		}
 
 		[disabled]
@@ -2263,7 +2314,36 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			margin:0 0 0.3em;
 			text-align:center;
 		}
-			
+
+		/* "Please fill me in" cue for required inputs — a bold amber field with a
+		   pulsing glow so it clearly reads as "enter data here" (amber stands out
+		   against the site's blue). Applied/removed by mark_empty_fields(); the
+		   transitions make it fade in and out smoothly. */
+		input.needs-input,
+		select.needs-input {
+			border: 2px solid #ff8f00 !important;
+			border-radius: 7px;
+			outline: none;
+			box-shadow: 0 0 0 4px rgba(255,143,0,0.32);
+			background-color: #fff6e3 !important;
+			animation: needsInputPulse 1.4s ease-in-out infinite;
+		}
+		input[type=radio].needs-input {
+			border-radius: 50%;
+			background-color: transparent !important;
+			box-shadow: 0 0 0 4px rgba(255,143,0,0.40);
+		}
+		input, select {
+			transition: box-shadow .18s ease, border-color .18s ease, background-color .18s ease;
+		}
+		@keyframes needsInputPulse {
+			0%,100% { box-shadow: 0 0 0 4px rgba(255,143,0,0.34); }
+			50%     { box-shadow: 0 0 0 8px rgba(255,143,0,0.14); }
+		}
+		@media (prefers-reduced-motion: reduce) {
+			input.needs-input, select.needs-input { animation: none; }
+		}
+
 
 		.note
 		{
@@ -2666,19 +2746,19 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 					<h2>Your Fat Loss Calculation</h2>
 					<p>To get your personal customized recommendations, please enter some data about yourself.</p>
 					
-					<table>
+					<table class="userinputs">
 						<tr><td><input name="sex" tabindex="1" type="radio" value="1">Female <input name="sex" tabindex="2" type="radio" value="0">Male</td></tr>
 
-						<tr><td><input name="kg" tabindex="3" type="number" step="0.1" value=""> kg weight (<input name="lbs" type="number" step="0.1" value=""> lbs)
+						<tr><td><input name="lbs" tabindex="3" type="number" step="0.1" value="" placeholder="180"> lbs weight (<input name="kg" type="number" step="0.1" value=""> kg)
 						<div id="weight_warning"></div>
 						</td></tr>
 
-						<tr><td><input name="height" tabindex="4" type="number" value=""> cm tall (<input name="feet" type="number" value="" step="1" style="width:2em">' <input name="inch" type="number" step="1" value="" style="width:3em">")
+						<tr><td><input name="feet" tabindex="4" type="number" value="" step="1" style="width:3.4em" placeholder="5">' <input name="inch" tabindex="5" type="number" step="1" value="" style="width:3.8em" placeholder="9">" tall (<input name="height" type="number" value=""> cm)
 						<div id="height_warning"></div>
 						</td></tr>
 
 						<!-- see http://eternicode.github.io/bootstrap-datepicker/?markup=input&format=&weekStart=&startDate=&endDate=&startView=0&minViewMode=0&maxViewMode=2&todayBtn=false&clearBtn=false&language=en&orientation=auto&multidate=&multidateSeparator=&keyboardNavigation=on&forceParse=on#sandbox --> 
-						<tr><td>Date of birth: <input id="bday" name="bday" tabindex="5" type="text" placeholder="MM/DD/YYYY" style="width:7em" title="Write e.g. 8/30/1979"> 
+						<tr><td>Date of birth: <input id="bday" name="bday" tabindex="6" type="text" placeholder="MM/DD/YYYY" style="width:7em" title="Write e.g. 8/30/1979">
 							<div id="date_warning"></div>				
 						</td></tr>
 
@@ -2734,7 +2814,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 					<p>Let's find out your body fat percentage. Based on your height and weight, your body fat percentage might be <a href="http://www.ncbi.nlm.nih.gov/pubmed/16469982" onclick="return gatrack(this);">around <span class="estimated_bodyfat_percent"></span>%</a>. The most accurate measurement would be a <a href="http://en.wikipedia.org/wiki/Dual_energy_X-ray_absorptiometry" onclick="return gatrack(this);">DEXA</a>. Skin fold measurement with <a href="http://www.amazon.com/gp/product/B0000AN3UB/ref=as_li_ss_tl?ie=UTF8&amp;camp=1789&amp;creative=390957&amp;creativeASIN=B0000AN3UB&amp;linkCode=as2&amp;tag=martanke-20" onclick="return gatrack(this);">a good caliper</a> is also pretty accurate. The easiest way is to just estimate it from some <a href="http://martin.ankerl.com/2016/01/04/body-fat-comparison-pictures/" onclick="return gatrack(this);">comparison pictures</a>. More: <a href="http://www.builtlean.com/2012/09/24/body-fat-percentage-men-women/" onclick="return gatrack(this);">1</a>, <a href="http://www.leighpeele.com/body-fat-pictures-and-percentages" onclick="return gatrack(this);">2</a>, <a href="http://paindatabase.com/body-fat/" onclick="return gatrack(this);">3</a>, <a href="http://www.nerdfitness.com/blog/2012/07/02/body-fat-percentage/" onclick="return gatrack(this);">4</a>. You can also try <a href="http://www.healthcentral.com/cholesterol/home-body-fat-test-2774-143.html" onclick="return gatrack(this);">this calculator</a> but that can be inaccurate.</p>
 
 					<ul>
-						<li><input name="bodyfat" type="number" value=""> % Body fat</li>
+						<li><input name="bodyfat" type="number" value="" placeholder="20"> % Body fat</li>
 					</ul>
 
 					<p>With <span class="bodyfat_percentage"></span>% body fat you have <span class="lean_kg"></span>kg (<span class="lean_lbs"></span>lbs) of lean body mass, and <span class="fat_kg"></span>kg (<span class="fat_lbs"></span>lbs) of body fat. This includes about <span class="essential_fat_kg"></span>kg (<span class="essential_fat_lbs"></span>lbs) of <a href="http://en.wikipedia.org/wiki/Body_fat_percentage#Typical_body_fat_amounts" onclick="return gatrack(this);">essential body fat</a> that you must not lose.</p>
