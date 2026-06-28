@@ -2339,7 +2339,71 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			display:block;
 			border-radius:8px;
 		}
-		
+
+		/* Results readout — the payoff, styled like a clean metabolic instrument panel */
+		.results-card {
+			max-width:440px;
+			margin:20px 0 26px;
+			padding:22px 26px;
+			background:linear-gradient(180deg, #f7fbfe 0%, #edf5fb 100%);
+			border:1px solid #d9e6ef;
+			border-radius:14px;
+			box-shadow:0 6px 22px rgba(20,60,90,0.07);
+		}
+		.results-kcal {
+			display:flex;
+			align-items:baseline;
+			gap:11px;
+			padding-bottom:15px;
+			margin-bottom:6px;
+			border-bottom:1px solid #dce8f0;
+		}
+		.results-kcal-num {
+			font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
+			font-weight:700;
+			font-size:46px;
+			line-height:1;
+			letter-spacing:-2px;
+			color:#14202b;
+		}
+		.results-kcal-label {
+			font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
+			font-size:12px;
+			line-height:1.3;
+			letter-spacing:0.6px;
+			text-transform:uppercase;
+			color:#5a6b78;
+		}
+		.macro-row {
+			display:flex;
+			align-items:center;
+			gap:12px;
+			padding:11px 0;
+		}
+		.macro-row + .macro-row { border-top:1px solid #e4eef5; }
+		.macro-dot { width:12px; height:12px; border-radius:50%; flex:none; }
+		.macro-val {
+			font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
+			font-weight:600;
+			font-size:23px;
+			color:#14202b;
+			min-width:66px;
+		}
+		.macro-val i { font-size:14px; font-style:normal; font-weight:500; color:#7a8a96; margin-left:1px; }
+		.macro-name {
+			font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
+			font-weight:600;
+			font-size:16px;
+			color:#27333c;
+			flex:1;
+		}
+		.macro-meta {
+			font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
+			font-size:12.5px;
+			color:#6b7a86;
+			white-space:nowrap;
+		}
+
 		.recommended {
 			width:100%;
 			text-align:center;
@@ -3020,31 +3084,31 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 					<h2 id="yourpersonalresults">Your Personal Results</h2>
 					<p>Here are your personal macros:</p>
 
-					<table style="margin:20px; width:auto;">
-						<tr>
-							<td align="right"><strong><span class="target_kcal"></span></strong></td>
+					<div class="results-card">
+						<div class="results-kcal">
+							<span class="results-kcal-num"><span class="target_kcal"></span></span>
+							<span class="results-kcal-label">kcal / day<br>daily calorie target</span>
+						</div>
 
-							<td><strong>kcal Daily Calorie Intake</strong></td>
-						</tr>
-
-						<tr>
-							<td align="right"><strong><span class="carbs"></span></strong></td>
-
-							<td><strong>g Carbs</strong> (<span class="carbs_proc"></span>%, <span class="carbs_kcal"></span> kcal)</td>
-						</tr>
-
-						<tr>
-							<td align="right"><strong><span class="protein"></span></strong></td>
-
-							<td><strong>g Protein</strong> (<span class="protein_proc"></span>%, <span class="protein_kcal"></span> kcal)</td>
-						</tr>
-
-						<tr>
-							<td align="right"><strong><span class="fat"></span></strong></td>
-
-							<td><strong>g Fat</strong> (<span class="fat_proc"></span>%, <span class="fat_kcal"></span> kcal)</td>
-						</tr>
-					</table>
+						<div class="macro-row">
+							<span class="macro-dot" style="background:#E60144"></span>
+							<span class="macro-val"><span class="carbs"></span><i>g</i></span>
+							<span class="macro-name">Carbs</span>
+							<span class="macro-meta"><span class="carbs_proc"></span>% &middot; <span class="carbs_kcal"></span> kcal</span>
+						</div>
+						<div class="macro-row">
+							<span class="macro-dot" style="background:#709500"></span>
+							<span class="macro-val"><span class="protein"></span><i>g</i></span>
+							<span class="macro-name">Protein</span>
+							<span class="macro-meta"><span class="protein_proc"></span>% &middot; <span class="protein_kcal"></span> kcal</span>
+						</div>
+						<div class="macro-row">
+							<span class="macro-dot" style="background:#264A73"></span>
+							<span class="macro-val"><span class="fat"></span><i>g</i></span>
+							<span class="macro-name">Fat</span>
+							<span class="macro-meta"><span class="fat_proc"></span>% &middot; <span class="fat_kcal"></span> kcal</span>
+						</div>
+					</div>
 
 					<p style="font-size:smaller; color:#555; border-left:4px solid #e4e4ef; padding-left:0.8em; margin:1em 0; font-style:italic;">
 						<strong>These numbers are estimates, not medical advice.</strong> They come from the
@@ -3055,7 +3119,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 					</p>
 
 					<p>
-						<button type="button" onclick="share_my_macros()" style="cursor:pointer; padding:9px 16px; font-size:16px; border:none; border-radius:4px; background:#33B5E5; color:#fff;">🔗 Share my macros</button>
+						<button type="button" onclick="share_my_macros()" style="cursor:pointer; padding:11px 20px; font-size:16px; font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif; font-weight:600; letter-spacing:0.2px; border:none; border-radius:9px; background:linear-gradient(135deg,#33B5E5,#1294c8); color:#fff; box-shadow:0 4px 12px rgba(18,148,200,0.32);">🔗 Share my macros</button>
 						<span id="share_feedback" style="color:#1a8a55; font-size:smaller;"></span>
 					</p>
 					<p style="font-size:smaller; color:#666; margin-top:-0.5em;">Copies a link that reopens this calculator with your numbers already filled in — handy for saving or sharing on Reddit.</p>
