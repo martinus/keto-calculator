@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- Google tag (gtag.js) — GA4 property G-4EDP644SXM.
+	<!-- Google tag (gtag.js) — GA4 property G-4EDP644SXM — with Google Consent Mode v2.
 	     Replaced the old dead stack here: the Google Optimize anti-flicker snippet
 	     (Optimize sunset 2023-09-30; it blanked the page for up to 4s) and the
-	     Universal Analytics tag UA-36863101-1 (UA stopped collecting 2023-07-01). -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-4EDP644SXM"></script>
+	     Universal Analytics tag UA-36863101-1 (UA stopped collecting 2023-07-01).
+	     Consent defaults to denied; Cookiebot updates it (see the bridge below the
+	     Cookiebot script). Non-consenting traffic is then modelled, not lost. -->
 	<script>
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
+	  gtag('consent', 'default', {
+	    'ad_storage': 'denied',
+	    'ad_user_data': 'denied',
+	    'ad_personalization': 'denied',
+	    'analytics_storage': 'denied',
+	    'wait_for_update': 500
+	  });
+	  gtag('set', 'ads_data_redaction', true);
+	  gtag('set', 'url_passthrough', true);
+	</script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-4EDP644SXM"></script>
+	<script>
 	  gtag('js', new Date());
-
 	  gtag('config', 'G-4EDP644SXM');
 	</script>
 
@@ -43,6 +55,23 @@
 
 	<!-- cookie consent start -->
 	<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="6ba27c9d-ecd5-419a-9d84-8202995164a0" type="text/javascript" async></script>
+	<script>
+	  // Bridge Cookiebot consent -> Google Consent Mode v2.
+	  // CookiebotOnConsentReady fires after a fresh choice AND on return visits
+	  // with stored consent, so this covers both cases.
+	  function ketoUpdateConsent() {
+	    if (typeof Cookiebot === 'undefined' || !Cookiebot.consent) return;
+	    var statistics = Cookiebot.consent.statistics ? 'granted' : 'denied';
+	    var marketing  = Cookiebot.consent.marketing  ? 'granted' : 'denied';
+	    gtag('consent', 'update', {
+	      'analytics_storage': statistics,
+	      'ad_storage': marketing,
+	      'ad_user_data': marketing,
+	      'ad_personalization': marketing
+	    });
+	  }
+	  window.addEventListener('CookiebotOnConsentReady', ketoUpdateConsent);
+	</script>
 	<!-- cookie consent end -->
 	
     <!-- app service stuff end -->
@@ -94,11 +123,12 @@
 
 	<!-- clean with http://www.dirtymarkup.com/ (tabs, no print margin, preserve HTML entities) -->
 
-	<title>Keto Calculator - Learn Your Macros on the Ketogenic Diet</title>
-	
+	<title>Free Keto Macro Calculator – Find Your Macros for the Ketogenic Diet</title>
+	<link rel="canonical" href="https://keto-calculator.ankerl.com/">
+
 	<!-- see http://stackoverflow.com/a/7623986/48181 for facebook properties -->
 	<meta content="fanP0_gbfKxHbEib0H-EkgwGkH1KGEDZlsudKEXoKP8" name="google-site-verification">
-	<meta name="description" content="How to lose weight on keto? This site calculates your perfect macros for the ketogenic diet.">
+	<meta name="description" content="Calculate your exact keto macros in 60 seconds. Enter your weight, height, and goal to get personalized carb, protein, and fat targets for the ketogenic diet.">
 	<meta property="fb:admins" content="651310669">
 	<meta property="og:type" content="website">
 	<meta property="og:image" content="https://keto-calculator.ankerl.com/share_1600_lanc2.jpg">
@@ -3033,8 +3063,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 					
 					<a class="shareicon" href="https://www.pinterest.com/pin/create/button/?guid=50b41y6Y4Fhg-1&url=https%3A%2F%2Fketo-calculator.ankerl.com%2F&media=https%3A%2F%2Fketo-calculator.ankerl.com%2Fshare_high_1200.jpg&description=This%20weight%20loss%20calculator%20finds%20out%20how%20you%20can%20lose%20weight%20on%20a%20ketogenic%20diet.%20Based%20on%20your%20personal%20data%20you%20can%20calculate%20the%20amount%20of%20carbohydrates,%20protein,%20and%20fat%20you%20can%20eat%20to%20reach%20your%20specific%20goal.%20Give%20it%20a%20try!" rel="nofollow" title="Share on Pinterest" target="_blank" onclick="return gatrack(this, function() { show_window('https://www.pinterest.com/pin/create/button/?guid=50b41y6Y4Fhg-1&url=https%3A%2F%2Fketo-calculator.ankerl.com%2F&media=https%3A%2F%2Fketo-calculator.ankerl.com%2Fshare_high_1200.jpg&description=This%20weight%20loss%20calculator%20finds%20out%20how%20you%20can%20lose%20weight%20on%20a%20ketogenic%20diet.%20Based%20on%20your%20personal%20data%20you%20can%20calculate%20the%20amount%20of%20carbohydrates,%20protein,%20and%20fat%20you%20can%20eat%20to%20reach%20your%20specific%20goal.%20Give%20it%20a%20try!', 767, 545);});"><i class="sprite sprite-pi"></i></a>
 
-					<a class="shareicon" href="https://plus.google.com/share?url=https://keto-calculator.ankerl.com" rel="nofollow" title="Share on Google+" target="_blank" onclick="return gatrack(this, function() { show_window('https://plus.google.com/share?url=https://keto-calculator.ankerl.com', 555, 655);});"><i class="sprite sprite-gp"></i></a>
-					
+					<!-- Google+ share removed (Google+ shut down 2019-04-02) -->
 					<!-- whatsapp is only in the other icons -->
 				</div>
 				<!-- facebook
@@ -3079,7 +3108,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			<div id="bottom2">
 				<div id="aboutme">
 					<div id="aboutmewidth">
-						<i class="sprite sprite-me" style="float:left; margin-right: 1em; margin-top:4px;" title="Martin Ankerl"></i> Created by Martin Ankerl. I am a software developer with interest in nutrition, specifically in the ketogenic diet. You can find me on <a href="http://www.reddit.com/user/martinus/" onclick="return gatrack(this);">reddit</a>, <a href="https://plus.google.com/101871575253544122749?rel=author" onclick="return gatrack(this);">Google+</a>, <a href="https://www.facebook.com/martin.ankerl" onclick="return gatrack(this);">Facebook</a>, and <a href="http://martin.ankerl.com/" onclick="return gatrack(this);">my blog</a>. If you want to support this site, you can <a href="#donate">donate here</a>. Please read the <a href="disclaimer.html" onclick="return gatrack(this);">disclaimer and Cookie Consent</a>.
+						<i class="sprite sprite-me" style="float:left; margin-right: 1em; margin-top:4px;" title="Martin Ankerl"></i> Created by Martin Ankerl. I am a software developer with interest in nutrition, specifically in the ketogenic diet. You can find me on <a href="http://www.reddit.com/user/martinus/" onclick="return gatrack(this);">reddit</a>, <a href="https://www.facebook.com/martin.ankerl" onclick="return gatrack(this);">Facebook</a>, and <a href="http://martin.ankerl.com/" onclick="return gatrack(this);">my blog</a>. If you want to support this site, you can <a href="#donate">donate here</a>. Please read the <a href="disclaimer.html" onclick="return gatrack(this);">disclaimer and Cookie Consent</a>.
 						
 						<span style="clear:left; display:block;"></span>
 					</div>
