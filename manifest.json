@@ -21,8 +21,5 @@
   "start_url": "index.html?launcher=true",
   "background_color": "#33b5e5",
   "display": "standalone",
-  "theme_color": "#33b5e5",
-
-  "gcm_sender_id": "482941778795",
-  "DO_NOT_CHANGE_GCM_SENDER_ID": "Do not change the GCM Sender ID"
+  "theme_color": "#33b5e5"
 }

@@ -1,30 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- optimize.google.com just before analytics to prevent flickering -->
-	<style>.async-hide { opacity: 0 !important} </style>
-	<script>(function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
-		h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
-		(a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
-		})(window,document.documentElement,'async-hide','dataLayer',4000,
-		{'GTM-TC6WLFB':true});</script>
-	<!-- optimize.google.com end -->
-	<!-- google analytics start. For optimize.google.com, move as high as possible in the head. -->
+	<!-- Google tag (gtag.js) — GA4 property G-4EDP644SXM.
+	     Replaced the old dead stack here: the Google Optimize anti-flicker snippet
+	     (Optimize sunset 2023-09-30; it blanked the page for up to 4s) and the
+	     Universal Analytics tag UA-36863101-1 (UA stopped collecting 2023-07-01). -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-4EDP644SXM"></script>
 	<script>
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-		ga('create', 'UA-36863101-1', 'auto');
-		ga('require', 'GTM-TC6WLFB');
-		ga('send', 'pageview');
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'G-4EDP644SXM');
 	</script>
-	<!-- google analytics end -->
-	
+
 	<meta charset="utf-8">
 	
-	<!-- fonts should come first --> 
-	<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:300|PT+Serif' rel='stylesheet' type='text/css'>
+	<!-- fonts should come first -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:300|PT+Serif&display=swap' rel='stylesheet' type='text/css'>
     
     <!-- app service stuff start, see https://googlechrome.github.io/samples/app-install-banner/basic-banner/index.html -->
 	<link rel="manifest" href="manifest.json">
@@ -45,42 +40,6 @@
         });
     </script>
 	
-	<!-- onesignal start -->
-	<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script>
-	<script>
-		var OneSignal = window.OneSignal || [];
-		OneSignal.push(["init", {
-			appId: "34bd93a9-4b5f-4b31-b647-e98d4c531128",
-			safari_web_id: 'web.onesignal.auto.5ccade99-0f35-4775-9ae0-5e2c3bfd110b',
-			autoRegister: false,
-			notifyButton: {
-				enable: true, /* Set to false to hide */
-				colors: { // Customize the colors of the main button and dialog popup button
-					'circle.background': 'rgb(51,181,229)',
-					'badge.background': 'rgb(51,181,229)'
-				},
-				offset: {
-					bottom: '54px'
-				},
-				showCredit: false, /* Hide the OneSignal logo */
-				text: {
-					'tip.state.unsubscribed': 'Subscribe to notifications',
-					'tip.state.subscribed': "You're subscribed to notifications",
-					'tip.state.blocked': "You've blocked notifications",
-					'message.prenotify': 'Click to subscribe to notifications',
-					'message.action.subscribed': "Thanks for subscribing!",
-					'message.action.resubscribed': "You're subscribed to notifications",
-					'message.action.unsubscribed': "You won't receive notifications again",
-					'dialog.main.title': 'Manage Site Notifications',
-					'dialog.main.button.subscribe': 'SUBSCRIBE',
-					'dialog.main.button.unsubscribe': 'UNSUBSCRIBE',
-					'dialog.blocked.title': 'Unblock Notifications',
-					'dialog.blocked.message': "Follow these instructions to allow notifications:"
-				}
-			}
-		}]);
-	</script>
-	<!-- onesignal end -->
 
 	<!-- cookie consent start -->
 	<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="6ba27c9d-ecd5-419a-9d84-8202995164a0" type="text/javascript" async></script>
@@ -2491,12 +2450,31 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
                 float: none !important; 
 			}
 									
-			input, input[type=radio] {
-				width:4em;
-				height:1.5em;
+			/* Text/number inputs: >=16px font stops iOS Safari from auto-zooming
+			   on focus (iOS Safari is the #1 platform here). */
+			input[type=text],
+			input[type=number],
+			input[type=email],
+			select,
+			textarea {
 				font-family:Verdana, Arial, Helvetica, sans-serif;
-				font-size:100%;
-				margin: 0.5em 0.5em 0.7em 0.1em;
+				font-size:16px;
+				margin: 0.4em 0.5em 0.6em 0.1em;
+			}
+			input[type=number] {
+				width:4.5em;
+			}
+			/* Radios as proper square tap targets, not 4em-wide boxes. */
+			input[type=radio] {
+				width:22px;
+				height:22px;
+				vertical-align:middle;
+				margin: 0.4em 0.6em 0.4em 0.1em;
+			}
+			/* Breathing room + bigger tap lines between form rows. */
+			#main table td {
+				padding:5px 0;
+				line-height:1.9;
 			}
 			.onlyonmobile {
 				display:block;
@@ -3279,7 +3257,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 	<!-- track outbound links end -->
 	
 	<!-- required for google charts start -->
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<!-- required for google charts end -->
 	
 	<script type="text/javascript">
@@ -3308,8 +3286,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 		});
 		
 		mark_empty_fields(document.data);
-		google.load('visualization', '1', {'packages':['annotationchart','corechart']});
-		google.setOnLoadCallback(google_is_loaded);
+		google.charts.load('current', {'packages':['annotationchart','corechart']});
+		google.charts.setOnLoadCallback(google_is_loaded);
     </script>
 	
 	<script type="text/javascript">
