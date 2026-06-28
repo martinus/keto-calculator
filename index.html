@@ -297,6 +297,41 @@
 			elem.innerHTML = val;
 		}
 
+		// Translate the macro grams into recognisable everyday foods so the targets
+		// feel real instead of made-up. We lead with believable, relatable portions
+		// (single-food counts like "17 eggs" are technically correct but read as
+		// absurd). Anchors, all rough on purpose: berries ~12g net carb/cup, banana
+		// ~24g net carb; cooked chicken breast ~31g protein/100g, canned tuna ~30g
+		// protein/can; avocado ~21g fat each, olive oil ~14g fat/tbsp. Each macro's
+		// .macro-food sub-line is cleared (and CSS :empty-hidden) until it's valid.
+		function update_food_equivalents(carbs_g, protein_g, fat_g) {
+			var note = document.getElementById('macro_food_note');
+			var valid = !(isNaN(carbs_g) || isNaN(protein_g) || isNaN(fat_g));
+			if (note) { note.style.display = valid ? '' : 'none'; }
+			if (!valid) {
+				update_by_name('carbs_food', '');
+				update_by_name('protein_food', '');
+				update_by_name('fat_food', '');
+				return;
+			}
+
+			var berries = Math.max(1, Math.round(carbs_g / 12));
+			var banana = Math.round(carbs_g / 24);
+			var carbsTxt = '<span class="fe">🫐</span>about <b>' + berries + ' cup' + (berries === 1 ? '' : 's') + '</b> of berries';
+			if (banana >= 1) {
+				carbsTxt += ', or <b>' + banana + '</b> banana' + (banana === 1 ? '' : 's');
+			}
+			update_by_name('carbs_food', carbsTxt);
+
+			var chicken = Math.round(protein_g * 3.23 / 10) * 10;
+			var tuna = Math.max(1, Math.round(protein_g / 30));
+			update_by_name('protein_food', '<span class="fe">🍗</span>about a <b>' + chicken + 'g</b> cooked chicken breast, or <b>' + tuna + '</b> can' + (tuna === 1 ? '' : 's') + ' of tuna');
+
+			var butter = Math.round(fat_g / 0.81 / 10) * 10; // butter is ~81% fat
+			var oil = Math.max(1, Math.round(fat_g / 14));
+			update_by_name('fat_food', '<span class="fe">🧈</span>about a <b>' + butter + 'g</b> block of butter, or <b>' + oil + ' tbsp</b> of olive oil');
+		}
+
 		// about 7.7 kcal of bodyfat tissue is actually fat.
 		// see http://www.caloriesperhour.com/tutorial_pound.php
 		// based on this conversation http://www.reddit.com/r/keto/comments/12amhq/keto_calculator_20/c6ux0xt?context=3
@@ -963,6 +998,9 @@
 			}
 			
 			
+			// turn the gram targets into everyday-food equivalents (hidden until valid)
+			update_food_equivalents(carbs_g, protein_g, fat_g);
+
 			// write summary
 			if (isNaN(fat_g)) {
 				update_by_name("fat", "-")
@@ -2347,11 +2385,12 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			border-radius:8px;
 		}
 
-		/* Results readout — the payoff, styled like a clean metabolic instrument panel */
+		/* Results readout — the payoff, styled like a clean metabolic instrument panel.
+		   Spans the full content column (no narrow cap) so it reads as the page's hero
+		   payoff rather than a small chip hugging the left edge. */
 		.results-card {
-			max-width:440px;
 			margin:20px 0 26px;
-			padding:22px 26px;
+			padding:24px 30px;
 			background:linear-gradient(180deg, #f7fbfe 0%, #edf5fb 100%);
 			border:1px solid #d9e6ef;
 			border-radius:14px;
@@ -2383,18 +2422,24 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 		}
 		.macro-row {
 			display:flex;
-			align-items:center;
-			gap:12px;
-			padding:11px 0;
+			align-items:flex-start;
+			gap:13px;
+			padding:13px 0;
 		}
 		.macro-row + .macro-row { border-top:1px solid #e4eef5; }
-		.macro-dot { width:12px; height:12px; border-radius:50%; flex:none; }
+		.macro-dot { width:12px; height:12px; border-radius:50%; flex:none; margin-top:8px; }
+		.macro-body { flex:1; min-width:0; }
+		.macro-line {
+			display:flex;
+			align-items:baseline;
+			gap:12px;
+		}
 		.macro-val {
 			font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
 			font-weight:600;
 			font-size:23px;
 			color:#14202b;
-			min-width:66px;
+			min-width:62px;
 		}
 		.macro-val i { font-size:14px; font-style:normal; font-weight:500; color:#7a8a96; margin-left:1px; }
 		.macro-name {
@@ -2409,6 +2454,34 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			font-size:12.5px;
 			color:#6b7a86;
 			white-space:nowrap;
+		}
+
+		/* Food sub-line under each macro — turns the gram target into recognisable
+		   everyday food so it feels real, not made-up. update_food_equivalents()
+		   fills .macro-food (carbs_food/protein_food/fat_food); :empty hides the
+		   line until the macro is valid. The 🥑/🍗 emoji is wrapped in .fe. */
+		.macro-food {
+			font-family:'PT Serif',Georgia,'Times New Roman',serif;
+			font-size:14.5px;
+			line-height:1.45;
+			color:#5a6b78;
+			margin-top:3px;
+		}
+		.macro-food:empty { display:none; }
+		.macro-food b {
+			font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
+			font-weight:600;
+			color:#27333c;
+		}
+		.macro-food .fe { font-style:normal; margin-right:4px; }
+		.macro-food-note {
+			font-family:'PT Serif',Georgia,'Times New Roman',serif;
+			font-size:13px;
+			font-style:italic;
+			color:#6b7a86;
+			margin:14px 0 0;
+			padding-top:13px;
+			border-top:1px solid #dce8f0;
 		}
 
 		/* The three scaled pies (maintenance / target / deficit) — same readout language */
@@ -3169,22 +3242,39 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 
 						<div class="macro-row">
 							<span class="macro-dot" style="background:#E60144"></span>
-							<span class="macro-val"><span class="carbs"></span><i>g</i></span>
-							<span class="macro-name">Carbs</span>
-							<span class="macro-meta"><span class="carbs_proc"></span>% &middot; <span class="carbs_kcal"></span> kcal</span>
+							<div class="macro-body">
+								<div class="macro-line">
+									<span class="macro-val"><span class="carbs"></span><i>g</i></span>
+									<span class="macro-name">Carbs</span>
+									<span class="macro-meta"><span class="carbs_proc"></span>% &middot; <span class="carbs_kcal"></span> kcal</span>
+								</div>
+								<div class="macro-food carbs_food"></div>
+							</div>
 						</div>
 						<div class="macro-row">
 							<span class="macro-dot" style="background:#709500"></span>
-							<span class="macro-val"><span class="protein"></span><i>g</i></span>
-							<span class="macro-name">Protein</span>
-							<span class="macro-meta"><span class="protein_proc"></span>% &middot; <span class="protein_kcal"></span> kcal</span>
+							<div class="macro-body">
+								<div class="macro-line">
+									<span class="macro-val"><span class="protein"></span><i>g</i></span>
+									<span class="macro-name">Protein</span>
+									<span class="macro-meta"><span class="protein_proc"></span>% &middot; <span class="protein_kcal"></span> kcal</span>
+								</div>
+								<div class="macro-food protein_food"></div>
+							</div>
 						</div>
 						<div class="macro-row">
 							<span class="macro-dot" style="background:#264A73"></span>
-							<span class="macro-val"><span class="fat"></span><i>g</i></span>
-							<span class="macro-name">Fat</span>
-							<span class="macro-meta"><span class="fat_proc"></span>% &middot; <span class="fat_kcal"></span> kcal</span>
+							<div class="macro-body">
+								<div class="macro-line">
+									<span class="macro-val"><span class="fat"></span><i>g</i></span>
+									<span class="macro-name">Fat</span>
+									<span class="macro-meta"><span class="fat_proc"></span>% &middot; <span class="fat_kcal"></span> kcal</span>
+								</div>
+								<div class="macro-food fat_food"></div>
+							</div>
 						</div>
+
+						<p class="macro-food-note" id="macro_food_note">Rough daily comparisons spread across all your meals — mix and match real foods, these aren't exact.</p>
 					</div>
 
 					<p style="font-size:smaller; color:#555; border-left:4px solid #e4e4ef; padding-left:0.8em; margin:1em 0; font-style:italic;">
