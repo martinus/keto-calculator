@@ -31,7 +31,7 @@
 	<!-- fonts should come first -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:300|PT+Serif&display=swap' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=PT+Serif:wght@400;700&display=swap' rel='stylesheet' type='text/css'>
     
     <!-- app service stuff start, see https://googlechrome.github.io/samples/app-install-banner/basic-banner/index.html -->
 	<link rel="manifest" href="manifest.json">
@@ -2092,7 +2092,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 		input
 		{
 			width:5em;
-			font-family: "PT Serif",Georgia,serif;
+			/* the calculator's figures read like a precise instrument */
+			font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
 			font-size:100%;
 			margin:4px;
 		}
@@ -2188,74 +2189,97 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 
 		a
 		{
-			color:#09c;
+			color:#0e6e96;
 			text-decoration:none;
+			transition:color .15s ease;
 		}
 
 		a:visited
 		{
-			color:#93c;
+			color:#0e6e96;
 			text-decoration:none;
 		}
 
 		a:hover,a:visited:hover
 		{
-			color:#C61A1A;
+			color:#0a5675;
 			text-decoration:underline;
 		}
 
 		body
 		{
 			font-style: normal;
-			font-variant: normal;    
-			font-weight: normal;    
-			font-stretch: normal;    
-			font-size: 17px;
-			line-height: 27px;
+			font-variant: normal;
+			font-weight: normal;
+			font-stretch: normal;
+			font-size: 18px;
+			line-height: 1.66;
 			font-family: 'PT Serif', Georgia, serif;
+			color:#14202b;
 			margin:0;
 			padding:0;
+			-webkit-font-smoothing:antialiased;
+			-moz-osx-font-smoothing:grayscale;
 		}
-	
+
 
 
 		#header {
-			background-color:#33B5E5;
-			margin-bottom: 5em;
+			background: linear-gradient(135deg, #33B5E5 0%, #1294c8 100%);
+			margin-bottom: 3.4em;
+			box-shadow: 0 2px 14px rgba(12,78,108,0.22);
 		}
 		h1
 		{
 			color:#FFF;
-			font-family: 'Roboto Condensed', 'PT Serif', Georgia, serif;
-			font-weight:100;
-			font-size:104px;
+			font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+			font-weight:600;
+			font-size:80px;
+			letter-spacing:-2px;
 			text-align:center;
 			margin:0 0 0em;
-			padding-top:.2em;
-			padding-bottom: 0.2em;
+			padding-top:.3em;
+			padding-bottom: 0.3em;
 		}
 
 		h2
 		{
-			font-family: 'Roboto Condensed', 'PT Serif', Georgia, serif;
-			font-weight:100;
-			color:#000;
+			position:relative;
+			font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+			font-weight:600;
+			color:#14202b;
 			margin-left:0px;
-			margin-top:50px;
-			margin-bottom:20px;
-			font-size:38px;
-			padding:0;  
+			margin-top:56px;
+			margin-bottom:22px;
+			font-size:32px;
+			letter-spacing:-0.6px;
+			line-height:1.18;
+			padding:0 0 13px;
+		}
+		/* signature: a short ketone-cyan readout rule under each section heading */
+		h2::after
+		{
+			content:"";
+			position:absolute;
+			left:0;
+			bottom:0;
+			width:52px;
+			height:4px;
+			border-radius:2px;
+			background:linear-gradient(90deg, #33B5E5, #1294c8);
 		}
 
 		h3
 		{
-			font-family: 'Roboto Condensed', 'PT Serif', Georgia, serif;
-			font-weight:100;
-			color:#000;
-			margin-top:50px;
-			margin-bottom:15px;
-			font-size:30px;
-			padding:0;  
+			font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+			font-weight:500;
+			color:#1b2730;
+			margin-top:46px;
+			margin-bottom:14px;
+			font-size:23px;
+			letter-spacing:-0.3px;
+			line-height:1.25;
+			padding:0;
 		}
 
 		dd
@@ -2299,8 +2323,21 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 
 		.book {
 			display:inline-block;
-			margin:5px;
-			border: 1px solid lightgray;
+			margin:8px;
+			border:none;
+			border-radius:8px;
+			box-shadow:0 2px 10px rgba(20,40,60,0.14);
+			overflow:hidden;
+			line-height:0;
+			transition:transform .16s ease, box-shadow .16s ease;
+		}
+		.book:hover {
+			transform:translateY(-3px);
+			box-shadow:0 8px 20px rgba(20,40,60,0.22);
+		}
+		.book img {
+			display:block;
+			border-radius:8px;
 		}
 		
 		.recommended {
@@ -2559,9 +2596,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 				margin-left: -3.53319%;
 			}
 			body {
-				font: 17px/27px "PT Serif",Georgia,serif;
+				font: 18px/1.62 "PT Serif",Georgia,serif;
 			}
-		
+
 			.recommended {
 				display:block;
 				margin-bottom:20px;
@@ -2586,12 +2623,12 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			}
 			
 			h2 {
-				font-size:25px;
-				font-weight:100;
+				font-size:26px;
+				font-weight:600;
 			}
 			h3 {
-				font-size:20px;
-				font-weight:100;
+				font-size:21px;
+				font-weight:500;
 			}
 			
 			#content {
