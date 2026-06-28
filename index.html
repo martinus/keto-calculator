@@ -2206,6 +2206,12 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			text-decoration:underline;
 		}
 
+		/* Paint the page explicitly so the browser's white canvas never flashes through.
+		   The content sits on white; the html canvas takes the footer's dark colour, so when
+		   Firefox Android's keyboard/dynamic-toolbar transiently makes the viewport taller than
+		   the content, the strip revealed below the dark #bottom2 footer blends in instead of
+		   showing a white bar. */
+		html { background-color:#222222; }
 		body
 		{
 			font-style: normal;
@@ -2216,6 +2222,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			line-height: 1.66;
 			font-family: 'PT Serif', Georgia, serif;
 			color:#14202b;
+			background-color:#ffffff;
 			margin:0;
 			padding:0;
 			-webkit-font-smoothing:antialiased;
