@@ -135,23 +135,42 @@
 	<meta property="og:title" content="Keto Calculator">
 	<meta property="og:description" content="This weight loss calculator finds out how you can lose weight on a ketogenic diet. Based on your personal data you can calculate the amount of carbohydrates, protein, and fat you can eat to reach your specific goal. Give it a try!">
 	<meta property="og:url" content="https://keto-calculator.ankerl.com/">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site" content="@sunitram">
+	<meta name="twitter:title" content="Free Keto Macro Calculator">
+	<meta name="twitter:description" content="Calculate your exact keto macros in 60 seconds — personalized carb, protein, and fat targets for the ketogenic diet.">
+	<meta name="twitter:image" content="https://keto-calculator.ankerl.com/share_1600_lanc2.jpg">
 	<meta name="theme-color" content="#33B5E5">
 	
 	<link href="favicon.png" rel="icon" type="image/png">
 	
 	<script type="application/ld+json">
 	{
-	  "@context" : "http://schema.org",
-	  "@type" : "Organization",
-	  "name" : "Keto Calculator",
-	  "url" : "https://keto-calculator.ankerl.com/",
-	  "sameAs" : [
-		"https://www.facebook.com/KetoCalculator/",
-		"https://twitter.com/sunitram"
-	  ],
-	  "logo": "https://keto-calculator.ankerl.com/launcher-icon-152x152.png"
+	  "@context": "https://schema.org",
+	  "@type": "WebApplication",
+	  "name": "Keto Calculator",
+	  "url": "https://keto-calculator.ankerl.com/",
+	  "applicationCategory": "HealthApplication",
+	  "operatingSystem": "All",
+	  "browserRequirements": "Requires JavaScript",
+	  "description": "Free keto macro calculator: enter your weight, height, and goal to get personalized carb, protein, and fat targets for the ketogenic diet.",
+	  "offers": {
+		"@type": "Offer",
+		"price": "0",
+		"priceCurrency": "USD"
+	  },
+	  "publisher": {
+		"@type": "Organization",
+		"name": "Keto Calculator",
+		"url": "https://keto-calculator.ankerl.com/",
+		"logo": "https://keto-calculator.ankerl.com/launcher-icon-152x152.png",
+		"sameAs": [
+		  "https://www.facebook.com/KetoCalculator/",
+		  "https://twitter.com/sunitram"
+		]
+	  }
 	}
-	</script>	
+	</script>
 	
 	<script type="text/javascript">
 		// similar to Easy SocialShare Buttons, see http://migrevolution.de/eat/keto-kickstart-tipps/
@@ -2982,7 +3001,108 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 						<p>For all you data junkies, you can <a id="csvdownload" download="KetoCalculatorForecast.csv" href="javascript:void(0)">download a CSV file of your projected weight loss</a>. This contains all the data used in the above graph.
                     </div>
 
-		
+					<div id="faq">
+						<h2>Keto Calculator FAQ</h2>
+
+						<h3>How many carbs can I eat on keto?</h3>
+						<p>Most people stay in ketosis on 20–50 grams of net carbs per day. This calculator defaults to 25 grams, which works well for the majority. Get your carbs from vegetables, nuts, and a little fruit rather than from sugar and grains.</p>
+
+						<h3>How much protein should I eat on keto?</h3>
+						<p>Protein is set from your lean body mass, not your total weight — roughly 1.2 to 2.0 grams per kilogram of lean mass. The calculator gives you a personalized minimum and maximum so you keep muscle without eating so much that it interferes with ketosis.</p>
+
+						<h3>What is a macro?</h3>
+						<p>"Macro" is short for macronutrient — the three nutrients that give your body energy: fat, protein, and carbohydrates. On keto you eat high fat, moderate protein, and very few carbs.</p>
+
+						<h3>What is the difference between net carbs and total carbs?</h3>
+						<p>Net carbs are total carbohydrates minus fiber (and sugar alcohols). Fiber does not raise blood sugar, so keto counts net carbs. European labels already show net carbs; United States labels show total carbs, so subtract the fiber yourself.</p>
+
+						<h3>What foods are high in fat for keto?</h3>
+						<p>Good keto fat sources include avocado, olive oil, coconut oil, butter, nuts and seeds, fatty fish like salmon, eggs, and full-fat cheese. These let you reach your fat target while keeping carbs low.</p>
+
+						<h3>How fast will I lose weight on keto?</h3>
+						<p>It depends on the calorie deficit you choose. A deficit that loses 0.5 to 1 kilogram per week is sustainable for most people. Expect a larger drop in the first week as your body sheds water weight, then a steadier loss after that.</p>
+
+						<h3>How does this keto calculator work?</h3>
+						<p>It estimates your Base Metabolic Rate with the Mifflin-St. Jeor formula, multiplies it by your activity level to get your daily energy needs, then subtracts your chosen deficit. Protein comes from your lean body mass and carbs from your chosen limit; the remaining calories become your fat target.</p>
+
+						<h3>Is this medical advice?</h3>
+						<p>No. This calculator provides general information to help you plan a ketogenic diet and is not a substitute for professional medical advice. Talk to your doctor before making big dietary changes, especially if you have a health condition.</p>
+					</div>
+
+					<script type="application/ld+json">
+					{
+					  "@context": "https://schema.org",
+					  "@type": "FAQPage",
+					  "mainEntity": [
+						{
+						  "@type": "Question",
+						  "name": "How many carbs can I eat on keto?",
+						  "acceptedAnswer": {
+							"@type": "Answer",
+							"text": "Most people stay in ketosis on 20–50 grams of net carbs per day. This calculator defaults to 25 grams, which works well for the majority. Get your carbs from vegetables, nuts, and a little fruit rather than from sugar and grains."
+						  }
+						},
+						{
+						  "@type": "Question",
+						  "name": "How much protein should I eat on keto?",
+						  "acceptedAnswer": {
+							"@type": "Answer",
+							"text": "Protein is set from your lean body mass, not your total weight — roughly 1.2 to 2.0 grams per kilogram of lean mass. The calculator gives you a personalized minimum and maximum so you keep muscle without eating so much that it interferes with ketosis."
+						  }
+						},
+						{
+						  "@type": "Question",
+						  "name": "What is a macro?",
+						  "acceptedAnswer": {
+							"@type": "Answer",
+							"text": "Macro is short for macronutrient — the three nutrients that give your body energy: fat, protein, and carbohydrates. On keto you eat high fat, moderate protein, and very few carbs."
+						  }
+						},
+						{
+						  "@type": "Question",
+						  "name": "What is the difference between net carbs and total carbs?",
+						  "acceptedAnswer": {
+							"@type": "Answer",
+							"text": "Net carbs are total carbohydrates minus fiber (and sugar alcohols). Fiber does not raise blood sugar, so keto counts net carbs. European labels already show net carbs; United States labels show total carbs, so subtract the fiber yourself."
+						  }
+						},
+						{
+						  "@type": "Question",
+						  "name": "What foods are high in fat for keto?",
+						  "acceptedAnswer": {
+							"@type": "Answer",
+							"text": "Good keto fat sources include avocado, olive oil, coconut oil, butter, nuts and seeds, fatty fish like salmon, eggs, and full-fat cheese. These let you reach your fat target while keeping carbs low."
+						  }
+						},
+						{
+						  "@type": "Question",
+						  "name": "How fast will I lose weight on keto?",
+						  "acceptedAnswer": {
+							"@type": "Answer",
+							"text": "It depends on the calorie deficit you choose. A deficit that loses 0.5 to 1 kilogram per week is sustainable for most people. Expect a larger drop in the first week as your body sheds water weight, then a steadier loss after that."
+						  }
+						},
+						{
+						  "@type": "Question",
+						  "name": "How does this keto calculator work?",
+						  "acceptedAnswer": {
+							"@type": "Answer",
+							"text": "It estimates your Base Metabolic Rate with the Mifflin-St. Jeor formula, multiplies it by your activity level to get your daily energy needs, then subtracts your chosen deficit. Protein comes from your lean body mass and carbs from your chosen limit; the remaining calories become your fat target."
+						  }
+						},
+						{
+						  "@type": "Question",
+						  "name": "Is this medical advice?",
+						  "acceptedAnswer": {
+							"@type": "Answer",
+							"text": "No. This calculator provides general information to help you plan a ketogenic diet and is not a substitute for professional medical advice. Talk to your doctor before making big dietary changes, especially if you have a health condition."
+						  }
+						}
+					  ]
+					}
+					</script>
+
+
                     <div id="questions">
                         <h2>Got Questions?</h2>
                         <h3>Post Your Question to /r/keto</h3>						
