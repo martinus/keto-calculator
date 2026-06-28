@@ -2404,6 +2404,37 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			white-space:nowrap;
 		}
 
+		/* The three scaled pies (maintenance / target / deficit) — same readout language */
+		.pie-trio {
+			display:flex;
+			flex-wrap:wrap;
+			justify-content:center;
+			align-items:flex-start;
+			gap:14px 22px;
+			text-align:center;
+			margin:10px 0 6px;
+		}
+		.pie-col { flex:0 1 200px; }
+		.pie-label {
+			display:block;
+			font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
+			font-weight:600;
+			font-size:12px;
+			letter-spacing:0.5px;
+			text-transform:uppercase;
+			color:#5a6b78;
+		}
+		.pie-kcal {
+			display:block;
+			font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
+			font-weight:600;
+			font-size:20px;
+			color:#14202b;
+			margin:1px 0 4px;
+		}
+		.pie-kcal i { font-style:normal; font-weight:500; font-size:13px; color:#7a8a96; }
+		.pie-col > div[id^="pie_"] { display:inline-block; }
+
 		.recommended {
 			width:100%;
 			text-align:center;
@@ -2556,24 +2587,38 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			text-align:center;
 		}
 
+		/* "Show more" toggle — a clean cyan chevron disc (replaces the old sprite +/-).
+		   toggle_visibility() adds .expandeble_expanded, which flips the chevron up. */
 		.expandable
-		{		
-			position: relative;
-			background:url(spritesheet.png) no-repeat;
-			width:16px;
-			height:16px;
-			background-position: -170px -39px;
-			display:inline-block;
-		}
-
-		.expandeble_expanded
 		{
 			position: relative;
-			background:url(spritesheet.png) no-repeat;
-			width:16px;
-			height:16px;
-			background-position: -115px -5px;
 			display:inline-block;
+			width:22px;
+			height:22px;
+			border-radius:50%;
+			background:#e8f4fb;
+			vertical-align:middle;
+			cursor:pointer;
+			transition:background .15s ease;
+		}
+		.expandable:hover { background:#d4ebf9; }
+		.expandable::before
+		{
+			content:"";
+			position:absolute;
+			left:50%;
+			top:42%;
+			width:6px;
+			height:6px;
+			border-right:2px solid #1294c8;
+			border-bottom:2px solid #1294c8;
+			transform:translate(-50%,-50%) rotate(45deg);
+			transition:transform .2s ease;
+		}
+		.expandeble_expanded::before
+		{
+			top:54%;
+			transform:translate(-50%,-50%) rotate(-135deg);
 		}
 		
 		#aboutmewidth {
@@ -2741,21 +2786,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			.onlyonmobile {
 				display:block;
 			}
-			
-			@keyframes moveup {
-				from { bottom:-39px; }
-				to { bottom:0; }
-			}
-			.sharebuttons {
-				position:fixed;
-				width:100%;
-				height:39px ;
-				left:0;
-				bottom:0;
-				animation-name: moveup;
-				animation-duration:0.5s;
-				z-index: 10000;
-			}
 		}
 	</style>
     
@@ -2801,31 +2831,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
                 </div>
             
 				<form action="get" id="data" method="post" name="data">
-					<div class="onlyonmobile sharebuttons">
-						<table style="text-align:center;"><tr>
-						
-						<td style="background-color:#59D1DF">
-						<a class="shareicon" href="https://twitter.com/intent/tweet?hashtags=keto&text=Calculate%20your%20macros%20on%20the%20ketogenic%20diet&tw_p=tweetbutton&url=https%3A%2F%2Fketo-calculator.ankerl.com%2F" rel="nofollow" title="Share on Twitter" target="_blank" onclick="return gatrack(this, function() { show_window('https://twitter.com/intent/tweet?hashtags=keto&text=Calculate%20your%20macros%20on%20the%20ketogenic%20diet&tw_p=tweetbutton&url=https%3A%2F%2Fketo-calculator.ankerl.com%2F', 555, 258);});"><i class="sprite sprite-tw"></i></a></td>
-
-						
-						<td style="background-color:#3B5999">
-						<a class="shareicon" href="http://www.facebook.com/sharer/sharer.php?u=http://keto-calculator.ankerl.com/" rel="nofollow" title="Share on Facebook" target="_blank" onclick="return gatrack(this, function() { show_window('http://www.facebook.com/sharer/sharer.php?u=http://keto-calculator.ankerl.com/', 576, 500);});"><i class="sprite sprite-fb"></i></a></td>
-						
-						<td style="background-color:#CD252B">
-						<a class="shareicon" href="https://www.pinterest.com/pin/create/button/?guid=50b41y6Y4Fhg-1&url=https%3A%2F%2Fketo-calculator.ankerl.com%2F&media=https%3A%2F%2Fketo-calculator.ankerl.com%2Fshare_high_1200.jpg&description=This%20weight%20loss%20calculator%20finds%20out%20how%20you%20can%20lose%20weight%20on%20a%20ketogenic%20diet.%20Based%20on%20your%20personal%20data%20you%20can%20calculate%20the%20amount%20of%20carbohydrates,%20protein,%20and%20fat%20you%20can%20eat%20to%20reach%20your%20specific%20goal.%20Give%20it%20a%20try!" rel="nofollow" title="Share on Pinterest" target="_blank" onclick="return gatrack(this, function() { show_window('https://www.pinterest.com/pin/create/button/?guid=50b41y6Y4Fhg-1&url=https%3A%2F%2Fketo-calculator.ankerl.com%2F&media=https%3A%2F%2Fketo-calculator.ankerl.com%2Fshare_high_1200.jpg&description=This%20weight%20loss%20calculator%20finds%20out%20how%20you%20can%20lose%20weight%20on%20a%20ketogenic%20diet.%20Based%20on%20your%20personal%20data%20you%20can%20calculate%20the%20amount%20of%20carbohydrates,%20protein,%20and%20fat%20you%20can%20eat%20to%20reach%20your%20specific%20goal.%20Give%20it%20a%20try!', 767, 545);});"><i class="sprite sprite-pi"></i></a></td>
-
-<!--						
-						<td style="background-color:#BF3727">
-						<a class="shareicon" href="https://plus.google.com/share?url=https://keto-calculator.ankerl.com" rel="nofollow" title="Share on Google+" target="_blank" onclick="return gatrack(this, function() { show_window('https://plus.google.com/share?url=https://keto-calculator.ankerl.com', 555, 655);});"><i class="sprite sprite-gp"></i></a></td>
-						-->
-
-						<!-- whatsapp is here -->
-						<td style="background-color:#1D9E11">
-						<a class="shareicon" href="whatsapp://send?text=This%20weight%20loss%20calculator%20finds%20out%20how%20you%20can%20lose%20weight%20on%20a%20ketogenic%20diet.%20Based%20on%20your%20personal%20data%20you%20can%20calculate%20the%20amount%20of%20carbohydrates,%20protein,%20and%20fat%20you%20can%20eat%20to%20reach%20your%20specific%20goal.%20Give%20it%20a%20try!%20https%3A%2F%2Fketo-calculator.ankerl.com" rel="nofollow" title="Share on WhatsApp" target="_blank" onclick="return gatrack(this, function() { show_window('whatsapp://send?text=This%20weight%20loss%20calculator%20finds%20out%20how%20you%20can%20lose%20weight%20on%20a%20ketogenic%20diet.%20Based%20on%20your%20personal%20data%20you%20can%20calculate%20the%20amount%20of%20carbohydrates,%20protein,%20and%20fat%20you%20can%20eat%20to%20reach%20your%20specific%20goal.%20Give%20it%20a%20try!%20https%3A%2F%2Fketo-calculator.ankerl.com', 555, 258);});"><i class="sprite sprite-wa"></i></a></td>
-						
-						</tr></table>						
-					</div>
-					
 					<p>This is a weight loss calculator for the <a href="http://www.reddit.com/r/keto/wiki/faq" onclick="return gatrack(this);">ketogenic diet</a>. It finds your optimal food intake for your personal weight loss goals. Click <a title="show more" href="javascript:void(0)" onclick="toggle_visibility('detail_intro', this); load_youtube('youtubeplayer', 'vyRnunLjDvI');" class="expandable"></a> for more!
 
 					<p style="font-size:smaller; color:#666; margin-top:0.2em;">Built and maintained by <a href="#aboutme" onclick="return gatrack(this);">Martin Ankerl</a>, a software developer who has followed and researched the ketogenic diet for years. The math uses the peer-reviewed Mifflin-St. Jeor equation. This is general information, not medical advice.
@@ -3141,20 +3146,20 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 				
 					<p>Here is a visual representation of your macros and your deficit. The area of the circles is exactly scaled based on your ratios.</p>
 
-					<div style="text-align:center;">
-						<div style="display:inline-block;">
-							<b>Weight Maintenance</b><br />
-							<span class="expenditure_kcal"></span> kcal<br />
+					<div class="pie-trio">
+						<div class="pie-col">
+							<span class="pie-label">Weight Maintenance</span>
+							<span class="pie-kcal"><span class="expenditure_kcal"></span> <i>kcal</i></span>
 							<div id="pie_maintainence"></div>
 						</div>
-						<div style="display:inline-block;">
-							<b>Your Target</b><br />
-							<span class="target_kcal"></span> kcal<br />
+						<div class="pie-col">
+							<span class="pie-label">Your Target</span>
+							<span class="pie-kcal"><span class="target_kcal"></span> <i>kcal</i></span>
 							<div id="pie_chosen"></div>
 						</div>
-						<div style="display:inline-block;">
-							<b>Deficit</b><br />
-							<span class="deficit_kcal"></span> kcal<br />
+						<div class="pie-col">
+							<span class="pie-label">Deficit</span>
+							<span class="pie-kcal"><span class="deficit_kcal"></span> <i>kcal</i></span>
 							<div id="pie_deficit"></div>
 						</div>
 					</div>
