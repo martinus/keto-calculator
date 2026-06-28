@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /beta_slPsUD7oVbjykc9bRpQl/
+Disallow: /beta_EM_em-Mt1H2Y9aCUzFaA0ehaFsRqjMKYE0f35a1YhQAOWjgis1DCqzlUt5ub8ZPj/
