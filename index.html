@@ -2546,6 +2546,37 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			margin-right:46px;
 		}
 
+		/* Reading measure — body prose is capped to a comfortable line length (~66
+		   characters) so the eye tracks easily from line to line. The calculator
+		   table, results card, charts and book grid are not prose and keep their own
+		   widths (they are tables/cards/images, not <p>/<ul>/<ol>). */
+		#main p,
+		#main ul,
+		#main ol,
+		#main dl
+		{
+			max-width:650px;
+		}
+		#main p
+		{
+			margin:0 0 1.15em;
+			line-height:1.72;
+		}
+		#main li
+		{
+			line-height:1.6;
+		}
+		/* Editorial lead-in: the opening paragraph reads like the first line of a
+		   health article — a little larger, a little softer, drawing the reader in. */
+		#main p.lead
+		{
+			max-width:660px;
+			font-size:20px;
+			line-height:1.6;
+			color:#2a3a47;
+			margin-bottom:1.3em;
+		}
+
 		#leftbar
 		{
 		  width:180px;
@@ -2872,7 +2903,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
                 </div>
             
 				<form action="get" id="data" method="post" name="data">
-					<p>This is a weight loss calculator for the <a href="http://www.reddit.com/r/keto/wiki/faq" onclick="return gatrack(this);">ketogenic diet</a>. It finds your optimal food intake for your personal weight loss goals. Click <a title="show more" href="javascript:void(0)" onclick="toggle_visibility('detail_intro', this); load_youtube('youtubeplayer', 'vyRnunLjDvI');" class="expandable"></a> for more!
+					<p class="lead">This is a weight loss calculator for the <a href="http://www.reddit.com/r/keto/wiki/faq" onclick="return gatrack(this);">ketogenic diet</a>. It finds your optimal food intake for your personal weight loss goals. Click <a title="show more" href="javascript:void(0)" onclick="toggle_visibility('detail_intro', this); load_youtube('youtubeplayer', 'vyRnunLjDvI');" class="expandable"></a> for more!
 
 					<p style="font-size:smaller; color:#666; margin-top:0.2em;">Built and maintained by <a href="#aboutme" onclick="return gatrack(this);">Martin Ankerl</a>, a software developer who has followed and researched the ketogenic diet for years. The math uses the peer-reviewed Mifflin-St. Jeor equation. This is general information, not medical advice.
 
