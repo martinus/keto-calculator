@@ -2447,6 +2447,40 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			text-align:center;
 		}
 
+		/* Custom radios (appearance:none) — native radios ignore border-radius on their
+		   border/box-shadow, so the "needs-input" ring rendered square in Chrome. Drawing
+		   our own makes the shape and the amber ring perfectly round, and gives a clean
+		   cyan selected dot. */
+		input[type=radio] {
+			-webkit-appearance:none;
+			appearance:none;
+			box-sizing:border-box;
+			width:18px;
+			height:18px;
+			min-width:18px;
+			margin:3px 5px 3px 0;
+			padding:0;
+			border:2px solid #b9c5ce;
+			border-radius:50%;
+			background:#fff;
+			vertical-align:-4px;
+			cursor:pointer;
+			position:relative;
+			transition:border-color .15s ease, box-shadow .15s ease;
+		}
+		input[type=radio]:checked { border-color:#1294c8; }
+		input[type=radio]:checked::after {
+			content:"";
+			position:absolute;
+			left:50%;
+			top:50%;
+			width:10px;
+			height:10px;
+			border-radius:50%;
+			background:#1294c8;
+			transform:translate(-50%,-50%);
+		}
+
 		/* "Please fill me in" cue for required inputs — a bold amber field with a
 		   pulsing glow so it clearly reads as "enter data here" (amber stands out
 		   against the site's blue). Applied/removed by mark_empty_fields(); the
@@ -2462,7 +2496,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 		}
 		input[type=radio].needs-input {
 			border-radius: 50%;
-			background-color: transparent !important;
+			background-color: #fff !important;
 			box-shadow: 0 0 0 4px rgba(255,143,0,0.40);
 		}
 		input, select {
@@ -3199,7 +3233,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 						<ul>
 						<li>Start on <input id="graphstartdate" name="graphstartdate" tabindex="5" type="text" placeholder="MM/DD/YYYY" style="width:7em" title="Write e.g. 8/30/1979">.</li>
 					
-						<li>Show in <input name="chart_weight_type" tabindex="1" type="radio" style="width:1.5em;" value="0">kg or <input name="chart_weight_type" tabindex="2" type="radio" style="width:1.5em;" value="1">lbs</li>
+						<li>Show in <input name="chart_weight_type" tabindex="1" type="radio" value="0">kg or <input name="chart_weight_type" tabindex="2" type="radio" value="1">lbs</li>
 						</ul></p>
 
 						<div id="chart">
