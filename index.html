@@ -1046,6 +1046,7 @@
 		}
 
 		function load_url_params() {
+			var hasParams = window.location.search.indexOf('=') !== -1;
 			var params = get_url_params(window.location.search);
 			Object.keys(params).forEach(function (key) {
 				var value = params[key]
@@ -1065,6 +1066,43 @@
 			// remove from URL
 			var url = [location.protocol, '//', location.host, location.pathname].join('');
 			window.history.replaceState({}, document.title, url);
+
+			// A shared link prefilled the form -> recalc now so the recipient sees
+			// the results immediately instead of a blank form.
+			if (hasParams) {
+				calc_handler(null);
+			}
+			return hasParams;
+		}
+
+		// Build a shareable URL that reproduces the current inputs (the recipient's
+		// browser recalculates from them). RadioNodeList.value yields the checked value.
+		function build_share_url() {
+			var d = document.data;
+			var fields = ['sex','kg','height','bday','bodyfat','level','custom_expenditure',
+				'carbs','protein_chosen','target_deficit_form','target_fat_form','target_kcal_form'];
+			var parts = [];
+			fields.forEach(function(name) {
+				var el = d.elements[name];
+				if (!el) return;
+				var val = el.value;
+				if (val !== undefined && val !== null && val !== '') {
+					parts.push(name + '=' + encodeURIComponent(val));
+				}
+			});
+			var base = location.protocol + '//' + location.host + location.pathname;
+			return base + (parts.length ? '?' + parts.join('&') : '');
+		}
+
+		function share_my_macros() {
+			var url = build_share_url();
+			var fb = document.getElementById('share_feedback');
+			var ok = function() { if (fb) { fb.textContent = ' Link copied to clipboard!'; } };
+			if (navigator.clipboard && navigator.clipboard.writeText) {
+				navigator.clipboard.writeText(url).then(ok, function() { window.prompt('Copy your shareable link:', url); });
+			} else {
+				window.prompt('Copy your shareable link:', url);
+			}
 		}
 
 		function load_cookie() {
@@ -1412,6 +1450,7 @@
 		window['use_graphstartdate_today'] = use_graphstartdate_today;
 		window['load_cookie'] = load_cookie;
 		window['load_url_params'] = load_url_params;
+		window['share_my_macros'] = share_my_macros;
 		window['mark_empty_fields'] = mark_empty_fields;
 		window['google_is_loaded'] = google_is_loaded;
 	</script>
@@ -2925,6 +2964,12 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 					</p>
 
 					<p>
+						<button type="button" onclick="share_my_macros()" style="cursor:pointer; padding:9px 16px; font-size:16px; border:none; border-radius:4px; background:#33B5E5; color:#fff;">🔗 Share my macros</button>
+						<span id="share_feedback" style="color:#1a8a55; font-size:smaller;"></span>
+					</p>
+					<p style="font-size:smaller; color:#666; margin-top:-0.5em;">Copies a link that reopens this calculator with your numbers already filled in — handy for saving or sharing on Reddit.</p>
+
+					<p>
 						<div class="fullwidthad">
 							<!-- Keto Bottom -->
 							<ins class="adsbygoogle"
@@ -3415,9 +3460,12 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 	<!-- required for google charts end -->
 	
 	<script type="text/javascript">
-		load_url_params();
-		load_cookie();
-		
+		// A shared ?key=value link is authoritative; only fall back to the saved
+		// cookie when the visitor didn't arrive via a share link.
+		if (!load_url_params()) {
+			load_cookie();
+		}
+
 		 // set datepicker's *after* loading, so that field keeps beeing there.
 		$('#bday').datepicker({
 			format: "mm/dd/yyyy",
