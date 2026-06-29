@@ -1412,7 +1412,17 @@
 		{
 			transform:translate(-50%,-25%) rotate(-135deg);
 		}
-		
+
+		/* Cusdis comments iframe. Cusdis auto-sizes via a postMessage('resize')
+		   that measures documentElement.offsetHeight, but its own style.css loads
+		   async (a stylesheet load is not a DOM mutation, so the MutationObserver
+		   doesn't re-fire) — the initial form is measured pre-CSS and ends up
+		   clipped with a scrollbar. min-height is a floor that keeps the form fully
+		   visible; real comment threads arrive as DOM mutations and grow it past
+		   the floor. ~480px fits the empty form on both desktop and mobile (Cusdis
+		   keeps the name/email fields two-up even at phone widths). */
+		#cusdis_thread iframe { width:100%; min-height:480px; }
+
 		#aboutmewidth {
 			margin: 0 8px;
 		}
@@ -2171,7 +2181,7 @@
 						<!-- google adsense end -->
 
                         <p>
-                            <div style="text-align:center; font-size:x-small; font-style:italic;">
+                            <div>
 								<!-- Comments: Cusdis (lightweight, ad-free, no login required to comment).
 									 Managed at https://cusdis.com; data-app-id is this site's App ID. -->
 								<div id="cusdis_thread"
