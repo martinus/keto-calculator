@@ -2172,9 +2172,15 @@
 
                         <p>
                             <div style="text-align:center; font-size:x-small; font-style:italic;">
-								<div id="disqus_thread"></div>
-                                <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript" onclick="return gatrack(this);">comments powered by Disqus.</a></noscript>
-                                <a class="dsq-brlink" href="http://disqus.com">comments powered by <span class="logo-disqus">Disqus</span></a>
+								<!-- Comments: Cusdis (lightweight, ad-free, no login required to comment).
+									 Managed at https://cusdis.com; data-app-id is this site's App ID. -->
+								<div id="cusdis_thread"
+									data-host="https://cusdis.com"
+									data-app-id="12c12213-53aa-4286-a49e-225c1fb40f62"
+									data-page-id="/"
+									data-page-url="https://keto-calculator.ankerl.com/"
+									data-page-title="Keto Calculator"></div>
+                                <noscript>Please enable JavaScript to view the comments.</noscript>
                             </div>
                         </p>
 					</div>
@@ -3604,20 +3610,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			e.target.select();
 		}
 		
-		/*
-		function load_disqus() {
-			var disqus_shortname = 'ketocalculator'; 
-
-			(function() {
-				var dsq = document.createElement('script'); 
-				dsq.type = 'text/javascript'; 
-				dsq.async = true;
-				dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-				(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-			})();
-		}
-		*/
-
 		// Add event listeners once the DOM has fully loaded by listening for the
 		// `DOMContentLoaded` event on the document, and adding your listeners to
 		// specific elements when it triggers.
@@ -3680,34 +3672,28 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
     </script>
 	
 	<script type="text/javascript">
-		var disqus_loaded = false;
-        var disqus_config = function() {
-            this.page.url = 'http://keto-calculator.ankerl.com/';
-            this.page.identifier = '/';
-        };
-		function load_disqus() {	
-			/* * * CONFIGURATION VARIABLES * * */
-			var disqus_shortname = 'ketocalculator';
-			
-			/* * * DON'T EDIT BELOW THIS LINE * * */
-			(function() {
-				var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-				dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-				(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-			})();
+		// Lazy-load the Cusdis comment widget (~5KB, ad-free) only when the
+		// reader nears the bottom of the page, so it never blocks first paint.
+		var cusdis_loaded = false;
+		function load_cusdis() {
+			var s = document.createElement('script');
+			s.async = true;
+			s.defer = true;
+			s.src = 'https://cusdis.com/js/cusdis.es.js';
+			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
 		}
-		
-		// only load disqus at the bottom.
+
+		// only load comments near the bottom.
 		window.onscroll = function(e) {
 			if ((window.innerHeight*3 + window.scrollY) >= document.body.offsetHeight) {
 				// hit one window.innerHeight above bottom of page
-				if (!disqus_loaded) {
-					disqus_loaded = true;
-					load_disqus();
+				if (!cusdis_loaded) {
+					cusdis_loaded = true;
+					load_cusdis();
 				};
 			}
 		};
 	</script>
-	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>			
+	<noscript>Please enable JavaScript to view the comments.</noscript>
 </body>
 </html>
