@@ -227,12 +227,6 @@
 			display: inline-block;
 		}
 
-		.sprite-fb {
-			width: 45px;
-			height: 39px;
-			background-position: -5px -5px;
-		}
-
 		.sprite-gp {
 			width: 45px;
 			height: 39px;
@@ -251,29 +245,12 @@
 			background-position: -115px -5px;
 		}
 
-		.sprite-pi {
-			width: 45px;
-			height: 39px;
-			background-position: -115px -39px;
-		}
-
 		.sprite-plus {
 			width: 16px;
 			height: 16px;
 			background-position: -170px -39px;
 		}
 
-		.sprite-tw {
-			width: 45px;
-			height: 39px;
-			background-position: -196px -39px;
-		}
-
-		.sprite-wa {
-			width: 45px;
-			height: 39px;
-			background-position: -79px -88px;
-		}
 	</style>
 	
 	<style>
@@ -1492,10 +1469,6 @@
 		.onlyonmobile {
 			display:none;
 		}
-		.shareicon {
-			margin:5px;
-		}
-		
 		@media only screen and (min-width: 830px) {
 			#content {
 				max-width:830px;
@@ -2224,17 +2197,12 @@
 									
 				<p style="clear:both; margin-top:50px;">
 			
-				<!-- also copied to a place for mobile -->
-				<div>
-					<a class="shareicon" href="http://www.facebook.com/sharer/sharer.php?u=https://keto-calculator.ankerl.com/" rel="nofollow" title="Share on Facebook" target="_blank" onclick="return gatrack(this, function() { show_window('http://www.facebook.com/sharer/sharer.php?u=https://keto-calculator.ankerl.com/', 576, 500) })"><i class="sprite sprite-fb"></i></a>
-					
-					<a class="shareicon" href="https://twitter.com/intent/tweet?hashtags=keto&text=Calculate%20your%20macros%20on%20the%20ketogenic%20diet&tw_p=tweetbutton&url=https%3A%2F%2Fketo-calculator.ankerl.com%2F" rel="nofollow" title="Share on Twitter" target="_blank" onclick="return gatrack(this, function() { show_window('https://twitter.com/intent/tweet?hashtags=keto&text=Calculate%20your%20macros%20on%20the%20ketogenic%20diet&tw_p=tweetbutton&url=https%3A%2F%2Fketo-calculator.ankerl.com%2F', 555, 258);});"><i class="sprite sprite-tw"></i></a>
-					
-					<a class="shareicon" href="https://www.pinterest.com/pin/create/button/?guid=50b41y6Y4Fhg-1&url=https%3A%2F%2Fketo-calculator.ankerl.com%2F&media=https%3A%2F%2Fketo-calculator.ankerl.com%2Fshare_high_1200.jpg&description=This%20weight%20loss%20calculator%20finds%20out%20how%20you%20can%20lose%20weight%20on%20a%20ketogenic%20diet.%20Based%20on%20your%20personal%20data%20you%20can%20calculate%20the%20amount%20of%20carbohydrates,%20protein,%20and%20fat%20you%20can%20eat%20to%20reach%20your%20specific%20goal.%20Give%20it%20a%20try!" rel="nofollow" title="Share on Pinterest" target="_blank" onclick="return gatrack(this, function() { show_window('https://www.pinterest.com/pin/create/button/?guid=50b41y6Y4Fhg-1&url=https%3A%2F%2Fketo-calculator.ankerl.com%2F&media=https%3A%2F%2Fketo-calculator.ankerl.com%2Fshare_high_1200.jpg&description=This%20weight%20loss%20calculator%20finds%20out%20how%20you%20can%20lose%20weight%20on%20a%20ketogenic%20diet.%20Based%20on%20your%20personal%20data%20you%20can%20calculate%20the%20amount%20of%20carbohydrates,%20protein,%20and%20fat%20you%20can%20eat%20to%20reach%20your%20specific%20goal.%20Give%20it%20a%20try!', 767, 545);});"><i class="sprite sprite-pi"></i></a>
-
-					<!-- Google+ share removed (Google+ shut down 2019-04-02) -->
-					<!-- whatsapp is only in the other icons -->
-				</div>
+				<!-- Generic Facebook / X / Pinterest share icons removed 2026-06-29:
+				     they were desktop-only (this sidebar is display:none under 830px,
+				     missing the 65% mobile audience), converted ~nothing on a utility
+				     tool, and Twitter is dated. Social inbound is already carried by the
+				     og:image/twitter:card rich previews and the "Share my macros"
+				     (prefilled-URL) button in #main. -->
 				<!-- facebook
 				<p style="clear:both; margin-top:70px;">
 				
