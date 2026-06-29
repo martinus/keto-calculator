@@ -1322,6 +1322,19 @@
 			margin-top:0px;
 		}
 
+		/* Sticky desktop sidebar ad. The 160x600 box is reserved up front so the
+		   ad load causes no layout shift (CLS). position:sticky follows the reader
+		   down the long page; it can travel because #content is a flex row at
+		   >=830px, which stretches #sidebar to #main's height. */
+		.sidebar-ad
+		{
+			position:sticky;
+			top:20px;
+			width:160px;
+			height:600px;
+			margin:0 auto;
+		}
+
 		#leftbar
 		{
 			float:left;
@@ -1470,8 +1483,11 @@
             a[href^="#"]:after,a[href^="javascript:"]:after { content: ""; }
         }
 		
+		/* Show the inline book rec on desktop too. It used to be hidden here
+		   because books lived in the (now removed) sidebar grid; the sidebar
+		   now holds the sticky ad, so the inline rec is the only book block. */
 		.recommended {
-			display:none;
+			display:block;
 		}
 		.onlyonmobile {
 			display:none;
@@ -1483,7 +1499,12 @@
 		@media only screen and (min-width: 830px) {
 			#content {
 				max-width:830px;
-			}		
+				/* Flex row so #sidebar stretches to #main's full height; that
+				   gives the sticky sidebar ad room to travel the whole page.
+				   (Floats on the children are ignored in flex but harmless.) */
+				display:flex;
+				align-items:stretch;
+			}
 			#main {
 				width:550px;
 				margin-right:2%;
@@ -1745,7 +1766,11 @@
 					<h2>Learn Your Optimal Macronutrient Ratio</h2>
 					<div class="recommended">
 						<p class="rec-label">📚 Want the science behind it? Books I recommend:</p>
-						<span class="book" title="The Ketogenic Diet - by Lyle McDonald. This book is not the typical diet book, it teaches you everything you should know about this diet."><a href="http://www.amazon.com/gp/product/0967145600/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0967145600" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/0967145600_small.png" width="110" height="166" alt="The Ketogenic Diet by Lyle McDonald — book cover"></a></span>
+						<span class="book" title="The Art and Science of Low Carbohydrate Living - by Stephen D. Phinney, Jeff S. Volek. This book is where I learned the most about the ketogenic diet and its effect on the body. Without it, this calculator would not exist. Highly recommended!"><a href="http://www.amazon.com/gp/product/0983490708/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0983490708" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/0983490708_small.png" width="110" height="166" alt="The Art and Science of Low Carbohydrate Living — book cover"></a></span>
+
+						<span class="book" title="The Case for Keto: Rethinking Weight Control and the Science and Practice of Low-Carb/High-Fat Eating - by Gary Taubes. A modern, science-first case for low-carb, high-fat eating, built on interviews with 100 doctors who prescribe keto to their patients."><a href="http://www.amazon.com/gp/product/0525520066/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0525520066" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/0525520066_small.png" width="110" height="166" alt="The Case for Keto by Gary Taubes — book cover"></a></span>
+
+						<span class="book" title="The Obesity Code: Unlocking the Secrets of Weight Loss - by Dr. Jason Fung. Explains how insulin, not willpower, drives weight gain — the hormonal case for cutting carbs."><a href="http://www.amazon.com/gp/product/1771641258/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=1771641258" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/1771641258_small.png" width="110" height="166" alt="The Obesity Code by Jason Fung — book cover"></a></span>
 
 						<span class="book" title="Good Calories, Bad Calories: Fats, Carbs, and the Controversial Science of Diet and Health - by Gary Taubes. This book is probably the main reason why the ketogenic diet became so popular recently. It thoroughly debunks the 'fat is bad' myth and backs this up with more scientific references than you will ever care to look up yourself."><a href="http://www.amazon.com/gp/product/1400033462/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=1400033462" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/1400033462_small.png" width="110" height="166" alt="Good Calories, Bad Calories by Gary Taubes — book cover"></a></span>
 					</div>
@@ -1829,13 +1854,7 @@
 						
 						
 					<h3>How Much Fat Should I Eat?</h3>
-					<div class="recommended">
-						<p class="rec-label">📚 Go deeper on keto fats — recommended reading:</p>
-						<span class="book" title="The Art and Science of Low Carbohydrate Performance - by Jeff S. Volek, Stephen D. Phinney. This is a follow up book after Low Carb Living, and while it is a small book it is so packed with information that you'll probably have to read it multiple times. Fantastic for anyone who wants to exercise as well."><a href="http://www.amazon.com/gp/product/0983490716/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0983490716" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/0983490716_small.png" width="110" height="166" alt="The Art and Science of Low Carbohydrate Performance — book cover"></a></span>
 
-						<span class="book" title="Fat Chance: Beating the Odds Against Sugar, Processed Food, Obesity, and Disease - by Robert H. Lustig"><a href="http://www.amazon.com/gp/product/159463100X/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=159463100X" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/159463100X_small.png" width="110" height="166" alt="Fat Chance by Robert Lustig — book cover"></a></span>
-					</div>
-							
 					<p>Eat fat to your liking. You have chosen <span class="carbs"></span>g of carbs and <span class="protein"></span>g protein. This means you have already <span class="kcal_nonfat"></span>kcal of your daily requirements covered. What's left for you to choose is how much fat to eat.</p>
 							
 					<p>Here you can choose your caloric intake. Try a moderate deficit and only go lower if you feel comfortable after about a week.</p>
@@ -2227,29 +2246,22 @@
 				
 				
 
-				<p>Want to learn more? Here is a good collection.</p>
-
-				<div class="booktable">
-					<div>
-						<span class="book" title="Why We Get Fat: And What to Do About It - by Gary Taubes. This is the short and readable version of 'Good Calories, Bad Calories'. It's a real eye opener."><a href="http://www.amazon.com/gp/product/0307474259/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0307474259" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/0307474259_small.png" width="110" height="166" alt="Why We Get Fat by Gary Taubes — book cover"></a></span>        
-			  
-						<span class="book" title="The Art and Science of Low Carbohydrate Living - by Stephen D. Phinney, Jeff S. Volek. This book is where I learned the most about the ketogenic diet and it's effect on the body. Without it, this calculator would not exist. Highly recommended!"><a href="http://www.amazon.com/gp/product/0983490708/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0983490708" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/0983490708_small.png" width="110" height="166" alt="The Art and Science of Low Carbohydrate Living — book cover"></a></span>
-					</div>
-					<div>
-						<span class="book" title="The Ketogenic Diet - by Lyle McDonald. This book is not the typical diet book, it teaches you everything you should know about this diet."><a href="http://www.amazon.com/gp/product/0967145600/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0967145600" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/0967145600_small.png" width="110" height="166" alt="The Ketogenic Diet by Lyle McDonald — book cover"></a></span>
-			  
-						<span class="book" title="Good Calories, Bad Calories: Fats, Carbs, and the Controversial Science of Diet and Health - by Gary Taubes. This book is probably the main reason why the ketogenic diet became so popular recently. It thoroughly debunks the 'fat is bad' myth and backs this up with more scientific references than you will ever care to look up yourself."><a href="http://www.amazon.com/gp/product/1400033462/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=1400033462" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/1400033462_small.png" width="110" height="166" alt="Good Calories, Bad Calories by Gary Taubes — book cover"></a></span>
-					</div>
-					<div>
-						<span class="book" title="The Art and Science of Low Carbohydrate Performance - by Jeff S. Volek, Stephen D. Phinney. This is a follow up book after Low Carb Living, and while it is a small book it is so packed with information that you'll probably have to read it multiple times. Fantastic for anyone who wants to exercise as well."><a href="http://www.amazon.com/gp/product/0983490716/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0983490716" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/0983490716_small.png" width="110" height="166" alt="The Art and Science of Low Carbohydrate Performance — book cover"></a></span>
-
-						<span class="book" title="Fat Chance: Beating the Odds Against Sugar, Processed Food, Obesity, and Disease - by Robert H. Lustig"><a href="http://www.amazon.com/gp/product/159463100X/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=159463100X" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/159463100X_small.png" width="110" height="166" alt="Fat Chance by Robert Lustig — book cover"></a></span>
-					</div>
-					<div>
-						<span class="book" title="Wheat Belly: Lose the Wheat, Lose the Weight, and Find Your Path Back to Health - by William Davis"><a href="http://www.amazon.com/gp/product/1609611543/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=1609611543" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/1609611543_small.png" width="110" height="166" alt="Wheat Belly by William Davis — book cover"></a></span>
-			  
-						<span class="book" title="The Big Fat Surprise: Why Butter, Meat and Cheese Belong in a Healthy Diet"><a href="http://www.amazon.com/gp/product/1451624433/ref=as_li_tl?ie=UTF8&camp=1789&creative=390957&creativeASIN=1451624433&linkCode=as2&tag=martanke-20&linkId=A2S4YBICIK7UQ3EJ" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/1451624433_small.png" width="110" height="166" alt="The Big Fat Surprise by Nina Teicholz — book cover"></a></span>			  
-					</div>
+				<!-- Desktop sidebar ad (sticky skyscraper). Replaced the Amazon book
+				     grid here 2026-06-29: the books earned ~$3/mo while taking the
+				     sidebar's prime, desktop-only space (#sidebar is display:none under
+				     830px). A sticky display unit in the same space earns more; the
+				     single inline "Books I recommend" rec keeps the E-E-A-T/trust value.
+				     NOTE: slot 2426641084 was the dormant "Keto Links" link unit —
+				     reused so ads serve immediately. Ideally create a dedicated 160x600
+				     display unit in AdSense and swap this data-ad-slot. -->
+				<div class="sidebar-ad">
+					<ins class="adsbygoogle"
+						 style="display:inline-block;width:160px;height:600px"
+						 data-ad-client="ca-pub-2398468033418589"
+						 data-ad-slot="2426641084"></ins>
+					<script>
+					(adsbygoogle = window.adsbygoogle || []).push({});
+					</script>
 				</div>
 			</div>	
 		</div>
