@@ -2568,10 +2568,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			if (!isNaN(height)) {
 				if (height < 54.6) {
 					// https://en.wikipedia.org/wiki/List_of_shortest_people
-					update_by_id("height_warning", "WARNING: Are you a dwarf?<br /> You are shorter than <a href=\"https://en.wikipedia.org/wiki/Chandra_Bahadur_Dangi\">Chandra Bahadur Dangi</a>, the smallest human ever recorded!<br />Check your size!<br /><img width=\"190\" height=\"244\" src=\"height_warning_short.jpg\" alt=\"Funny warning illustration about being unusually short\" />");
+					update_by_id("height_warning", "WARNING: Are you a dwarf?<br /> You are shorter than <a href=\"https://en.wikipedia.org/wiki/Chandra_Bahadur_Dangi\">Chandra Bahadur Dangi</a>, the smallest human ever recorded!<br />Check your size!<br /><span class=\"book\"><img width=\"190\" height=\"244\" src=\"height_warning_short.jpg\" alt=\"Funny warning illustration about being unusually short\" /></span>");
 				} else if (height > 272) {
 					// https://en.wikipedia.org/wiki/List_of_tallest_people
-					update_by_id("height_warning", "WARNING: Are you a giant?<br /> You are taller than <a href=\"https://en.wikipedia.org/wiki/Robert_Wadlow\">Robert Wadlow</a>, the tallest human ever recorded!<br />Check your size!<br /><img width=\"190\" height=\"325\" src=\"height_warning_tall.jpg\" alt=\"Funny warning illustration about being unusually tall\" />");
+					update_by_id("height_warning", "WARNING: Are you a giant?<br /> You are taller than <a href=\"https://en.wikipedia.org/wiki/Robert_Wadlow\">Robert Wadlow</a>, the tallest human ever recorded!<br />Check your size!<br /><span class=\"book\"><img width=\"190\" height=\"325\" src=\"height_warning_tall.jpg\" alt=\"Funny warning illustration about being unusually tall\" /></span>");
 				}
 			}
 			
@@ -2582,7 +2582,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 					update_by_id("weight_warning", "WARNING: Are you an elf?<br /> Your body weight is extremely low!<br /> Check your numbers!");
 				} else if (kg > 635) {
 					// https://en.wikipedia.org/wiki/Jon_Brower_Minnoch
-					update_by_id("weight_warning", "WARNING: Are you sure you entered the correct weight?<br /> You are heavier than <a href=\"https://en.wikipedia.org/wiki/Jon_Brower_Minnoch\">Jon Brower Minnoch</a>, the heaviest human ever recorded!<br />Check your numbers!<br /><img width=\"190\" height=\"244\" src=\"weight_warning_high.jpg\" alt=\"Funny warning illustration about an unusually high weight\" />");
+					update_by_id("weight_warning", "WARNING: Are you sure you entered the correct weight?<br /> You are heavier than <a href=\"https://en.wikipedia.org/wiki/Jon_Brower_Minnoch\">Jon Brower Minnoch</a>, the heaviest human ever recorded!<br />Check your numbers!<br /><span class=\"book\"><img width=\"190\" height=\"244\" src=\"weight_warning_high.jpg\" alt=\"Funny warning illustration about an unusually high weight\" /></span>");
 				}
 			}
 			
@@ -2592,7 +2592,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 				if (parseFloat(d.protein_min.value) > protein_g) {
 					update_by_id("protein_warning", "WARNING: protein too low!");
 				} else if (parseFloat(d.protein_max.value) < protein_g) {
-					update_by_id("protein_warning", "WARNING: protein too high!<br /><img width=\"190\" height=\"227\" src=\"proteintoohigh_small.jpg\" alt=\"Warning illustration: protein intake too high\" />");
+					update_by_id("protein_warning", "WARNING: protein too high!<br /><span class=\"book\"><img width=\"190\" height=\"227\" src=\"proteintoohigh_small.jpg\" alt=\"Warning illustration: protein intake too high\" /></span>");
 					// http://preview.images.memegenerator.net/Instance/Preview?imageID=203665&generatorTypeID=&panels=&text0=132g%20protein&text1=is%20too%20damn%20high&text2=&text3=
 				}
 			}	
