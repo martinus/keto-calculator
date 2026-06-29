@@ -2020,19 +2020,19 @@
 						
 						<p>Now to the fun stuff: a weight and body fat forecast for one year, starting today. Remember that this is a rough estimate and your personal results can differ.</p>
 						
-						<p>Choose kg or lbs, and then play around with your chosen fat intake to see how it affects weight loss.</p>
+						<p>Choose lbs or kg, and then play around with your chosen fat intake to see how it affects weight loss.</p>
 						
                         
 						<p>
 						<ul>
 						<li>Start on <input id="graphstartdate" name="graphstartdate" type="text" placeholder="MM/DD/YYYY" style="width:7em" title="Write e.g. 8/30/1979">.</li>
 					
-						<li>Show in <input name="chart_weight_type" type="radio" value="0">kg or <input name="chart_weight_type" type="radio" value="1">lbs</li>
+						<li>Show in <input name="chart_weight_type" type="radio" value="1">lbs or <input name="chart_weight_type" type="radio" value="0">kg</li>
 						</ul></p>
 
 						<div id="chart">
 							<div style="padding-top:200px; vertical-align:middle;">
-								Please enter a date and click kg or lbs to show the graph.
+								Please enter a date and click lbs or kg to show the graph.
 							</div>
 						</div>
                         
@@ -3606,8 +3606,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			var elem = document.data;
 			for (var i=0; i<elem.length; ++i) {
 				if (elem[i] != document.data.reddit_copypaste) {
-					elem[i].addEventListener('keyup', calc_handler);
-					elem[i].addEventListener('click', calc_handler);
+					elem[i].addEventListener('input', calc_handler);
+					elem[i].addEventListener('change', calc_handler);
 					elem[i].addEventListener('focusout', calc_handler);
 				} else {
 					document.data.reddit_copypaste.addEventListener('click', select_all_handler);
