@@ -1335,12 +1335,9 @@
 			float:center;
 		}
 
-		.hidden-cls,.bitcoinhidden,#version_number
+		.bitcoinhidden,#version_number
 		{
 			display:none;
-			margin-left: 1em;
-			border-left: 4px solid #e4e4ef;
-			padding-left: 0.5em;
 		}
 
 		.visible-cls,.bitcoinvisible
@@ -1353,38 +1350,62 @@
 			text-align:center;
 		}
 
-		/* "Show more" toggle — a clean cyan chevron disc (replaces the old sprite +/-).
-		   toggle_visibility() adds .expandeble_expanded, which flips the chevron up. */
-		.expandable
+		/* "Read more" details/summary — native, crawler-indexable collapsible content
+		   (replaces the old display:none + toggle_visibility() JS). Styled to match the
+		   old look: a cyan chevron disc on the summary + an indented, left-bordered body. */
+		details.detail-block
 		{
-			position: relative;
+			margin:0.4em 0 1.15em 1em;
+			border-left:4px solid #e4e4ef;
+			padding-left:0.9em;
+			max-width:650px;
+		}
+		details.detail-block > summary
+		{
+			position:relative;
+			list-style:none;            /* hide default triangle (Firefox) */
+			cursor:pointer;
 			display:inline-block;
+			padding:4px 0 4px 32px;     /* room for the 22px disc + gap */
+			font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
+			font-weight:600;
+			font-size:15px;
+			color:#0e6e96;
+			-webkit-user-select:none;
+			user-select:none;
+		}
+		details.detail-block > summary::-webkit-details-marker { display:none; } /* Safari/Chrome */
+		details.detail-block > summary:hover { color:#0a5675; }
+		details.detail-block > summary::before   /* the cyan disc */
+		{
+			content:"";
+			position:absolute;
+			left:0;
+			top:50%;
 			width:22px;
 			height:22px;
 			border-radius:50%;
 			background:#e8f4fb;
-			vertical-align:middle;
-			cursor:pointer;
+			transform:translateY(-50%);
 			transition:background .15s ease;
 		}
-		.expandable:hover { background:#d4ebf9; }
-		.expandable::before
+		details.detail-block > summary:hover::before { background:#d4ebf9; }
+		details.detail-block > summary::after    /* the chevron, centered on the disc */
 		{
 			content:"";
 			position:absolute;
-			left:50%;
-			top:42%;
+			left:11px;
+			top:50%;
 			width:6px;
 			height:6px;
 			border-right:2px solid #1294c8;
 			border-bottom:2px solid #1294c8;
-			transform:translate(-50%,-50%) rotate(45deg);
+			transform:translate(-50%,-75%) rotate(45deg);
 			transition:transform .2s ease;
 		}
-		.expandeble_expanded::before
+		details.detail-block[open] > summary::after
 		{
-			top:54%;
-			transform:translate(-50%,-50%) rotate(-135deg);
+			transform:translate(-50%,-25%) rotate(-135deg);
 		}
 		
 		#aboutmewidth {
@@ -1572,7 +1593,7 @@
 	<style>
 	a:focus-visible,
 	button:focus-visible,
-	.expandable:focus-visible,
+	summary:focus-visible,
 	[tabindex]:focus-visible {
 		outline: 3px solid rgba(18,148,200,0.65);
 		outline-offset: 2px;
@@ -1609,22 +1630,23 @@
                 </div>
             
 				<form action="get" id="data" method="post" name="data">
-					<p class="lead">This free keto calculator finds your personal macros — the exact grams of fat, protein, and net carbs to eat each day to lose weight on the <a href="http://www.reddit.com/r/keto/wiki/faq" onclick="return gatrack(this);">ketogenic diet</a>. Enter a few details below and get your numbers in under a minute. Click <a title="show more" aria-label="Show more details" aria-expanded="false" aria-controls="detail_intro" href="javascript:void(0)" onclick="toggle_visibility('detail_intro', this); load_youtube('youtubeplayer', 'vyRnunLjDvI');" class="expandable"></a> for more!
+					<p class="lead">This free keto calculator finds your personal macros — the exact grams of fat, protein, and net carbs to eat each day to lose weight on the <a href="http://www.reddit.com/r/keto/wiki/faq" onclick="return gatrack(this);">ketogenic diet</a>. Enter a few details below and get your numbers in under a minute.
 
 					<p style="font-size:smaller; color:#666; margin-top:0.2em;">Built and maintained by <a href="#aboutme" onclick="return gatrack(this);">Martin Ankerl</a>, a software developer who has followed and researched the ketogenic diet for years. The math uses the peer-reviewed Mifflin-St. Jeor equation. This is general information, not medical advice.
 
-					<div class="hidden-cls" id="detail_intro">
+					<details class="detail-block" id="detail_intro" ontoggle="if(this.open){load_youtube('youtubeplayer','vyRnunLjDvI');}">
+						<summary>What is a ketogenic diet? (+ video tutorial)</summary>
 						<p>A ketogenic diet is high in fat, moderate in protein, and very low in carbohydrates. When you cut carbs this far, your body switches from running on sugar to running on fat — producing <em>ketones</em> as fuel along the way. Most people start keto to lose weight, and many also find it steadies their energy, appetite, and blood sugar through the day. It isn't magic and results vary from person to person, but a lot of people find it easier to stick to than constant calorie counting.</p>
-					
+
 						<p>James Hardiman has created a nice tutorial for this calculator, watch it here:</p>
-						
+
 						<p>
 							<!-- see https://developers.google.com/youtube/iframe_api_reference -->
 							<div class="videoWrapper">
 								<div id="youtubeplayer"></div>
 							</div>
 						</p>
-					</div>
+					</details>
 
 					
 					<h2>Your Fat Loss Calculation</h2>
@@ -1718,11 +1740,12 @@
 					
 					<h3>How Many Carbs Can I Eat?</h3>
 
-					<p>Most people stay in ketosis somewhere between 20 and 50g of net carbs a day. This calculator starts you at 25g — a sweet spot that works for the majority. Spend those carbs wisely: get them from vegetables (10–15g), nuts and seeds (5–10g), and a little fruit (5–10g) rather than from sugar and grains. One catch with labels: in Europe they usually already show net carbs, while in the US they show total carbs, so subtract the fiber yourself. <a title="show more" aria-label="Show more details" aria-expanded="false" aria-controls="detail_low_ni_carbs" href="javascript:void(0)" onclick="toggle_visibility('detail_low_ni_carbs', this);" class="expandable"></a></p>
-			
-					<div class="hidden-cls" id="detail_low_ni_carbs">
+					<p>Most people stay in ketosis somewhere between 20 and 50g of net carbs a day. This calculator starts you at 25g — a sweet spot that works for the majority. Spend those carbs wisely: get them from vegetables (10–15g), nuts and seeds (5–10g), and a little fruit (5–10g) rather than from sugar and grains. One catch with labels: in Europe they usually already show net carbs, while in the US they show total carbs, so subtract the fiber yourself.</p>
+
+					<details class="detail-block" id="detail_low_ni_carbs">
+						<summary>Net carbs vs. fiber — what actually counts?</summary>
 						<p>Total carbohydrate is made up of net carbs plus fiber. Net carbs are the part that turns into glucose and raises your blood sugar — exactly what you want to limit on keto, which is why most people aim for 20–25g a day. Fiber is the rest, and it's good for you: insoluble fiber passes straight through without touching your blood sugar, while gut bacteria ferment soluble fiber into fatty acids that add only a few calories and don't spike glucose. That's why keto counts net carbs and lets fiber off the hook.</p>
-					</div>
+					</details>
 
 
 					<ul>
@@ -1736,13 +1759,14 @@
 
 					<p>Based on your personal data, you should stay above <span class="min_protein_g"></span>g if you are mostly sedentary. You can go as high as <span class="max_protein_g"></span>g if you put your muscles under a lot of new stress or with a large caloric deficit. High protein prevents muscle loss.</p>
 					
-					<p>When in doubt, choose the middle ground. For you, that's <span class="mid_protein_g"></span>g. <a title="show more" aria-label="Show more details" aria-expanded="false" aria-controls="detail_protein" href="javascript:void(0)" onclick="toggle_visibility('detail_protein', this);" class="expandable"></a></p>
-					
-					<div class="hidden-cls" id="detail_protein">
+					<p>When in doubt, choose the middle ground. For you, that's <span class="mid_protein_g"></span>g.</p>
+
+					<details class="detail-block" id="detail_protein">
+						<summary>Why not just eat more protein?</summary>
 						<p>When you're losing weight or under physical stress, eating somewhat more protein than the <a href="http://en.wikipedia.org/wiki/Reference_Daily_Intake#Food_labeling_reference_tables" onclick="return gatrack(this);">RDA</a> is a good thing — it protects your muscle. Going far above what you need can work against ketosis, though: the body can convert the excess amino acids into glucose, which nudges ketone levels down. So don't fear protein — just don't massively overshoot the maximum below.</p>
 				
 						<p>See <a href="http://www.bodyrecomposition.com/fat-loss/protein-intake-while-dieting-qa.html" onclick="return gatrack(this);">Protein Intake While Dieting</a> and the book <a href="http://www.amazon.com/gp/product/0983490716/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0983490716" onclick="return gatrack(this);">The Art and Science of Low Carbohydrate Performance</a> for details. The maximum protein level used here is based on the research paper "<a href="http://www.ncbi.nlm.nih.gov/pubmed/22150425" onclick="return gatrack(this);">Dietary protein for athletes: From requirements to optimum adaptation</a>" analyzed in "<a href="http://bayesianbodybuilding.com/the-myth-of-1glb-optimal-protein-intake-for-bodybuilders/" onclick="return gatrack(this);">The Myth of 1 g/lb: Optimal Protein Intake for Bodybuilders</a>". Even professional body builders should have no benefit in going above the upper limit used here. The values here are in g/lbs of <em>lean</em> body mass, while in the previous link they talk about g/lbs of total body weight. That's why the number here seems a bit higher.</p>
-					</div>
+					</details>
 				
 
 					<ul>
@@ -1799,15 +1823,16 @@
 							
 					<p>Eat fat to your liking. You have chosen <span class="carbs"></span>g of carbs and <span class="protein"></span>g protein. This means you have already <span class="kcal_nonfat"></span>kcal of your daily requirements covered. What's left for you to choose is how much fat to eat.</p>
 							
-					<p>Here you can choose your caloric intake. Try a moderate deficit and only go lower if you feel comfortable after about a week. <a title="show more" aria-label="Show more details" aria-expanded="false" aria-controls="detail_fat" href="javascript:void(0)" onclick="toggle_visibility('detail_fat', this);" class="expandable"></a></p>
-					
-					<div class="hidden-cls" id="detail_fat">
+					<p>Here you can choose your caloric intake. Try a moderate deficit and only go lower if you feel comfortable after about a week.</p>
+
+					<details class="detail-block" id="detail_fat">
+						<summary>How low can your calories go?</summary>
 						<p>Fat intake depends on your goal. If you want to lose weight, your total calories have to be below your maintenance calories of <span class="expenditure_kcal"></span>kcal. Think of fat as your healthy filler nutrient. To maintain your current weight, fill all the <span class="kcal_fat"></span> remaining calories up with <span class="fat_g_max"></span>g fat. Don't go below <span class="fat_g_min"></span>g of fat.</p>
 								
 						<p>If you want to lose weight, your total calories have to eat less than <span class="expenditure_kcal"></span>kcal. How low can you go? This depends on the maximum rate your body can release body fat (See discussion <a href="http://www.reddit.com/r/keto/comments/127sm0/keto_calculator/c6sw2xc" onclick="return gatrack(this);">1</a> and <a href="http://www.reddit.com/r/keto/comments/12amhq/keto_calculator_20/c6vvu7f?context=3" onclick="return gatrack(this);">2</a>). If you eat <b>above </b> <span class="fat_g_min"></span>g of fat, your body burns only fat and you will lose weight. If you eat <b>below</b> that, your body will start burning protein. This means your body cannot produce that many calories from fat only. You will start to lose your hard earned muscles. You don't want that.</p>
 
 						<p>Also, you should not go below 30g of daily fat to prevent the formation of gallstones. (See <a href="http://www.amazon.com/gp/product/0983490708/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0983490708" onclick="return gatrack(this);">TAaSoLCL</a> page 168).</p>
-					</div>
+					</details>
 					
 					<div id="date_warning_at_calorie_selection"></div>
 					<ul>
@@ -2315,19 +2340,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			[35, "#e67e17",  "Severe deficit: are you sure? Try a 20% deficit if you fail."],              // 35-45%
 			[45, "#e61717",  "Enormous deficit, extremely hard. Start with 20% if you are unsure."]        // 45%+
 		];
-		
-		function toggle_visibility(id, elem) {
-			var e = document.getElementById(id);
-			if(e.style.display == 'block') {
-				e.style.display = 'none';
-				elem.className = elem.className.replace(" expandeble_expanded", "");
-				elem.setAttribute('aria-expanded', 'false');
-			} else {
-				e.style.display = 'block';
-				elem.className += " expandeble_expanded";
-				elem.setAttribute('aria-expanded', 'true');
-			}
-		}
 		
 		function load_youtube(id, myVideoId) {
 			var e = document.getElementById(id);
@@ -3621,7 +3633,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 
 
 		// exports for compression: store the function in a global property referenced by a string:
-		window['toggle_visibility'] = toggle_visibility;
 		window['use_graphstartdate_today'] = use_graphstartdate_today;
 		window['load_cookie'] = load_cookie;
 		window['load_url_params'] = load_url_params;
