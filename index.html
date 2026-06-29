@@ -794,6 +794,24 @@
 			text-align:right;
 		}
 
+		/* Computed / non-editable fields (BMR, expenditure, protein & deficit ranges):
+		   greyed cool fill + muted text + not-allowed cursor so they read as read-only
+		   outputs, clearly different from the white fields you fill in. */
+		input[type=text]:disabled,
+		input[type=email]:disabled,
+		input[type=number]:disabled,
+		input[type=text][readonly],
+		input[type=number][readonly]
+		{
+			background:#eceff2;
+			border-color:#dce4ea;
+			color:#8a97a1;
+			-webkit-text-fill-color:#8a97a1; /* iOS Safari greys disabled text on its own; pin it */
+			opacity:1;                        /* override UA dimming so our colors stay exact */
+			box-shadow:none;
+			cursor:not-allowed;
+		}
+
 		/* The data-entry form: give the rows real breathing room and clean alignment
 		   so it doesn't read as a cramped 2000s table. */
 		table.userinputs {
