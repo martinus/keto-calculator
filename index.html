@@ -2300,17 +2300,20 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 		var last_updated_target = null;
 
 		// from http://www.bodyrecomposition.com/fat-loss/setting-the-deficit-small-moderate-or-large.html
+		// each entry: [lower deficit-% threshold, glow color, advice]. The lookup picks
+		// the highest entry whose threshold is <= your chosen deficit. Wording escalates
+		// monotonically with the deficit.
 		var deficit_levels = [
-			[-1e9, "#e61717", "You will gain weight"], // minus to 0
-			[0, "#1717e6", "Zero deficit: You will maintain your current weight."], // 0-1%
-			[1, "#177ee6", "Very little deficit, choose a higher deficit to lose faster."], // 1-10-% 
-			[10, "#17e6e6",  "Small deficit: Best for athletes who are already lean."], // 10-15%
-			[15, "#17e67e",  "Average deficit. This should be easily sustainable, good choice for a start."], // 15-20%
-			[20, "#17e617",  "Moderate Deficit: Fast weight loss with moderate difficulty."], // 20-25
-			[25, "#7ee617",  "Large Deficit: This is hard, give it a try for two weeks."], // 25-30
-			[30, "#e6e617",  "That's a huge deficit. Try a 20% deficit if you fail."], // 35-
-			[35, "#e67e17",  "Severe Deficit: Are you sure? Try a 20% deficit if you fail"], // 30-35%
-			[45, "#e61717",  "That is an enormous deficit and extremely hard. Start with 20% if you are unsure."] // 40%
+			[-1e9, "#e61717", "You will gain weight."],                                                   // below 0%
+			[0, "#1717e6", "Zero deficit: you will maintain your current weight."],                        // 0%
+			[1, "#177ee6", "Very little deficit. Choose a higher deficit to lose faster."],                // 1-10%
+			[10, "#17e6e6",  "Small deficit: best for athletes who are already lean."],                    // 10-15%
+			[15, "#17e67e",  "Average deficit. Easily sustainable, a good choice to start with."],         // 15-20%
+			[20, "#17e617",  "Moderate deficit: fast weight loss with moderate difficulty."],              // 20-25%
+			[25, "#7ee617",  "Large deficit: this is hard, give it a try for two weeks."],                 // 25-30%
+			[30, "#e6e617",  "Very large deficit. Hard to sustain — try a 20% deficit if you struggle."],  // 30-35%
+			[35, "#e67e17",  "Severe deficit: are you sure? Try a 20% deficit if you fail."],              // 35-45%
+			[45, "#e61717",  "Enormous deficit, extremely hard. Start with 20% if you are unsure."]        // 45%+
 		];
 		
 		function toggle_visibility(id, elem) {
@@ -2381,7 +2384,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 						++j
 					}
 					if (j == ignore_list.length) {
-						document.cookie = e.name + "=" + escape(e.value) + expires;
+						document.cookie = e.name + "=" + encodeURIComponent(e.value) + expires;
 					}
 				}
 			}
@@ -2780,8 +2783,10 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 				&& !isNaN(level)
 				&& !isNaN(bmr))
 			{
-				// factors are based on http://en.wikipedia.org/wiki/Harris-Benedict_equation
-				// it scales from 1.2 to 1.9 in 4 steps (5 levels)
+				// factors are loosely based on http://en.wikipedia.org/wiki/Harris-Benedict_equation
+				// but deliberately conservative: 4 preset levels scaling 1.1 -> 1.617
+				// (level 4 is a custom expenditure). Lower than the textbook 1.2-1.9
+				// because people tend to overestimate how active they are.
 				
 				if (level == 4) {
 					// enable custom expenditure
@@ -3169,7 +3174,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			d.reddit_copypaste.value = str;
 			
 			// build url
-			url = "http://www.reddit.com/r/keto/submit?"
+			var url = "http://www.reddit.com/r/keto/submit?"
 			url += "text=" + encodeURIComponent("\n\n" + str);
 			
 			update_by_name("redditsubmit", "<a href="+url+" target=\"_blank\">Create a /r/keto post</a>");
@@ -3283,7 +3288,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 				for (var i=0; i<fields.length; ++i) {
 					var idx = fields[i].indexOf("=");
 					var key = fields[i].substr(0, idx);
-					var val = unescape(fields[i].substr(idx+1));
+					var val = decodeURIComponent(fields[i].substr(idx+1));
 
 					set_by_key(key, val);					
 				}
