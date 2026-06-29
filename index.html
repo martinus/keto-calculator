@@ -33,7 +33,10 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<!-- Preload the header logo (LCP candidate) so it starts fetching before the body is parsed -->
 	<link rel="preload" as="image" href="logo-white-150.png" fetchpriority="high">
-	<link href='https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=PT+Serif:wght@400;700&display=swap' rel='stylesheet' type='text/css'>
+	<!-- Load Google Fonts non-render-blocking (display=swap already shows fallback text immediately) -->
+	<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=PT+Serif:wght@400;700&display=swap">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=PT+Serif:wght@400;700&display=swap" media="print" onload="this.media='all'">
+	<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=PT+Serif:wght@400;700&display=swap"></noscript>
     
     <!-- app service stuff start, see https://googlechrome.github.io/samples/app-install-banner/basic-banner/index.html -->
 	<link rel="manifest" href="manifest.json">
@@ -134,9 +137,13 @@
 	<meta content="fanP0_gbfKxHbEib0H-EkgwGkH1KGEDZlsudKEXoKP8" name="google-site-verification">
 	<meta name="description" content="Calculate your exact keto macros in 60 seconds. Enter your weight, height, and goal to get personalized carb, protein, and fat targets for the ketogenic diet.">
 	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="Keto Calculator">
+	<meta property="og:locale" content="en_US">
 	<meta property="og:image" content="https://keto-calculator.ankerl.com/share_1600_lanc2.jpg">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
 	<meta property="og:title" content="Keto Calculator">
-	<meta property="og:description" content="This weight loss calculator finds out how you can lose weight on a ketogenic diet. Based on your personal data you can calculate the amount of carbohydrates, protein, and fat you can eat to reach your specific goal. Give it a try!">
+	<meta property="og:description" content="Calculate your exact keto macros in 60 seconds — personalized carb, protein, and fat targets to lose weight on the ketogenic diet.">
 	<meta property="og:url" content="https://keto-calculator.ankerl.com/">
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:title" content="Free Keto Macro Calculator">
@@ -156,6 +163,17 @@
 	  "operatingSystem": "All",
 	  "browserRequirements": "Requires JavaScript",
 	  "description": "Free keto macro calculator: enter your weight, height, and goal to get personalized carb, protein, and fat targets for the ketogenic diet.",
+	  "author": {
+		"@type": "Person",
+		"name": "Martin Leitner-Ankerl",
+		"description": "Software developer who has followed and researched the ketogenic diet for years.",
+		"url": "https://martin.ankerl.com/",
+		"sameAs": [
+		  "https://martin.ankerl.com/",
+		  "https://www.reddit.com/user/martinus/",
+		  "https://github.com/martinus"
+		]
+	  },
 	  "offers": {
 		"@type": "Offer",
 		"price": "0",

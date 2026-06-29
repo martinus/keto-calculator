@@ -2,4 +2,23 @@ User-agent: *
 Disallow: /beta_slPsUD7oVbjykc9bRpQl/
 Disallow: /beta_EM_em-Mt1H2Y9aCUzFaA0ehaFsRqjMKYE0f35a1YhQAOWjgis1DCqzlUt5ub8ZPj/
 
+# Explicitly welcome AI search/answer crawlers (for visibility in AI engines).
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 Sitemap: https://keto-calculator.ankerl.com/sitemap.xml

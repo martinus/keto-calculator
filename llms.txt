@@ -1,0 +1,21 @@
+# Keto Calculator
+
+> A free keto macro calculator at keto-calculator.ankerl.com. Enter your weight, height, sex,
+> activity level, and weight-loss goal to get personalized daily macro targets — grams of fat,
+> protein, and net carbs — for the ketogenic diet. The math uses the peer-reviewed
+> Mifflin-St. Jeor equation for BMR, sets protein from lean body mass, and derives fat from the
+> remaining calories after your chosen carb limit and deficit. Created by Martin Leitner-Ankerl,
+> a software developer who has researched the ketogenic diet for years. General information, not
+> medical advice.
+
+## Pages
+
+- [Keto Calculator](https://keto-calculator.ankerl.com/): The calculator — inputs, personalized macro results, weight-loss projection, food equivalents, and a keto FAQ.
+- [Disclaimer & Cookie Policy](https://keto-calculator.ankerl.com/disclaimer.html): Medical disclaimer and cookie information.
+
+## Key facts
+
+- Default net-carb target: 25 g/day (most people stay in ketosis on 20–50 g/day).
+- Protein: ~1.3–2.2 g per kg of lean body mass (personalized min/max).
+- Fat: fills the remaining calories after carbs, protein, and your chosen deficit.
+- BMR formula: Mifflin-St. Jeor. Net carbs = total carbs − fiber.
