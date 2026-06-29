@@ -31,6 +31,10 @@
 	<!-- fonts should come first -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<!-- Cookiebot loads early (consent gate); preconnect saves ~300ms LCP -->
+	<link rel="preconnect" href="https://consent.cookiebot.com">
+	<!-- Google Charts loader sits in the critical request chain; preconnect shortens it -->
+	<link rel="preconnect" href="https://www.gstatic.com">
 	<!-- Preload the header logo (LCP candidate) so it starts fetching before the body is parsed -->
 	<link rel="preload" as="image" href="logo-white-150.png" fetchpriority="high">
 	<!-- Load Google Fonts non-render-blocking (display=swap already shows fallback text immediately) -->
