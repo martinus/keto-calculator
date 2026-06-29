@@ -2255,9 +2255,9 @@
 	</script>
 	<!-- track outbound links end -->
 	
-	<!-- required for google charts start -->
-	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-	<!-- required for google charts end -->
+	<!-- Google Charts loader is NOT loaded here anymore. It (+ ~249 KiB of chart
+	     modules) is fetched lazily by ensure_charts_loaded() on the first calculation,
+	     so visitors who never complete the form don't download it. See wait_until_deadline(). -->
 	
 	<!-- Scripts relocated out of <head> to unblock first render;
 	     order preserved: jQuery+plugins, Bootstrap, then the calculator. -->
@@ -2294,6 +2294,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 	<script type="text/javascript">
 		// global variable that is set to true when google is loaded
 		var google_is_loaded_bool = false;
+		// guards the lazy, on-first-calculation load of the Google Charts loader
+		var charts_loader_started = false;
 		var weight_table = [];
 		var last_weight_table_input = [];
 		var maintainence_fat_protein_carbs = [];
@@ -2548,8 +2550,9 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 				// waited enough! perform the update.
 				//update_by_id("debug", current_time + " EXECUTING!");	
 				calc_deadline = 0;
-				
-				// draw time consuming stuff now
+
+				// draw time consuming stuff now — kick off the lazy Charts load on first use
+				ensure_charts_loaded();
 				draw_pies(maintainence_fat_protein_carbs);
 				draw_chart(weight_table);
 				update_csv(weight_table);
@@ -3300,7 +3303,22 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 			google_is_loaded_bool = true;
 			draw_pies(maintainence_fat_protein_carbs);
 			draw_chart(weight_table);
-			update_csv(weight_table);			
+			update_csv(weight_table);
+		}
+
+		// Inject the Google Charts loader on first call only, then load the packages.
+		// Until this finishes, draw_pies/draw_chart no-op (gated on google_is_loaded_bool);
+		// google_is_loaded() redraws from the current data once the packages are ready.
+		function ensure_charts_loaded() {
+			if (charts_loader_started) { return; }
+			charts_loader_started = true;
+			var s = document.createElement('script');
+			s.src = 'https://www.gstatic.com/charts/loader.js';
+			s.onload = function() {
+				google.charts.load('current', {'packages':['annotationchart','corechart']});
+				google.charts.setOnLoadCallback(google_is_loaded);
+			};
+			document.head.appendChild(s);
 		}
 
 		function is_similar(a, b, closeness) {
@@ -3638,9 +3656,8 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 		});
 		
 		mark_empty_fields(document.data);
-		google.charts.load('current', {'packages':['annotationchart','corechart']});
-		google.charts.setOnLoadCallback(google_is_loaded);
-    </script>
+		// Google Charts is loaded lazily on the first calculation — see ensure_charts_loaded().
+</script>
 	
 	<script type="text/javascript">
 		// Lazy-load the Cusdis comment widget (~5KB, ad-free) only when the
