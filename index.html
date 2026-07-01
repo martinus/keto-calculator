@@ -77,7 +77,56 @@
 	
 
 	<!-- cookie consent start -->
-	<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="6ba27c9d-ecd5-419a-9d84-8202995164a0" type="text/javascript" async></script>
+	<!-- Load Cookiebot ONLY for visitors where prior consent for ad cookies is
+	     legally required: the EEA, the UK (PECR still applies post-Brexit) and
+	     Switzerland. Everyone else gets no banner and personalized ads (Consent
+	     Mode defaults to granted for them, set in <head>). Region is resolved by
+	     a keyless geo lookup; if it is slow, fails, or is at all ambiguous we
+	     load Cookiebot anyway — always fail safe to SHOWING the banner. -->
+	<script>
+	  (function () {
+	    var CBID = '6ba27c9d-ecd5-419a-9d84-8202995164a0';
+	    // EEA (EU27 + IS/LI/NO) + UK + Switzerland.
+	    var CONSENT_REGIONS = {AT:1,BE:1,BG:1,HR:1,CY:1,CZ:1,DK:1,EE:1,FI:1,FR:1,DE:1,GR:1,HU:1,IE:1,IT:1,LV:1,LT:1,LU:1,MT:1,NL:1,PL:1,PT:1,RO:1,SK:1,SI:1,ES:1,SE:1,IS:1,LI:1,NO:1,GB:1,CH:1};
+
+	    function loadCookiebot() {
+	      if (document.getElementById('Cookiebot')) return;
+	      var s = document.createElement('script');
+	      s.id = 'Cookiebot';
+	      s.src = 'https://consent.cookiebot.com/uc.js';
+	      s.setAttribute('data-cbid', CBID);
+	      s.type = 'text/javascript';
+	      s.async = true;
+	      (document.head || document.documentElement).appendChild(s);
+	    }
+
+	    var settled = false;
+	    function decide(cc) {
+	      if (settled) return;
+	      settled = true;
+	      // Skip the banner ONLY for a confidently non-consent 2-letter region;
+	      // anything unknown/ambiguous shows it (fail safe).
+	      if (!/^[A-Z]{2}$/.test(cc || '') || CONSENT_REGIONS[cc]) loadCookiebot();
+	    }
+
+	    // Never leave a visitor without the banner if geo is slow or broken.
+	    var timer = setTimeout(function () { decide(null); }, 1500);
+
+	    function tryProvider(url, extract, next) {
+	      fetch(url).then(function (r) { return r.json(); }).then(function (d) {
+	        var cc = (extract(d) || '').toString().toUpperCase();
+	        if (/^[A-Z]{2}$/.test(cc)) { clearTimeout(timer); decide(cc); }
+	        else if (next) { next(); }
+	        else { clearTimeout(timer); decide(null); }
+	      }).catch(function () { if (next) { next(); } else { clearTimeout(timer); decide(null); } });
+	    }
+
+	    // Primary: api.country.is (country = 2-letter code). Fallback: GeoJS.
+	    tryProvider('https://api.country.is/', function (d) { return d && d.country; }, function () {
+	      tryProvider('https://get.geojs.io/v1/ip/country.json', function (d) { return d && (d.country_code || d.country); }, null);
+	    });
+	  })();
+	</script>
 	<script>
 	  // Bridge Cookiebot consent -> Google Consent Mode v2.
 	  // CookiebotOnConsentReady fires after a fresh choice AND on return visits
