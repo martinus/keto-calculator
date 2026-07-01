@@ -5,18 +5,18 @@
 	     Replaced the old dead stack here: the Google Optimize anti-flicker snippet
 	     (Optimize sunset 2023-09-30; it blanked the page for up to 4s) and the
 	     Universal Analytics tag UA-36863101-1 (UA stopped collecting 2023-07-01).
-	     Consent defaults to granted worldwide, denied only in the EEA/UK/CH
-	     (region-scoped below); Cookiebot updates it there (see the bridge below
-	     the Cookiebot script). Non-consenting EU traffic is modelled, not lost. -->
+	     Consent defaults to granted worldwide, denied only in the EEA/UK
+	     (region-scoped below); Google's own consent message (Privacy & messaging,
+	     loaded further down) updates it there. Non-consenting EU traffic is
+	     modelled, not lost. -->
 	<script>
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
-	  // Default: GRANT everywhere (US etc. get personalized ads, no banner
+	  // Default: GRANT everywhere (US etc. get personalized ads, no message
 	  // needed) — then DENY only where prior consent is legally required
-	  // (EEA + UK + Switzerland). The Cookiebot bridge below still flips these
-	  // when a visitor in those regions makes a choice. Denying globally (the
-	  // previous setting) served non-personalized ads to the whole world and
-	  // tanked RPM, so the denied state is now region-scoped.
+	  // (EEA + UK). Google's consent message (loaded below; Google shows it in
+	  // the EEA/UK only) flips these when a visitor there makes a choice. The
+	  // denied region list mirrors the countries Google's message covers.
 	  gtag('consent', 'default', {
 	    'ad_storage': 'granted',
 	    'ad_user_data': 'granted',
@@ -28,7 +28,7 @@
 	    'ad_user_data': 'denied',
 	    'ad_personalization': 'denied',
 	    'analytics_storage': 'denied',
-	    'region': ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH'],
+	    'region': ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB'],
 	    'wait_for_update': 500
 	  });
 	  gtag('set', 'ads_data_redaction', true);
@@ -45,11 +45,8 @@
 	<!-- fonts should come first -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<!-- Cookiebot loads early for EU visitors (consent gate); preconnect saves ~300ms LCP -->
-	<link rel="preconnect" href="https://consent.cookiebot.com">
-	<!-- Geo lookup decides whether the consent banner is needed; preconnect trims its latency -->
-	<link rel="preconnect" href="https://api.country.is" crossorigin>
-	<link rel="preconnect" href="https://get.geojs.io" crossorigin>
+	<!-- Google's consent message (Privacy & messaging) loads for EEA/UK visitors; preconnect trims its latency -->
+	<link rel="preconnect" href="https://fundingchoicesmessages.google.com">
 	<!-- Google Charts loader sits in the critical request chain; preconnect shortens it -->
 	<link rel="preconnect" href="https://www.gstatic.com">
 	<!-- Preload the header logo (LCP candidate) so it starts fetching before the body is parsed -->
@@ -80,76 +77,15 @@
 	
 
 	<!-- cookie consent start -->
-	<!-- Load Cookiebot ONLY for visitors where prior consent for ad cookies is
-	     legally required: the EEA, the UK (PECR still applies post-Brexit) and
-	     Switzerland. Everyone else gets no banner and personalized ads (Consent
-	     Mode defaults to granted for them, set in <head>). Region is resolved by
-	     a keyless geo lookup; if it is slow, fails, or is at all ambiguous we
-	     load Cookiebot anyway — always fail safe to SHOWING the banner. -->
-	<script>
-	  (function () {
-	    var CBID = '6ba27c9d-ecd5-419a-9d84-8202995164a0';
-	    // EEA (EU27 + IS/LI/NO) + UK + Switzerland.
-	    var CONSENT_REGIONS = {AT:1,BE:1,BG:1,HR:1,CY:1,CZ:1,DK:1,EE:1,FI:1,FR:1,DE:1,GR:1,HU:1,IE:1,IT:1,LV:1,LT:1,LU:1,MT:1,NL:1,PL:1,PT:1,RO:1,SK:1,SI:1,ES:1,SE:1,IS:1,LI:1,NO:1,GB:1,CH:1};
-
-	    function loadCookiebot() {
-	      if (document.getElementById('Cookiebot')) return;
-	      var s = document.createElement('script');
-	      s.id = 'Cookiebot';
-	      s.src = 'https://consent.cookiebot.com/uc.js';
-	      s.setAttribute('data-cbid', CBID);
-	      s.type = 'text/javascript';
-	      s.async = true;
-	      (document.head || document.documentElement).appendChild(s);
-	    }
-
-	    var settled = false;
-	    function decide(cc) {
-	      if (settled) return;
-	      settled = true;
-	      // Skip the banner ONLY for a confidently non-consent 2-letter region;
-	      // anything unknown/ambiguous shows it (fail safe).
-	      if (!/^[A-Z]{2}$/.test(cc || '') || CONSENT_REGIONS[cc]) loadCookiebot();
-	    }
-
-	    // Fail safe (compliant): if geo can't be resolved in time — e.g. under a
-	    // throttled/slow connection like Lighthouse mobile — show the banner.
-	    // Generous window so the real region usually resolves first.
-	    var timer = setTimeout(function () { decide(null); }, 5000);
-
-	    function resolved(cc) {
-	      cc = (cc || '').toString().toUpperCase();
-	      if (settled || !/^[A-Z]{2}$/.test(cc)) return; // ignore blanks/ambiguous
-	      clearTimeout(timer);
-	      decide(cc);
-	    }
-	    function probe(url, extract) {
-	      fetch(url).then(function (r) { return r.json(); })
-	        .then(function (d) { resolved(extract(d)); })
-	        .catch(function () {});
-	    }
-	    // Query both providers in parallel; the first valid answer wins.
-	    probe('https://api.country.is/', function (d) { return d && d.country; });
-	    probe('https://get.geojs.io/v1/ip/country.json', function (d) { return d && (d.country_code || d.country); });
-	  })();
-	</script>
-	<script>
-	  // Bridge Cookiebot consent -> Google Consent Mode v2.
-	  // CookiebotOnConsentReady fires after a fresh choice AND on return visits
-	  // with stored consent, so this covers both cases.
-	  function ketoUpdateConsent() {
-	    if (typeof Cookiebot === 'undefined' || !Cookiebot.consent) return;
-	    var statistics = Cookiebot.consent.statistics ? 'granted' : 'denied';
-	    var marketing  = Cookiebot.consent.marketing  ? 'granted' : 'denied';
-	    gtag('consent', 'update', {
-	      'analytics_storage': statistics,
-	      'ad_storage': marketing,
-	      'ad_user_data': marketing,
-	      'ad_personalization': marketing
-	    });
-	  }
-	  window.addEventListener('CookiebotOnConsentReady', ketoUpdateConsent);
-	</script>
+	<!-- Google's own certified CMP (configured in AdSense -> Privacy & messaging).
+	     Google serves the GDPR consent message to EEA/UK visitors only, using its
+	     own server-side geo, and reports the choice into Google Consent Mode v2
+	     automatically. That replaces Cookiebot, the client-side geo lookup and the
+	     manual consent bridge — nothing else is needed here.
+	     IMPORTANT: the message must be created and PUBLISHED in the AdSense UI
+	     (Privacy & messaging -> GDPR) or no consent prompt will appear. -->
+	<script async src="https://fundingchoicesmessages.google.com/i/pub-2398468033418589?ers=1" nonce=""></script>
+	<script>(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
 	<!-- cookie consent end -->
 	
     <!-- app service stuff end -->
