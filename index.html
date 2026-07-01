@@ -45,8 +45,11 @@
 	<!-- fonts should come first -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<!-- Cookiebot loads early (consent gate); preconnect saves ~300ms LCP -->
+	<!-- Cookiebot loads early for EU visitors (consent gate); preconnect saves ~300ms LCP -->
 	<link rel="preconnect" href="https://consent.cookiebot.com">
+	<!-- Geo lookup decides whether the consent banner is needed; preconnect trims its latency -->
+	<link rel="preconnect" href="https://api.country.is" crossorigin>
+	<link rel="preconnect" href="https://get.geojs.io" crossorigin>
 	<!-- Google Charts loader sits in the critical request chain; preconnect shortens it -->
 	<link rel="preconnect" href="https://www.gstatic.com">
 	<!-- Preload the header logo (LCP candidate) so it starts fetching before the body is parsed -->
@@ -109,22 +112,25 @@
 	      if (!/^[A-Z]{2}$/.test(cc || '') || CONSENT_REGIONS[cc]) loadCookiebot();
 	    }
 
-	    // Never leave a visitor without the banner if geo is slow or broken.
-	    var timer = setTimeout(function () { decide(null); }, 1500);
+	    // Fail safe (compliant): if geo can't be resolved in time — e.g. under a
+	    // throttled/slow connection like Lighthouse mobile — show the banner.
+	    // Generous window so the real region usually resolves first.
+	    var timer = setTimeout(function () { decide(null); }, 5000);
 
-	    function tryProvider(url, extract, next) {
-	      fetch(url).then(function (r) { return r.json(); }).then(function (d) {
-	        var cc = (extract(d) || '').toString().toUpperCase();
-	        if (/^[A-Z]{2}$/.test(cc)) { clearTimeout(timer); decide(cc); }
-	        else if (next) { next(); }
-	        else { clearTimeout(timer); decide(null); }
-	      }).catch(function () { if (next) { next(); } else { clearTimeout(timer); decide(null); } });
+	    function resolved(cc) {
+	      cc = (cc || '').toString().toUpperCase();
+	      if (settled || !/^[A-Z]{2}$/.test(cc)) return; // ignore blanks/ambiguous
+	      clearTimeout(timer);
+	      decide(cc);
 	    }
-
-	    // Primary: api.country.is (country = 2-letter code). Fallback: GeoJS.
-	    tryProvider('https://api.country.is/', function (d) { return d && d.country; }, function () {
-	      tryProvider('https://get.geojs.io/v1/ip/country.json', function (d) { return d && (d.country_code || d.country); }, null);
-	    });
+	    function probe(url, extract) {
+	      fetch(url).then(function (r) { return r.json(); })
+	        .then(function (d) { resolved(extract(d)); })
+	        .catch(function () {});
+	    }
+	    // Query both providers in parallel; the first valid answer wins.
+	    probe('https://api.country.is/', function (d) { return d && d.country; });
+	    probe('https://get.geojs.io/v1/ip/country.json', function (d) { return d && (d.country_code || d.country); });
 	  })();
 	</script>
 	<script>
