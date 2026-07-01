@@ -5,16 +5,30 @@
 	     Replaced the old dead stack here: the Google Optimize anti-flicker snippet
 	     (Optimize sunset 2023-09-30; it blanked the page for up to 4s) and the
 	     Universal Analytics tag UA-36863101-1 (UA stopped collecting 2023-07-01).
-	     Consent defaults to denied; Cookiebot updates it (see the bridge below the
-	     Cookiebot script). Non-consenting traffic is then modelled, not lost. -->
+	     Consent defaults to granted worldwide, denied only in the EEA/UK/CH
+	     (region-scoped below); Cookiebot updates it there (see the bridge below
+	     the Cookiebot script). Non-consenting EU traffic is modelled, not lost. -->
 	<script>
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
+	  // Default: GRANT everywhere (US etc. get personalized ads, no banner
+	  // needed) — then DENY only where prior consent is legally required
+	  // (EEA + UK + Switzerland). The Cookiebot bridge below still flips these
+	  // when a visitor in those regions makes a choice. Denying globally (the
+	  // previous setting) served non-personalized ads to the whole world and
+	  // tanked RPM, so the denied state is now region-scoped.
+	  gtag('consent', 'default', {
+	    'ad_storage': 'granted',
+	    'ad_user_data': 'granted',
+	    'ad_personalization': 'granted',
+	    'analytics_storage': 'granted'
+	  });
 	  gtag('consent', 'default', {
 	    'ad_storage': 'denied',
 	    'ad_user_data': 'denied',
 	    'ad_personalization': 'denied',
 	    'analytics_storage': 'denied',
+	    'region': ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH'],
 	    'wait_for_update': 500
 	  });
 	  gtag('set', 'ads_data_redaction', true);
