@@ -2,15 +2,29 @@
 <html lang="en">
 <head>
 	<!-- Google tag (gtag.js) — GA4 property G-4EDP644SXM — with Google Consent Mode v2.
-	     Same analytics/consent stack as the calculator page. -->
+	     Same analytics/consent stack as the calculator page: consent defaults to
+	     granted worldwide, denied only in the EEA/UK (region-scoped); Google's own
+	     consent message (Privacy & messaging) updates it there. -->
 	<script>
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
+	  // Default: GRANT everywhere (US etc. get personalized ads, no message
+	  // needed) — then DENY only where prior consent is legally required
+	  // (EEA + UK). Google's consent message (loaded below; Google shows it in
+	  // the EEA/UK only) flips these when a visitor there makes a choice. The
+	  // denied region list mirrors the countries Google's message covers.
+	  gtag('consent', 'default', {
+	    'ad_storage': 'granted',
+	    'ad_user_data': 'granted',
+	    'ad_personalization': 'granted',
+	    'analytics_storage': 'granted'
+	  });
 	  gtag('consent', 'default', {
 	    'ad_storage': 'denied',
 	    'ad_user_data': 'denied',
 	    'ad_personalization': 'denied',
 	    'analytics_storage': 'denied',
+	    'region': ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB'],
 	    'wait_for_update': 500
 	  });
 	  gtag('set', 'ads_data_redaction', true);
@@ -29,27 +43,17 @@
 	<!-- fonts first; loaded non-render-blocking (display=swap shows fallback text immediately) -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link rel="preconnect" href="https://consent.cookiebot.com">
+	<link rel="preconnect" href="https://fundingchoicesmessages.google.com">
 	<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=PT+Serif:wght@400;700&display=swap">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=PT+Serif:wght@400;700&display=swap" media="print" onload="this.media='all'">
 	<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=PT+Serif:wght@400;700&display=swap"></noscript>
 
-	<!-- cookie consent (Cookiebot) + bridge to Google Consent Mode v2 -->
-	<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="6ba27c9d-ecd5-419a-9d84-8202995164a0" type="text/javascript" async></script>
-	<script>
-	  function ketoUpdateConsent() {
-	    if (typeof Cookiebot === 'undefined' || !Cookiebot.consent) return;
-	    var statistics = Cookiebot.consent.statistics ? 'granted' : 'denied';
-	    var marketing  = Cookiebot.consent.marketing  ? 'granted' : 'denied';
-	    gtag('consent', 'update', {
-	      'analytics_storage': statistics,
-	      'ad_storage': marketing,
-	      'ad_user_data': marketing,
-	      'ad_personalization': marketing
-	    });
-	  }
-	  window.addEventListener('CookiebotOnConsentReady', ketoUpdateConsent);
-	</script>
+	<!-- Google's own certified CMP (configured in AdSense -> Privacy & messaging).
+	     Google serves the GDPR consent message to EEA/UK visitors only and reports
+	     the choice into Google Consent Mode v2 automatically — same stack as the
+	     calculator page. -->
+	<script async src="https://fundingchoicesmessages.google.com/i/pub-2398468033418589?ers=1" nonce=""></script>
+	<script>(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
 
 	<!-- AdSense library (for the single in-content unit at the end of the article) -->
 	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
