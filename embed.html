@@ -45,8 +45,6 @@
 	<!-- fonts should come first -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<!-- Google's consent message (Privacy & messaging) loads for EEA/UK visitors; preconnect trims its latency -->
-	<link rel="preconnect" href="https://fundingchoicesmessages.google.com">
 	<!-- Google Charts loader sits in the critical request chain; preconnect shortens it -->
 	<link rel="preconnect" href="https://www.gstatic.com">
 	<!-- Preload the header logo (LCP candidate) so it starts fetching before the body is parsed -->
@@ -56,39 +54,7 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=PT+Serif:wght@400;700&display=swap" media="print" onload="this.media='all'">
 	<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=PT+Serif:wght@400;700&display=swap"></noscript>
     
-    <!-- app service stuff start, see https://googlechrome.github.io/samples/app-install-banner/basic-banner/index.html -->
-	<link rel="manifest" href="manifest.json">
-    <script> 
-        window.addEventListener('load', function() {
-            var outputElement = document.getElementById('output');
-            navigator.serviceWorker.register('service-worker.js', { scope: './' })
-                .then(function(r) {
-                    console.log('registered service worker');
-                })
-                .catch(function(whut) {
-                    console.error('uh oh... ');
-                    console.error(whut);
-                });
-            window.addEventListener('beforeinstallprompt', function(e) {
-                outputElement.textContent = 'beforeinstallprompt Event fired';
-            });
-        });
-    </script>
-	
-
-	<!-- cookie consent start -->
-	<!-- Google's own certified CMP (configured in AdSense -> Privacy & messaging).
-	     Google serves the GDPR consent message to EEA/UK visitors only, using its
-	     own server-side geo, and reports the choice into Google Consent Mode v2
-	     automatically. That replaces Cookiebot, the client-side geo lookup and the
-	     manual consent bridge — nothing else is needed here.
-	     IMPORTANT: the message must be created and PUBLISHED in the AdSense UI
-	     (Privacy & messaging -> GDPR) or no consent prompt will appear. -->
-	<script async src="https://fundingchoicesmessages.google.com/i/pub-2398468033418589?ers=1" nonce=""></script>
-	<script>(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
-	<!-- cookie consent end -->
-	
-    <!-- app service stuff end -->
+    
     
 	
 	<!-- 1. Load the Content Experiments JavaScript Client -->
@@ -123,22 +89,16 @@
 		}
 	</script>
 	-->
-	<!-- AdSense library (loaded once for the single manual in-content unit below).
-	     Auto Ads / page-level ads are intentionally NOT enabled here — they hand placement
-	     to Google and over-stuff the page (top anchor + side rails + extra in-text). See
-	     https://support.google.com/adsense/answer/3221666?hl=en-GB -->
-	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">		
 
 	<!-- clean with http://www.dirtymarkup.com/ (tabs, no print margin, preserve HTML entities) -->
 
-	<title>Free Keto Macro Calculator – Find Your Macros for the Ketogenic Diet</title>
-	<link rel="canonical" href="https://keto-calculator.ankerl.com/">
-	<link rel="alternate" hreflang="en" href="https://keto-calculator.ankerl.com/">
-	<link rel="alternate" hreflang="de" href="https://keto-calculator.ankerl.com/de/">
-	<link rel="alternate" hreflang="x-default" href="https://keto-calculator.ankerl.com/">
+	<title>Keto Calculator Widget – Free Keto Macro Calculator</title>
+	<meta name="robots" content="noindex">
+	<base target="_blank">
 
 	<!-- Open Graph + Twitter card properties for link previews -->
 	<meta content="fanP0_gbfKxHbEib0H-EkgwGkH1KGEDZlsudKEXoKP8" name="google-site-verification">
@@ -160,42 +120,7 @@
 	
 	<link href="favicon.png" rel="icon" type="image/png">
 	
-	<script type="application/ld+json">
-	{
-	  "@context": "https://schema.org",
-	  "@type": "WebApplication",
-	  "name": "Keto Calculator",
-	  "url": "https://keto-calculator.ankerl.com/",
-	  "applicationCategory": "HealthApplication",
-	  "operatingSystem": "All",
-	  "browserRequirements": "Requires JavaScript",
-	  "description": "Free keto macro calculator: enter your weight, height, and goal to get personalized carb, protein, and fat targets for the ketogenic diet.",
-	  "datePublished": "2012-10",
-	  "dateModified": "2026-06",
-	  "author": {
-		"@type": "Person",
-		"name": "Martin Leitner-Ankerl",
-		"description": "Software developer who has followed and researched the ketogenic diet for years.",
-		"url": "https://martin.ankerl.com/",
-		"sameAs": [
-		  "https://martin.ankerl.com/",
-		  "https://www.reddit.com/user/martinus/",
-		  "https://github.com/martinus"
-		]
-	  },
-	  "offers": {
-		"@type": "Offer",
-		"price": "0",
-		"priceCurrency": "USD"
-	  },
-	  "publisher": {
-		"@type": "Organization",
-		"name": "Keto Calculator",
-		"url": "https://keto-calculator.ankerl.com/",
-		"logo": "https://keto-calculator.ankerl.com/launcher-icon-152x152.png"
-	  }
-	}
-	</script>
+	
 	
 	<script type="text/javascript">
 		// similar to Easy SocialShare Buttons, see http://migrevolution.de/eat/keto-kickstart-tipps/
@@ -1653,6 +1578,16 @@
 		border-radius: 4px;
 	}
 	</style>
+<style>
+	/* embed.html overrides: compact chrome inside an <iframe> */
+	#header { padding: 10px 0; }
+	#header h1 { font-size: 30px !important; letter-spacing: -0.5px !important; margin: 8px 0 !important; }
+	#header h1 a { color: inherit; text-decoration: none; }
+	#logo { width: 40px !important; height: 40px !important; }
+	#content { display: block !important; }
+	#main { float: none !important; width: auto !important; max-width: 720px; margin: 0 auto; padding: 0 18px; }
+	#bottom1 { margin-top: 28px; }
+	</style>
 </head>
 
 
@@ -1661,13 +1596,13 @@
 
 	<div id="page">
 		<div id="header">
-			<h1><a href="https://keto-calculator.ankerl.com/"><img title="A ketone, which is an organic compound with the structure RC(=O)R'. When you eat low carb, your body will burn fat and start producing ketones to fuel your body. This process is called ketosis." alt="ketone" src="logo-white-150.png" id="logo" width="150" height="150" fetchpriority="high"></a> Keto Calculator</h1>
+			<h1><a href="https://keto-calculator.ankerl.com/"><img title="A ketone, which is an organic compound with the structure RC(=O)R'. When you eat low carb, your body will burn fat and start producing ketones to fuel your body. This process is called ketosis." alt="ketone" src="logo-white-150.png" id="logo" width="150" height="150" fetchpriority="high"></a> Keto Calculator</h1><!-- embed: compact header, see overrides -->
 		</div>
         
 		<div id="content">
 			<div id="main">
                 <div id="broughttoyou">
-                    By <a href="https://keto-calculator.ankerl.com/">keto-calculator.ankerl.com</a> &middot; <a href="de/" hreflang="de">Deutsch</a>
+                    Powered by <a href="https://keto-calculator.ankerl.com/">keto-calculator.ankerl.com</a> &middot; free keto macro calculator
                 </div>
             
 				<form action="get" id="data" method="post" name="data">
@@ -1675,19 +1610,7 @@
 
 					<p style="font-size:smaller; color:#666; margin-top:0.2em;">Built and maintained by <a href="#aboutme" onclick="return gatrack(this);">Martin Leitner-Ankerl</a>, a software developer who has followed and researched the ketogenic diet for years. The math uses the peer-reviewed Mifflin-St. Jeor equation. This is general information, not medical advice.
 
-					<details class="detail-block" id="detail_intro" ontoggle="if(this.open){load_youtube('youtubeplayer','vyRnunLjDvI');}">
-						<summary>What is a ketogenic diet? (+ video tutorial)</summary>
-						<p>A ketogenic diet is high in fat, moderate in protein, and very low in carbohydrates. When you cut carbs this far, your body switches from running on sugar to running on fat — producing <em>ketones</em> as fuel along the way. Most people start keto to lose weight, and many also find it steadies their energy, appetite, and blood sugar through the day. It isn't magic and results vary from person to person, but a lot of people find it easier to stick to than constant calorie counting.</p>
-
-						<p>James Hardiman has created a nice tutorial for this calculator, watch it here:</p>
-
-						<p>
-							<!-- see https://developers.google.com/youtube/iframe_api_reference -->
-							<div class="videoWrapper">
-								<div id="youtubeplayer"></div>
-							</div>
-						</p>
-					</details>
+					
 
 					
 					<h2>Your Fat Loss Calculation</h2>
@@ -1761,16 +1684,6 @@
 					<div id="bodyfat_percentage_warning"></div>
 					
 					<h2>Learn Your Optimal Macronutrient Ratio</h2>
-					<div class="recommended">
-						<p class="rec-label">📚 Want the science behind it? Books I recommend:</p>
-						<span class="book" title="The Art and Science of Low Carbohydrate Living - by Stephen D. Phinney, Jeff S. Volek. This book is where I learned the most about the ketogenic diet and its effect on the body. Without it, this calculator would not exist. Highly recommended!"><a href="https://www.amazon.com/gp/product/0983490708/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0983490708" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/0983490708_small.png" width="110" height="166" alt="The Art and Science of Low Carbohydrate Living — book cover"></a></span>
-
-						<span class="book" title="The Case for Keto: Rethinking Weight Control and the Science and Practice of Low-Carb/High-Fat Eating - by Gary Taubes. A modern, science-first case for low-carb, high-fat eating, built on interviews with 100 doctors who prescribe keto to their patients."><a href="https://www.amazon.com/gp/product/0525520066/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=0525520066" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/0525520066_small.png" width="110" height="166" alt="The Case for Keto by Gary Taubes — book cover"></a></span>
-
-						<span class="book" title="The Obesity Code: Unlocking the Secrets of Weight Loss - by Dr. Jason Fung. Explains how insulin, not willpower, drives weight gain — the hormonal case for cutting carbs."><a href="https://www.amazon.com/gp/product/1771641258/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=1771641258" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/1771641258_small.png" width="110" height="166" alt="The Obesity Code by Jason Fung — book cover"></a></span>
-
-						<span class="book" title="Good Calories, Bad Calories: Fats, Carbs, and the Controversial Science of Diet and Health - by Gary Taubes. This book is probably the main reason why the ketogenic diet became so popular recently. It thoroughly debunks the 'fat is bad' myth and backs this up with more scientific references than you will ever care to look up yourself."><a href="https://www.amazon.com/gp/product/1400033462/ref=as_li_qf_sp_asin_il?ie=UTF8&amp;tag=martanke-20&amp;linkCode=as2&amp;camp=1789&amp;creative=9325&amp;creativeASIN=1400033462" onclick="return gatrack(this);"><img loading="lazy" border="0" src="books/1400033462_small.png" width="110" height="166" alt="Good Calories, Bad Calories by Gary Taubes — book cover"></a></span>
-					</div>
 					<p>Macronutrients are nutrients that provide energy for your body.</p>
 
 					
@@ -1981,17 +1894,7 @@
 					<p style="font-size:smaller; color:#666; margin-top:-0.5em;">Copies a link that reopens this calculator with your numbers already filled in — handy for saving or sharing on Reddit.</p>
 
 					<p>
-						<div class="fullwidthad">
-							<!-- Keto Bottom -->
-							<ins class="adsbygoogle"
-								 style="display:block"
-								 data-ad-client="ca-pub-2398468033418589"
-								 data-ad-slot="1224707884"></ins>
-							<script>
-							(adsbygoogle = window.adsbygoogle || []).push({ params: {google_ad_format: "auto" } });
-							</script>
-							<!-- google adsense end -->
-						</div>
+						
 					</p>
 					
 				
@@ -2062,210 +1965,30 @@
 						<p>For all you data junkies, you can <a id="csvdownload" download="KetoCalculatorForecast.csv" href="javascript:void(0)">download a CSV file of your projected weight loss</a>. This contains all the data used in the above graph.
                     </div>
 
-					<div id="faq">
-						<h2>Keto Calculator FAQ</h2>
+					<!-- The calculator JS fills this on every recalculation; the visible
+					     /r/keto section lives on the main page only. -->
+					<textarea name="reddit_copypaste" readonly="readonly" style="display:none" aria-hidden="true"></textarea>
 
-						<h3>How many carbs can I eat on keto?</h3>
-						<p>Most people stay in ketosis on 20–50 grams of net carbs per day. This calculator defaults to 25 grams, which works well for the majority. Get your carbs from vegetables, nuts, and a little fruit rather than from sugar and grains.</p>
-
-						<h3>How much protein should I eat on keto?</h3>
-						<p>Protein is set from your lean body mass, not your total weight — roughly 1.3 to 2.2 grams per kilogram of lean mass. The calculator gives you a personalized minimum and maximum so you keep muscle without eating so much that it interferes with ketosis.</p>
-
-						<h3>What is a macro?</h3>
-						<p>"Macro" is short for macronutrient — the three nutrients that give your body energy: fat, protein, and carbohydrates. On keto you eat high fat, moderate protein, and very few carbs.</p>
-
-						<h3>What is the difference between net carbs and total carbs?</h3>
-						<p>Net carbs are total carbohydrates minus fiber (and sugar alcohols). Fiber does not raise blood sugar, so keto counts net carbs. European labels already show net carbs; United States labels show total carbs, so subtract the fiber yourself.</p>
-
-						<h3>What foods are high in fat for keto?</h3>
-						<p>Good keto fat sources include avocado, olive oil, coconut oil, butter, nuts and seeds, fatty fish like salmon, eggs, and full-fat cheese. These let you reach your fat target while keeping carbs low.</p>
-
-						<h3>How fast will I lose weight on keto?</h3>
-						<p>It depends on the calorie deficit you choose. A deficit that loses 0.5 to 1 kilogram per week is sustainable for most people. Expect a larger drop in the first week as your body sheds water weight, then a steadier loss after that.</p>
-
-						<h3>How does this keto calculator work?</h3>
-						<p>It estimates your Base Metabolic Rate with the Mifflin-St. Jeor formula, multiplies it by your activity level to get your daily energy needs, then subtracts your chosen deficit. Protein comes from your lean body mass and carbs from your chosen limit; the remaining calories become your fat target.</p>
-
-						<h3>Is this medical advice?</h3>
-						<p>No. This calculator provides general information to help you plan a ketogenic diet and is not a substitute for professional medical advice. It is designed for healthy adults who want to lose weight. If you are pregnant or breastfeeding, have type 1 diabetes, kidney disease, or a history of disordered eating, talk to your doctor before starting keto — the standard targets here may not be safe for you.</p>
-					</div>
-
-					<script type="application/ld+json">
-					{
-					  "@context": "https://schema.org",
-					  "@type": "FAQPage",
-					  "mainEntity": [
-						{
-						  "@type": "Question",
-						  "name": "How many carbs can I eat on keto?",
-						  "acceptedAnswer": {
-							"@type": "Answer",
-							"text": "Most people stay in ketosis on 20–50 grams of net carbs per day. This calculator defaults to 25 grams, which works well for the majority. Get your carbs from vegetables, nuts, and a little fruit rather than from sugar and grains."
-						  }
-						},
-						{
-						  "@type": "Question",
-						  "name": "How much protein should I eat on keto?",
-						  "acceptedAnswer": {
-							"@type": "Answer",
-							"text": "Protein is set from your lean body mass, not your total weight — roughly 1.3 to 2.2 grams per kilogram of lean mass. The calculator gives you a personalized minimum and maximum so you keep muscle without eating so much that it interferes with ketosis."
-						  }
-						},
-						{
-						  "@type": "Question",
-						  "name": "What is a macro?",
-						  "acceptedAnswer": {
-							"@type": "Answer",
-							"text": "Macro is short for macronutrient — the three nutrients that give your body energy: fat, protein, and carbohydrates. On keto you eat high fat, moderate protein, and very few carbs."
-						  }
-						},
-						{
-						  "@type": "Question",
-						  "name": "What is the difference between net carbs and total carbs?",
-						  "acceptedAnswer": {
-							"@type": "Answer",
-							"text": "Net carbs are total carbohydrates minus fiber (and sugar alcohols). Fiber does not raise blood sugar, so keto counts net carbs. European labels already show net carbs; United States labels show total carbs, so subtract the fiber yourself."
-						  }
-						},
-						{
-						  "@type": "Question",
-						  "name": "What foods are high in fat for keto?",
-						  "acceptedAnswer": {
-							"@type": "Answer",
-							"text": "Good keto fat sources include avocado, olive oil, coconut oil, butter, nuts and seeds, fatty fish like salmon, eggs, and full-fat cheese. These let you reach your fat target while keeping carbs low."
-						  }
-						},
-						{
-						  "@type": "Question",
-						  "name": "How fast will I lose weight on keto?",
-						  "acceptedAnswer": {
-							"@type": "Answer",
-							"text": "It depends on the calorie deficit you choose. A deficit that loses 0.5 to 1 kilogram per week is sustainable for most people. Expect a larger drop in the first week as your body sheds water weight, then a steadier loss after that."
-						  }
-						},
-						{
-						  "@type": "Question",
-						  "name": "How does this keto calculator work?",
-						  "acceptedAnswer": {
-							"@type": "Answer",
-							"text": "It estimates your Base Metabolic Rate with the Mifflin-St. Jeor formula, multiplies it by your activity level to get your daily energy needs, then subtracts your chosen deficit. Protein comes from your lean body mass and carbs from your chosen limit; the remaining calories become your fat target."
-						  }
-						},
-						{
-						  "@type": "Question",
-						  "name": "Is this medical advice?",
-						  "acceptedAnswer": {
-							"@type": "Answer",
-							"text": "No. This calculator provides general information to help you plan a ketogenic diet and is not a substitute for professional medical advice. It is designed for healthy adults who want to lose weight. If you are pregnant or breastfeeding, have type 1 diabetes, kidney disease, or a history of disordered eating, talk to your doctor before starting keto — the standard targets here may not be safe for you."
-						  }
-						}
-					  ]
-					}
-					</script>
-
-
-                    <div id="embedcalc">
-                        <h2>Embed This Calculator on Your Site</h2>
-                        <p>Run a keto blog, coaching site, or forum? You can embed this calculator for free —
-                        paste this snippet into your page and you're done. It always serves the latest version.</p>
-                        <p>
-                            <textarea class="copytext" rows="5" readonly="readonly" onclick="this.select()" aria-label="HTML snippet to embed this calculator">&lt;iframe src="https://keto-calculator.ankerl.com/embed.html" width="100%" height="1200" style="border:1px solid #d9e6ef; border-radius:12px;" title="Keto Calculator" loading="lazy"&gt;&lt;/iframe&gt;
-&lt;p&gt;Free &lt;a href="https://keto-calculator.ankerl.com/"&gt;keto macro calculator&lt;/a&gt; by keto-calculator.ankerl.com&lt;/p&gt;</textarea>
-                        </p>
-                        <p style="font-size:smaller; color:#666;">Please keep the credit link below the iframe — it's how new people find the calculator.</p>
-                    </div>
-
-                    <div id="questions">
-                        <h2>Got Questions?</h2>
-                        <h3>Post Your Question to /r/keto</h3>						
-
-                        <p>We can help you. <span class="redditsubmit"></span>, and replace the first text line with your question. Or click inside this field:</p>
-                                
-                        <p>
-                            <center>
-                                <textarea class="copytext" cols="2" name="reddit_copypaste" readonly="readonly" rows="13"></textarea>
-                            </center>
-                        </p>
-                        
-                        <p>Copy its text with Ctrl+C. <a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">Go to /r/keto submit site</a>, move to the "text" field, paste it with Ctrl+V, and <strong>replace the first line with your question</strong>.</p>
-                    </div>
-
-					<div id="comments">
-                        <h3>Comments</h3>
-                        <p>Is this calculator useful to you? Share your thoughts!</p>
-
-                        <p>
-                            <div>
-								<!-- Comments: Cusdis (lightweight, ad-free, no login required to comment).
-									 Managed at https://cusdis.com; data-app-id is this site's App ID. -->
-								<div id="cusdis_thread"
-									data-host="https://cusdis.com"
-									data-app-id="12c12213-53aa-4286-a49e-225c1fb40f62"
-									data-page-id="/"
-									data-page-url="https://keto-calculator.ankerl.com/"
-									data-page-title="Keto Calculator"></div>
-                                <noscript>Please enable JavaScript to view the comments.</noscript>
-                            </div>
-                        </p>
-					</div>
-				</form>
+					</form>
 			</div>
 
 			
 			
 			
 			
-			<div id="sidebar">				
-									
-				<p style="clear:both; margin-top:50px;">
-			
-				<!-- Generic Facebook / X / Pinterest share icons removed 2026-06-29:
-				     they were desktop-only (this sidebar is display:none under 830px,
-				     missing the 65% mobile audience), converted ~nothing on a utility
-				     tool, and Twitter is dated. Social inbound is already carried by the
-				     og:image/twitter:card rich previews and the "Share my macros"
-				     (prefilled-URL) button in #main. -->
-				<p style="clear:both;margin-top:50px;"></p>
-				
-				
+			</div>
 
-				<!-- Desktop sidebar ad (sticky skyscraper). Replaced the Amazon book
-				     grid here 2026-06-29: the books earned ~$3/mo while taking the
-				     sidebar's prime, desktop-only space (#sidebar is display:none under
-				     830px). A sticky display unit in the same space earns more; the
-				     single inline "Books I recommend" rec keeps the E-E-A-T/trust value.
-				     Slot = "Keto Sidebar" (8747974681) — a real display unit (formerly
-				     "Keto Mid", repurposed from its old in-form placement and renamed in
-				     the AdSense dashboard). Real unit = proper per-unit reporting. -->
-				<div class="sidebar-ad">
-					<ins class="adsbygoogle"
-						 style="display:inline-block;width:160px;height:600px"
-						 data-ad-client="ca-pub-2398468033418589"
-						 data-ad-slot="8747974681"></ins>
-					<script>
-					(adsbygoogle = window.adsbygoogle || []).push({});
-					</script>
-				</div>
-			</div>	
-		</div>
-		
 		<div id="bottom1">
-			<div id="bottom2">
-				<div id="aboutme">
-					<div id="aboutmewidth">
-						<i class="sprite sprite-me" style="float:left; margin-right: 1em; margin-top:4px;" title="Martin Leitner-Ankerl"></i> Created by <b>Martin Leitner-Ankerl</b>. I'm a software developer who has followed and researched the ketogenic diet for years. I first built this calculator and <a href="https://www.reddit.com/r/keto/comments/127sm0/keto_calculator/" onclick="return gatrack(this);">announced it on /r/keto in October 2012</a>, because the keto advice online was vague and I wanted exact numbers for myself. The math is based on the peer-reviewed Mifflin-St. Jeor equation and the protein and fat guidance in Phinney and Volek's <i>The Art and Science of Low Carbohydrate Living</i> — the book I learned the most from. I'm not a doctor or dietitian; this is simply the tool I wished existed, shared freely. You can find me on <a href="https://www.reddit.com/user/martinus/" onclick="return gatrack(this);">reddit</a> and <a href="https://martin.ankerl.com/" onclick="return gatrack(this);">my blog</a>. Please read the <a href="disclaimer.html" onclick="return gatrack(this);">disclaimer and Cookie Consent</a>.
-						<p style="font-size:smaller; color:#6b7a86; margin-top:0.6em;">Created October 2012 · last reviewed June 2026. The formulas are unchanged since publication and are reviewed periodically for accuracy.</p>
-						
-						<span style="clear:left; display:block;"></span>
-					</div>
-  
-					<div style="clear:both;"></div>
-				</div>
-			</div>  
+		<div id="bottom2">
+			<div id="aboutmewidth">
+				Powered by <a href="https://keto-calculator.ankerl.com/"><b>Keto Calculator</b> &middot; keto-calculator.ankerl.com</a> —
+				a free keto macro calculator by Martin Leitner-Ankerl. These numbers are estimates,
+				not medical advice: <a href="https://keto-calculator.ankerl.com/disclaimer.html">disclaimer</a>.
+			</div>
 		</div>
 	</div>
-  
-	
+	</div>
+
 	<!-- track outbound links start -->
 	<!-- gatrack() is referenced by hundreds of inline onclick="return gatrack(this)" handlers.
 	     The old version used the now-removed Universal Analytics ga() and was commented out, so
@@ -3297,7 +3020,7 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 					parts.push(name + '=' + encodeURIComponent(val));
 				}
 			});
-			var base = location.protocol + '//' + location.host + location.pathname;
+			var base = 'https://keto-calculator.ankerl.com/';  // embed: shares open the full site
 			return base + (parts.length ? '?' + parts.join('&') : '');
 		}
 
@@ -3694,29 +3417,6 @@ if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires j
 		// Google Charts is loaded lazily on the first calculation — see ensure_charts_loaded().
 </script>
 	
-	<script type="text/javascript">
-		// Lazy-load the Cusdis comment widget (~5KB, ad-free) only when the
-		// reader nears the bottom of the page, so it never blocks first paint.
-		var cusdis_loaded = false;
-		function load_cusdis() {
-			var s = document.createElement('script');
-			s.async = true;
-			s.defer = true;
-			s.src = 'https://cusdis.com/js/cusdis.es.js';
-			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
-		}
-
-		// only load comments near the bottom.
-		window.onscroll = function(e) {
-			if ((window.innerHeight*3 + window.scrollY) >= document.body.offsetHeight) {
-				// hit one window.innerHeight above bottom of page
-				if (!cusdis_loaded) {
-					cusdis_loaded = true;
-					load_cusdis();
-				};
-			}
-		};
-	</script>
-	<noscript>Please enable JavaScript to view the comments.</noscript>
+	
 </body>
 </html>

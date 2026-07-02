@@ -11,9 +11,6 @@
 ## Pages
 
 - [Keto Calculator](https://keto-calculator.ankerl.com/): The calculator — inputs, personalized macro results, weight-loss projection, food equivalents, and a keto FAQ.
-- [Net Carbs vs Total Carbs](https://keto-calculator.ankerl.com/net-carbs-vs-total-carbs.html): How to count net carbs on keto (net = total − fiber − most sugar alcohols), with worked examples, sugar-alcohol caveats, and US vs European label differences.
-- [How Much Protein on Keto](https://keto-calculator.ankerl.com/how-much-protein-on-keto.html): How much protein to eat on keto (~1.3–2.2 g per kg of lean body mass), why protein does not kick you out of ketosis, and examples by body weight.
-- [How Fast Will I Lose Weight on Keto](https://keto-calculator.ankerl.com/how-fast-will-i-lose-weight-on-keto.html): Why the first-week drop is mostly water, how your calorie deficit sets the fat-loss pace (~0.5–1 kg/week is sustainable), the fat-release speed limit, and reading the weekly trend.
 - [Disclaimer & Cookie Policy](https://keto-calculator.ankerl.com/disclaimer.html): Medical disclaimer and cookie information.
 
 ## Key facts
