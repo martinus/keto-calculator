@@ -1,0 +1,14 @@
+* use http://code.shutterstock.com/rickshaw/ for javascript chart so it works on iPhone & iPad
+* Create an Android app with multiple goals: 20% below maintainence
+* add percentage to reddit copypasta?
+* Analyze what people buy, add links and text: Ketostix link http://www.amazon.com/gp/product/B0019SNZEA 
+* create nice TOC http://gregfranko.com/jquery.tocify.js/#OptionsAPI
+
+-- done --
+* I would also just try and trim a few non-essential sentences like this one 'You can also try this calculator but that can be inaccurate.' . Make the process as simple as possible. People get scared off by lots of text online, so try and minimise it as much as possible.
+* create two nice piecharts that show maintainence calories and chosen calories.
+* faster recalculation delay (more delay for graph)
+* WONTFIX Make it possible to enter g fat per hour?
+* You need to use the headings better. 'Let's get started' doesn't really tell the user anything. Why not just summarise what the page will do for them? This is important because people skim-read web copy. Why not start with something like: 'Get a personalised diet recommendation in less than 2 minutes' instead.
+* Also the next heading 'your personal data' would be better off as 'start here', or even 'Enter your personal data'. It's a small thing but it makes a difference, people need to be directed.
+
