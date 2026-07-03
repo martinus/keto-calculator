@@ -117,7 +117,14 @@ URLs). Head-term rank then rises as a side effect of authority — not the other
   no dominant incumbent; German AdSense RPMs are among the EU's highest. This is the
   highest-probability ranking win available. Expected: builds to +5–15% sessions over 2–3
   months.*
-- [ ] **T2.2 NEW — The story post + Hacker News launch (the real backlink engine).** Write
+- [~] **T2.2 NEW — The story post + Hacker News launch (the real backlink engine).**
+  ✅ Post **published 2026-07-03**:
+  https://martin.ankerl.com/2026/07/03/website-blank-for-4-seconds/ — **remaining: the
+  launch/distribution half**, which is where the links come from (a post with only the
+  blog's regular readers earns none). Playbook: `dev/docs/launch-kit-blank-page-post.md`
+  (HN submission w/ title options + timing + day-of comment duty, webperf Mastodon,
+  staggered Reddit, newsletter pitches, dev.to canonical cross-post, measurement).
+  Original brief follows. Write
   ONE post on the owner's blog (ankerl.com — an established dev blog with real audience):
   *"My 12-year-old keto calculator was blank for 4 seconds on every visit"* — the true story
   of the overhaul: the sunset Google Optimize snippet holding `<html>` at `opacity:0`, the
