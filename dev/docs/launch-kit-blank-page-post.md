@@ -130,3 +130,28 @@ best part of the story):
 > measured the old page: ~27 ms to first paint with uBlock's stub, ~3,978 ms without
 > it. My ad blocker had been quietly protecting me from my own dead ad-tech for years
 > — while every visitor generous enough to *not* run one got the full 4-second stare.
+
+### Addendum (2026-07-03): the AdGuard DNS twist
+
+Owner also runs **AdGuard DNS** at home. Important asymmetry, verified in source:
+
+- **DNS-level blocking cannot defuse the snippet** — it just makes the
+  `analytics.js` request fail. No code injection, no `hide.end()`, so the page
+  waits the full 4 s. DNS blocking *causes* the blank, it never hides it.
+- **In-browser blockers defuse it** — both uBlock Origin's and AdGuard's redirect
+  stubs call `dataLayer.hide.end()` on load (AdGuard: `Scriptlets/src/redirects/
+  google-analytics.js` line ~90; uBlock: `google-analytics_analytics.js`,
+  gorhill/uBlock#3075). Extension redirects run inside the browser, before DNS is
+  ever consulted — so with the extension on, AdGuard DNS never even sees the request.
+
+Consequences worth using in the post/comments:
+
+1. The owner never saw the blank because his **browser** blocker always served the
+   stub. The home DNS layer was irrelevant on his own machines.
+2. Any device on his home network **without** such an extension (stock mobile
+   browser, guests, TV browser) hit the DNS-blocked path — i.e. the 4 s blank —
+   **even before the 2023 sunset, all the way back to 2017.**
+3. **Self-test correction:** at home, "incognito + extensions off" still shows the
+   4 s blank regardless of what Google serves today, because AdGuard DNS kills GA
+   anyway. To test Google's live endpoint behavior post-sunset, repeat on mobile
+   data / any network without AdGuard DNS.
