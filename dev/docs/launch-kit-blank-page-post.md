@@ -185,3 +185,29 @@ earlier analysis:
 - Residual unknown (honest footnote if asked): endpoint behavior between Oct 2023 and
   June 2026 can't be probed retroactively; the June 2026 lab FCP is the earliest
   direct evidence of the shim, and no evidence suggests it ever went dark.
+
+## 🔁 REBOOT 2026-07-03 — post replaced entirely
+
+Owner decided to replace the published post outright ("nobody has seen the last one
+anyways") rather than patch it with a correction. The new post is
+`dev/docs/blog-post-my-ad-blocker.md` — **"My Ad Blocker Was Protecting Me From My Own
+Website"** — the corrected story told from scratch, with the failed reproduction as
+the plot twist and the old page linked as a live interactive exhibit
+(https://keto-calculator.ankerl.com/old.html).
+
+Everything in this kit still applies (venues, timing, day-of duty, newsletters,
+canonical cross-post, measurement) EXCEPT the titles. New HN title options:
+
+1. `My ad blocker was protecting me from my own website` ← recommended (the post title)
+2. `Google quietly keeps defusing abandoned A/B-test anti-flicker snippets`
+3. `Nine years of silent script rot on a static page`
+
+Publishing notes for the owner:
+- Publish under a new slug matching the new title; **delete or 301 the old
+  `/2026/07/03/website-blank-for-4-seconds/` URL** so two versions never compete.
+- Keep `/old.html` live — the post links it as the try-it-yourself exhibit. Optional:
+  `Disallow: /old.html` in robots.txt keeps it out of the index while staying linkable.
+- The "why didn't you notice" HN question is now answered *inside* the post; comment
+  duty shifts to: how the shim was found (FCP blind under opacity:0 + lab FCP 3.3s),
+  and the honest footnote that 2023–2026 endpoint behavior can't be probed
+  retroactively.
