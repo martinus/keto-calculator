@@ -82,3 +82,51 @@ shot). Late-year option: pitch a condensed version to the **Web Performance Cale
   calculator; HN itself shows the submission's points/comments.
 - Success bar (from the plan): a handful of real linking domains is already a win —
   domain-authority compounding is the goal, not the traffic spike.
+
+## The "why didn't you notice for 3 years?" answer — VERIFIED 2026-07-03
+
+This is the #1 question HN will ask, and the owner asked it himself ("I never saw
+that delay"). The empirical answer (all measured against the real 2018–2026
+`index.html`, commit `5b235ce`, headless Chromium):
+
+| Scenario | Time to first visible paint |
+|---|---|
+| Optimize container answers (pre-Sept-2023, no blocker) | ~216 ms (reveal ends the hide) |
+| Optimize dead / GA blocked with no stub (post-Sept-2023 reality) | **~3,978 ms — the 4s timeout** |
+| uBlock Origin serving its neutering stub | **~27 ms** |
+
+Mechanism: the page's first inline script added `async-hide` (`opacity:0 !important`
+on `<html>`) with a `setTimeout(4000)` fallback; the early reveal was
+`dataLayer.hide.end()`, called only by the Google Optimize container
+(`ga('require','GTM-TC6WLFB')`). Optimize sunset 2023-09-30 → nothing calls it →
+every visitor waits out the full 4,000 ms.
+
+**Why the owner never saw it:** uBlock Origin does not merely block `analytics.js` —
+it *redirects* it to a local stub that immediately runs
+`dl.hide.end()` precisely to defuse anti-flicker snippets
+(https://github.com/gorhill/uBlock/blob/master/src/web_accessible_resources/google-analytics_analytics.js,
+added for gorhill/uBlock#3075; the GTM stub does the same). So a browser with uBlock
+was structurally incapable of reproducing the bug: **the ad blocker was shielding the
+site owner from his own broken ad-tech, while every ad-viewing visitor ate the 4s.**
+
+Bonus nuance (accurate, usable in comments): blockers that *block without a redirect
+stub* (Safari content blockers, Firefox ETP strict) never call `hide.end()` either —
+those users got the 4s blank **even before the 2023 sunset**, all the way back to 2017
+when the snippet shipped.
+
+**Self-verification for the owner (30 seconds):** `git show 5b235ce:index.html > /tmp/old.html`,
+open it in a clean profile / incognito **with extensions off** — watch 4 s of white.
+Open it in the normal uBlock profile — instant. (Only remaining unknown from the
+sandboxed analysis container: whether Google's live endpoint served a hide-ending stub
+at any point post-sunset; the clean-profile test answers that too.)
+
+**Suggested update paragraph for the published post** (turns the objection into the
+best part of the story):
+
+> **Update:** several people (including me) wondered why I never noticed 4 seconds of
+> white. The answer is embarrassing in a different way: uBlock Origin doesn't just
+> block `analytics.js`, it replaces it with a stub that immediately calls
+> `dataLayer.hide.end()` — specifically to defuse anti-flicker snippets like mine. I
+> measured the old page: ~27 ms to first paint with uBlock's stub, ~3,978 ms without
+> it. My ad blocker had been quietly protecting me from my own dead ad-tech for years
+> — while every visitor generous enough to *not* run one got the full 4-second stare.
