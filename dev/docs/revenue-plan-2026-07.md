@@ -74,12 +74,14 @@ stuffing).
 
 ### Tier 1 — Mobile ad coverage & RPM (code, ~1–2 hours total; ship after T0.3 baseline)
 
-- [ ] **T1.1 Place the unused "Keto Top" unit (`7271241487`) as a second in-content unit
-  visible on mobile.** Concrete spot: **after the FAQ block (`#faq`), before the "Got
-  Questions?" section** (~line 2165 of `index.html`) — deep in content, ~2,000 words below the
-  input/Calculate flow (no invalid-click risk), on a section boundary (no reading interruption),
-  and seen by the 65% mobile majority that currently gets one ad. Responsive format, reserved
-  min-height to avoid CLS. *Expected: mobile goes 1 → 2 impressions/session; rough +€15–30/mo
+- [x] **T1.1 Place the unused "Keto Top" unit (`7271241487`) as a second in-content unit
+  visible on mobile.** ✅ **done 2026-07-03** — placed after the FAQ block (`#faq`), before the
+  Keto Guides section — deep in content, ~2,000 words below the input/Calculate flow (no
+  invalid-click risk), on a section boundary (no reading interruption), and seen by the 65%
+  mobile majority that previously got one ad. Responsive format, `min-height:280px` reserved
+  (no CLS). Inherited by `/de/` via the generator; excluded from `embed.html` (falls inside
+  the FAQ cut). Context: owner reported clicks down ~10/day → ~1/day after Auto Ads went off —
+  mobile coverage was the gap. *Expected: mobile goes 1 → 2 impressions/session; rough +€15–30/mo
   at recovered RPM.*
 - [ ] **T1.2 Trial a mobile anchor ad — the measured way.** In the AdSense dashboard enable
   Auto ads for the domain with **every format OFF except Anchor** (this is not "full-auto"

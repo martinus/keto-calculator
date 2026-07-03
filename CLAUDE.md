@@ -231,8 +231,11 @@ The account has **three real display ad units**: `7271241487` (Keto Top), `87479
 (Keto Sidebar, renamed from "Keto Mid"), `1224707884` (Keto Bottom). Amazon affiliate tag: `martanke-20`. (A `2426641084` "Keto Links" slot
 once existed in the code but the unit was deleted from the account — that ID is dead; don't use it.)
 
-**As of 2026-06-29 TWO manual ads are live:** `1224707884` ("Keto Bottom", right after the
-results table) and `8747974681` ("Keto Sidebar", repurposed as the **sticky desktop sidebar skyscraper**,
+**As of 2026-07-03 THREE manual ads are live:** `1224707884` ("Keto Bottom", right after the
+results table), `7271241487` ("Keto Top", second in-content unit **after the FAQ / before Keto
+Guides** — added 2026-07-03 for mobile coverage after clicks dropped ~10/day → ~1/day post-Auto-Ads;
+responsive, `min-height:280px` reserved, inherited by `/de/`, excluded from `embed.html`), and
+`8747974681` ("Keto Sidebar", repurposed as the **sticky desktop sidebar skyscraper**,
 `.sidebar-ad`, 160x600). The sidebar ad replaced the Amazon book grid on 2026-06-29 (the books earned
 ~$3/mo while taking the sidebar's prime, desktop-only space — `#sidebar` is `display:none` under
 830px). For the sticky to travel the long page, `#content` is a **flex row** at ≥830px (so `#sidebar`
@@ -240,8 +243,8 @@ stretches to `#main`'s height) and `.sidebar-ad` is `position:sticky;top:20px` w
 box (no CLS). This unit was previously the removed in-form "Keto Mid"; reused here (and renamed to
 "Keto Sidebar" in the dashboard) so the sidebar maps to a **real** unit with proper reporting.
 Book affiliate links now live **only** in the single inline rec (4 covers, `.recommended` under "Learn
-Your Optimal Macronutrient Ratio") for E-E-A-T/trust, not revenue. `7271241487` ("Keto Top") is the
-only unit not currently placed. **AdSense Auto Ads were disabled** (removed `enable_page_level_ads`)
+Your Optimal Macronutrient Ratio") for E-E-A-T/trust, not revenue. All three units are now placed
+(since 2026-07-03). **AdSense Auto Ads were disabled** (removed `enable_page_level_ads`)
 — keep them OFF (see `dev/docs/plan.md` §8). Note: Auto ads can still be re-enabled from the **AdSense
 dashboard** (Ads → By site) independent of code. (The old "forum" ads came from **Disqus's free
 tier**; Disqus was replaced by ad-free Cusdis on 2026-06-29, so that ad source is gone.)
