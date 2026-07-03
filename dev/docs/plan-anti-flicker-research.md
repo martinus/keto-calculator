@@ -107,3 +107,51 @@ Same authority math as before, better odds: links earned by the research post li
 ankerl.com's domain; the calculator inherits. And the "check your site" hook is the
 kind of thing that gets cited by documentation, newsletters, and how-to posts for
 years — durable links, not just a traffic spike.
+
+## RESULTS — Tier 1 run by owner, 2026-07-03
+
+**Q1 (Wappalyzer "Google Optimize" on root pages, mobile crawl):**
+
+| crawl date | sites |
+|---|---|
+| 2023-06-01 (pre-sunset) | 239,357 |
+| 2023-10-01 (just after sunset) | 182,022 |
+| 2024-06-01 | 45,281 |
+| 2025-06-01 | 32,639 |
+| 2026-06-01 | **25,009** |
+
+**✅ Decision gate: PASSED.** A quarter-million sites ran Optimize; 25k of the web's
+most-visited sites (HTTP Archive crawls CrUX origins — sites with real Chrome
+traffic) still carry it ~3 years after the product died. The decay curve is a
+finding in itself: ~90% cleanup within a year of sunset, then a plateau
+(45k → 33k → 25k) — the abandoned long tail that will apparently never clean up.
+
+Detection semantics (verified in HTTPArchive/wappalyzer `g.json`): flags
+`googleoptimize.com/optimize.js` script tags OR the runtime `window.google_optimize`
+global. So 25k = pages where Optimize machinery still *executes* in an unblocked
+browser. It's a lower bound for "Optimize leftovers" and an upper-ish population for
+the anti-flicker subset — Tier 2 sampling determines what fraction of these still
+carry the `async-hide` snippet and actually blank under strict blocking.
+
+**Q2 (body scan): SKIPPED — free-tier quota.** Not needed: the sample for Tier 2
+comes from the cheap pages table instead, ranked so the most popular offenders
+surface first:
+
+```sql
+SELECT page, rank
+FROM `httparchive.crawl.pages`, UNNEST(technologies) AS t
+WHERE date = '2026-06-01' AND client = 'mobile' AND is_root_page
+  AND t.technology = 'Google Optimize'
+ORDER BY rank
+LIMIT 50;
+```
+
+(If this month's free quota is fully burned, it resets monthly; or a billed run of
+the 0.1% Q2 body scan costs well under $1 if we ever want the snippet-only count too.)
+
+**Tier 2 next:** run `dev/research/measure-reveal.js` over those 50 URLs from a
+machine with normal network access (the analysis container can't reach arbitrary
+sites): `node dev/research/measure-reveal.js $(cat urls.txt)` after `npm i playwright`.
+Output per site: clean / blocked / stubbed reveal times + whether the snippet exists.
+The post's headline stat comes from this: "N of the 50 most-popular Optimize
+leftovers still blank for 4 seconds under Firefox strict / Pi-hole."
