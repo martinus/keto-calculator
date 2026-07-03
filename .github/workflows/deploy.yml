@@ -1,9 +1,10 @@
 # Deploys the site to GitHub Pages on every push to master.
 #
 # The repo root IS the website (no build step) — this workflow just strips the
-# dev-only files (planning docs, design sources, generators, editor config)
-# before uploading, so they never become live URLs on keto-calculator.ankerl.com.
-# The strip list below replaces the exclude list of the retired deploy.sh.
+# dev-only files before uploading, so they never become live URLs on
+# keto-calculator.ankerl.com. Everything dev-only lives under dev/ (put new
+# dev files there and they're excluded automatically); the only root-level
+# dev files are the docs listed below.
 #
 # Requires the repo's Pages setting: Settings → Pages → Source = "GitHub Actions".
 
@@ -33,10 +34,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Strip dev-only files from the artifact
-        run: |
-          rm -rf md etc .vscode .github \
-            CLAUDE.md README.md README.txt TODO.txt LICENSE.txt \
-            build_embed.py de/build_de.py de/TRANSLATION.md
+        run: rm -rf dev .github CLAUDE.md README.md LICENSE.txt
 
       - uses: actions/upload-pages-artifact@v3
         with:

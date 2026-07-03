@@ -1,7 +1,7 @@
 # Revenue Growth Plan — July 2026
 
 Owner asked (2026-07-02): **"I want the keto calculator to earn more revenue."** This plan
-supersedes the "minimal no-touch year" scope chosen 2026-06-29 in `md/plan.md` — the owner is
+supersedes the "minimal no-touch year" scope chosen 2026-06-29 in `dev/docs/plan.md` — the owner is
 now explicitly opting into revenue work. The guiding principle from `plan.md` still stands:
 **durable, compounding improvements over quick wins that hurt long term.** Nothing below
 violates the avoid-list (no Auto Ads full-auto, no interstitials, no ad refresh, no density
@@ -11,7 +11,7 @@ stuffing).
 
 ## 1. Where revenue actually stands (analysis)
 
-**Revenue = sessions × pages/session × page RPM.** Baseline from `md/analytics-summary.md`:
+**Revenue = sessions × pages/session × page RPM.** Baseline from `dev/docs/analytics-summary.md`:
 ~4,850 sessions/mo, ~€60/mo ≈ €12.4 per 1,000 sessions averaged over 12 months. 65% mobile,
 74% loyal Direct traffic, on-page SEO done (85/100 audit), field CWV all green.
 
@@ -31,7 +31,7 @@ stuffing).
    AdSense UI** — if not, EEA/UK visitors get no prompt and stay at denied (= near-zero EEA ad
    revenue). Verifying this is action #1.
 3. **A complete German translation (`/de/`) exists but is held back** (`00e855b`) — built,
-   generator-maintained (`de/build_de.py`), excluded from deploy/sitemap/hreflang. Launching
+   generator-maintained (`dev/build_de.py`), excluded from deploy/sitemap/hreflang. Launching
    it is a nearly-free traffic lever.
 
 ### The honest read
@@ -128,7 +128,7 @@ URLs). Head-term rank then rises as a side effect of authority — not the other
   have: the owner's dev-community standing.* Ship the widget (T2.3) first so the post can
   offer it.
 - [x] **T2.3 Build the embeddable widget (`embed.html`)** — **done 2026-07-02.** Generated
-  from `index.html` by `build_embed.py` (build_de.py philosophy: derived, can't drift; fails
+  from `index.html` by `dev/build_embed.py` (build_de.py philosophy: derived, can't drift; fails
   loudly on stale anchors). Full calculator/results/forecast, compact branded header,
   noindex, `<base target="_blank">`, powered-by credit top + bottom, "Share my macros" from
   an embed hands out the FULL site's URL. **Zero ads** (ads in iframes on third-party sites
@@ -232,11 +232,11 @@ speed, trust, and UX that took two overhaul sessions to build.
 
 ## Reference
 
-- Prior roadmap + avoid-list rationale: `md/plan.md` (its §8/§9 verification items are folded
+- Prior roadmap + avoid-list rationale: `dev/docs/plan.md` (its §8/§9 verification items are folded
   into Tier 0 here).
-- Analytics baseline: `md/analytics-summary.md` · SEO ceiling: `md/seo-audit-2026-06-29-v2.md`.
+- Analytics baseline: `dev/docs/analytics-summary.md` · SEO ceiling: `dev/docs/seo-audit-2026-06-29-v2.md`.
 - Consent bug + fix: commits `bcb0446`, `edf8191`, `1c21ea4`; CMP migration `9513f13`.
-- German page: `de/TRANSLATION.md`, `de/build_de.py`; holdback commit `00e855b`.
+- German page: `dev/TRANSLATION.md`, `dev/build_de.py`; holdback commit `00e855b`.
 - Ad units: `7271241487` Keto Top (**unplaced — T1.1 uses it**), `8747974681` Keto Sidebar
   (live, desktop sticky), `1224707884` Keto Bottom (live, after results). Dead: `2426641084`.
 - AdSense pub `ca-pub-2398468033418589` · Amazon tag `martanke-20`.

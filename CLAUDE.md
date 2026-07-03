@@ -12,12 +12,11 @@ element).
 ### How it deploys (single repo, since 2026-07-03)
 
 Merging/pushing to **`master`** triggers `.github/workflows/deploy.yml`, which strips
-the dev-only files (`md/`, `etc/`, `.vscode/`, `CLAUDE.md`, `README.*`, `TODO.txt`,
-`LICENSE.txt`, the `build_embed.py`/`de/build_de.py` generators, `de/TRANSLATION.md`)
-and publishes the rest to GitHub Pages (Pages source is set to "GitHub Actions", NOT
-"deploy from branch" — don't flip it back, or the dev docs become live URLs). `CNAME`
-and `googlea2ba6e6f24c19afa.html` (Google verification) stay in the artifact. When
-adding dev-only files, add them to the workflow's strip list.
+the dev-only files (`dev/`, `CLAUDE.md`, `README.md`, `LICENSE.txt`) and publishes the
+rest to GitHub Pages (Pages source is set to "GitHub Actions", NOT "deploy from branch"
+— don't flip it back, or the dev docs become live URLs). `CNAME` and
+`googlea2ba6e6f24c19afa.html` (Google verification) stay in the artifact. **Put new
+dev-only files under `dev/`** — they're excluded automatically, no strip-list edit needed.
 
 Before 2026-07-03 there were **two repos**: development happened in
 `keto-calculator-source` and a `deploy.sh` rsynced the site files into this repo
@@ -56,11 +55,10 @@ index.html        – The whole page. ALL CSS is inlined in <style> blocks (norm
                     before the datepicker-init script, in order jQuery+plugins → Bootstrap →
                     calculator. There is NO external stylesheet link (only Google Fonts).
 disclaimer.html   – Disclaimer + cookie policy (Cookiebot)
-embed.html        – Embeddable widget (GENERATED — run `python3 build_embed.py` after editing
-                    index.html; never hand-edit). No ads, noindex, powered-by backlink.
-build_embed.py    – Generator for embed.html (not deployed)
-de/index.html     – German page (GENERATED — run `python3 de/build_de.py` after editing
-                    index.html; see de/TRANSLATION.md). Launched 2026-07-02.
+embed.html        – Embeddable widget (GENERATED — run `python3 dev/build_embed.py` after
+                    editing index.html; never hand-edit). No ads, noindex, powered-by backlink.
+de/index.html     – German page (GENERATED — run `python3 dev/build_de.py` after editing
+                    index.html; see dev/TRANSLATION.md). Launched 2026-07-02.
 net-carbs-vs-total-carbs.html, how-much-protein-on-keto.html,
 how-fast-will-i-lose-weight-on-keto.html
                   – The three evergreen "Keto Guides" (each: article + FAQ schema + one
@@ -76,10 +74,12 @@ favicon.png, logo-white-150.png, launcher-icon-*.png, spritesheet.png, share_160
   *_warning_*.jpg, proteintoohigh_small.jpg – images
 books/            – Amazon affiliate book covers
 fonts/            – local fonts
-md/               – planning + analytics docs (see below) — not deployed
-etc/              – design source archive (logo .xcf/.svg, launcher icons, full-size book covers) — not deployed
+dev/              – ALL dev-only files (never deployed): build_embed.py + build_de.py
+                    (the generators), TRANSLATION.md, docs/ (planning + analytics, see
+                    below), design/ (logo sources: .svg/.xcf, logo-white.png,
+                    proteintoohigh.jpg original)
 .github/workflows/deploy.yml – the Pages deploy (strips dev files, publishes the rest)
-LICENSE.txt, README.md, README.txt, TODO.txt – not deployed
+LICENSE.txt (CC BY-SA 3.0), README.md – not deployed
 ```
 
 > Repo cleanup (2026-06-28): removed unused/orphaned files — `me.png`,
@@ -97,6 +97,20 @@ LICENSE.txt, README.md, README.txt, TODO.txt – not deployed
 > by `style.css`), and `youre-awesome.jpg`. The **live repo** additionally shed stale leftovers
 > rsync had never deleted: the `ads/` dir, `me.png`, `paypal-logo-small.png`, `logo_192.png`,
 > and five delinked book covers. `etc/` (design-source archive) was intentionally **kept**.
+
+> Repo cleanup (2026-07-03, after the single-repo merge): all dev-only files were moved
+> under **`dev/`** (`md/` → `dev/docs/`, the generators + `TRANSLATION.md` → `dev/`, the
+> surviving design sources → `dev/design/`) so the deploy strip list is a single directory.
+> Deleted as stale (all recoverable from git history): `README.txt` (its project-principles
+> section moved into `README.md`), `TODO.txt` (2013-era ideas), `.vscode/`,
+> `md/seo-audit-2026-06-29.md` (v1, superseded by v2 the same day), and most of `etc/` —
+> `test.rb` (experiment for a URL format that never shipped), the bootstrap-datepicker
+> dist zip (upstream, and the code is inlined anyway), `dataflow.graphml` (outdated
+> diagram), `books/` (full-size covers, mostly for delinked books), `ic_launcher/`
+> (Android app icons — there is no app), and every logo *experiment* (`logo_rand*`,
+> `logo_rund*`, `logo_centered*`, resolution exports). Kept: `logo-acetone.svg` (vector
+> master), `logo.xcf` (GIMP master), `logo-white.png` (source of the header logo), and
+> `proteintoohigh.jpg` (original of the served small version).
 
 **CSS:** every page now inlines all its CSS — there is **no external stylesheet** anywhere
 (only the Google Fonts link). The standalone source-of-record copies (`bootstrap.min.css`,
@@ -228,7 +242,7 @@ box (no CLS). This unit was previously the removed in-form "Keto Mid"; reused he
 Book affiliate links now live **only** in the single inline rec (4 covers, `.recommended` under "Learn
 Your Optimal Macronutrient Ratio") for E-E-A-T/trust, not revenue. `7271241487` ("Keto Top") is the
 only unit not currently placed. **AdSense Auto Ads were disabled** (removed `enable_page_level_ads`)
-— keep them OFF (see `md/plan.md` §8). Note: Auto ads can still be re-enabled from the **AdSense
+— keep them OFF (see `dev/docs/plan.md` §8). Note: Auto ads can still be re-enabled from the **AdSense
 dashboard** (Ads → By site) independent of code. (The old "forum" ads came from **Disqus's free
 tier**; Disqus was replaced by ad-free Cusdis on 2026-06-29, so that ad source is gone.)
 
@@ -237,20 +251,22 @@ tier**; Disqus was replaced by ad-free Cusdis on 2026-06-29, so that ad source i
 - **No build step.** Edit files directly; test by opening `index.html` or
   `python3 -m http.server` in the repo root.
 - Keep the calculator correct, cookie persistence working, and `load_url_params()` intact.
-- Mobile matters most: ~65% of traffic is mobile (see `md/analytics-summary.md`).
+- Mobile matters most: ~65% of traffic is mobile (see `dev/docs/analytics-summary.md`).
 - Keep ads away from the inputs / Calculate flow (avoids invalid-click penalties).
 - Preserve the Amazon tag `martanke-20` in book/caliper links.
 
-## Planning docs (in `md/`)
+## Planning docs (in `dev/docs/`)
 
-- `md/revenue-plan-2026-07.md` – **the current live plan** (revenue growth, 2026-07-02) —
+- `dev/docs/revenue-plan-2026-07.md` – **the current live plan** (revenue growth, 2026-07-02) —
   supersedes `plan.md`'s minimal scope
-- `md/plan.md` – the redesign roadmap (durable SEO / speed / UX / ad-placement wins)
-- `md/analytics-summary.md` – 12-month GA4 traffic/device/engagement findings
-- `md/peer.md` – the advisory "council" verdict that seeded the plan
-- `md/*.png` – GA4 screenshots
+- `dev/docs/plan.md` – the redesign roadmap (durable SEO / speed / UX / ad-placement wins)
+- `dev/docs/analytics-summary.md` – 12-month GA4 traffic/device/engagement findings
+- `dev/docs/peer.md` – the advisory "council" verdict that seeded the plan
+- `dev/docs/seo-action-plan.md`, `dev/docs/seo-audit-2026-06-29-v2.md` – SEO audit + actions
+- `dev/docs/blog-draft-blank-page.md` – draft story post for ankerl.com
+- `dev/docs/*.png` – GA4 screenshots
 
-> Note: `md/plan.md`'s "Already done" items (mobile layout, viewport fix) are present in
+> Note: `plan.md`'s "Already done" items (mobile layout, viewport fix) are present in
 > this source. Beyond those, the 2026-06-28 session also: refined the inline mobile block
 > (16px inputs, radio tap targets), removed the dead Optimize + Universal Analytics
 > snippets (so analytics is currently OFF — re-instrument before the 3-month review),

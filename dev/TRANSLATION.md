@@ -1,7 +1,7 @@
 # German translation (`/de/`) — how to keep it in sync
 
 The German page `de/index.html` is **generated** from the English `../index.html`
-by `de/build_de.py`. You don't hand-edit `de/index.html` — you edit the English
+by `dev/build_de.py`. You don't hand-edit `de/index.html` — you edit the English
 page as usual, then re-run the generator. The generator holds a list of
 English → German string replacements and **warns you about anything it can no
 longer find**, which is exactly the text you changed and need to re-translate.
@@ -9,7 +9,7 @@ longer find**, which is exactly the text you changed and need to re-translate.
 ## The update workflow (do this whenever you edit index.html)
 
 ```bash
-python3 de/build_de.py
+python3 dev/build_de.py
 ```
 
 - **Prints `OK: wrote de/index.html`** → done. Commit both `index.html` and
@@ -17,7 +17,7 @@ python3 de/build_de.py
 - **Prints `WARNING: ... NOT FOUND`** → the English text for those snippets
   changed, so the old German mapping no longer matches. For each one:
   1. Find the new English in `index.html`.
-  2. Open `de/build_de.py`, find the `rep('<old English>', '<German>')` entry
+  2. Open `dev/build_de.py`, find the `rep('<old English>', '<German>')` entry
      that matches, and update its **first** argument to the new English (and the
      German translation if the meaning changed).
   3. Re-run until it prints `OK`.
@@ -27,7 +27,7 @@ That "NOT FOUND" list is the whole point — it makes drift impossible to miss.
 ### Adding brand-new text
 If you add a new paragraph/heading to the English page, it simply won't appear
 translated on the German page (it stays English) until you add a new
-`rep('<new English>', '<German>')` line to `de/build_de.py`. Add it in the
+`rep('<new English>', '<German>')` line to `dev/build_de.py`. Add it in the
 matching section and re-run.
 
 ## What gets translated (section checklist)
@@ -78,7 +78,7 @@ matching section and re-run.
 ## Deploy / files
 
 - `de/index.html` is committed and served directly (flat, like the rest of the site).
-- `de/build_de.py` and `de/TRANSLATION.md` are **dev-only** and excluded from
+- `dev/build_de.py` and `dev/TRANSLATION.md` are **dev-only** and excluded from
   `deploy.sh`, so they never go live.
 - The German page reuses the root's images, fonts, sprite, manifest, GA4, and
   Cookiebot. The `disclaimer.html` link points to the (English) root disclaimer —

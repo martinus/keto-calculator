@@ -17,7 +17,7 @@ title: "My website was blank for 4 seconds on every visit — for three years"
      • Numbers to sanity-check against your own records: peak revenue (I left
        it qualitative), the €8–9 → €1.6 RPM collapse (from the 2026-07-01
        commit message), 17% engagement / 65% mobile / ~4,850 sessions/mo
-       (from md/analytics-summary.md).
+       (from dev/docs/analytics-summary.md).
      • The Claude/AI mention is one sentence, near the end. Cut it if you
        prefer the archaeology to stand alone.
      • HN submission: submit the blog URL directly, no editorializing in the

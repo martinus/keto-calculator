@@ -10,11 +10,11 @@ out the snippet). Rather than hand-maintaining a second big file, this script
 derives embed.html from the current index.html, so the calculator logic can
 never drift. Re-run it whenever index.html changes:
 
-  python3 build_embed.py
+  python3 dev/build_embed.py
 
 It fails loudly (AssertionError) if an anchor it cuts on disappears from
 index.html — that's the signal to update the anchor here, same philosophy as
-de/build_de.py.
+dev/build_de.py.
 
 What the embed deliberately does NOT contain:
   - AdSense (serving ads into an iframe on someone else's site is an AdSense
@@ -34,8 +34,9 @@ not the embed, so shares funnel people to keto-calculator.ankerl.com).
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, "index.html")
-OUT = os.path.join(HERE, "embed.html")
+ROOT = os.path.dirname(HERE)
+SRC = os.path.join(ROOT, "index.html")
+OUT = os.path.join(ROOT, "embed.html")
 
 html = open(SRC, encoding="utf-8").read()
 

@@ -4,7 +4,7 @@ One-time overhaul. No ongoing updates. Static site stays static.
 
 > **⚑ Superseded for revenue work (2026-07-02):** the owner opted out of the minimal
 > "no-touch year" scope and asked for revenue growth. The live to-do list is now
-> **[`md/revenue-plan-2026-07.md`](revenue-plan-2026-07.md)** (it folds in this file's open
+> **[`dev/docs/revenue-plan-2026-07.md`](revenue-plan-2026-07.md)** (it folds in this file's open
 > verification items). This file remains the record of the 2026-06 overhaul + the avoid-list
 > rationale.
 
@@ -153,7 +153,7 @@ these are not worth it now.
   is already carried by `og:image`/`twitter:card` rich previews + the "Share my macros" button.
 
 ### Session 2026-06-29 (SEO audit + performance pass)
-Full audit in `md/seo-audit-2026-06-29.md`; prioritized fixes in `md/seo-action-plan.md`.
+Full audit in `dev/docs/seo-audit-2026-06-29.md`; prioritized fixes in `dev/docs/seo-action-plan.md`.
 **Verdict: already ~78/100 "Good" — on-page/technical hygiene was strong; the ceiling is domain
 authority + niche demand, not tags (confirms the council verdict above).** Shipped the worthwhile,
 one-time, evergreen wins:
@@ -345,10 +345,10 @@ shift everyone's output, so they were deliberately NOT changed unilaterally:
 ---
 
 ## Reference
-- Council runs: `md/peer.md` (older), 2026-06-28 + 2026-06-29 verdicts folded in above.
-- SEO audit + action plan: `md/seo-audit-2026-06-29.md`, `md/seo-action-plan.md`.
+- Council runs: `dev/docs/peer.md` (older), 2026-06-28 + 2026-06-29 verdicts folded in above.
+- SEO audit + action plan: `dev/docs/seo-audit-2026-06-29.md`, `dev/docs/seo-action-plan.md`.
 - Codebase tech details: `CLAUDE.md`.
-- Analytics findings: `md/analytics-summary.md`.
+- Analytics findings: `dev/docs/analytics-summary.md`.
 - AdSense pub: `ca-pub-2398468033418589` — three real units: `1224707884` (Keto Bottom, after
   results — live), `8747974681` (Keto Sidebar, ex-Keto Mid — live, the desktop sidebar skyscraper),
   `7271241487` (Keto Top — not currently placed). The old `2426641084` "Keto Links" id is dead.

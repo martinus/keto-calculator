@@ -59,7 +59,7 @@ Only 1 in 6 sessions is "engaged" (30+ seconds). For a calculator that takes tim
 > through to its 4000ms safety timeout, i.e. **a blank page for up to 4 seconds on every
 > visit.** That alone plausibly explains much of the low engagement. Removed; re-measure
 > engagement at the 3-month review. (Note: re-measuring requires re-adding analytics — the
-> old UA tag was dead, see `md/plan.md`.)
+> old UA tag was dead, see `dev/docs/plan.md`.)
 
 ### 6. Revenue math
 ~4,850 sessions/month × €60/month = ~€12.40 per 1,000 sessions. Health content can get €15–30 RPM in the US/EU. If the engagement rate and mobile experience improve, RPM should rise without needing more traffic.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Generate de/index.html (German) from the English ../index.html.
+Generate de/index.html (German) from the English index.html in the repo root.
 
 Why this exists: the site is a single flat index.html with all text inlined.
 Rather than hand-maintaining a second 3700-line file, this script applies a
@@ -11,21 +11,22 @@ script is only run when you want to refresh the translation after editing the
 English page.
 
 How to update the translation after you change index.html:
-  1. python3 de/build_de.py
+  1. python3 dev/build_de.py
   2. If it prints "NOT FOUND" warnings, the English text for those snippets
      changed. Find the new English in index.html, update the matching German
      entry below (old = the new English, new = its translation), and re-run.
   3. Commit both index.html and the regenerated de/index.html.
 
-See de/TRANSLATION.md for the section checklist.
+See dev/TRANSLATION.md for the section checklist.
 """
 
 import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, "..", "index.html")
-OUT = os.path.join(HERE, "index.html")
+ROOT = os.path.dirname(HERE)
+SRC = os.path.join(ROOT, "index.html")
+OUT = os.path.join(ROOT, "de", "index.html")
 
 html = open(SRC, encoding="utf-8").read()
 missing = []
