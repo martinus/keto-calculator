@@ -155,3 +155,38 @@ sites): `node dev/research/measure-reveal.js $(cat urls.txt)` after `npm i playw
 Output per site: clean / blocked / stubbed reveal times + whether the snippet exists.
 The post's headline stat comes from this: "N of the 50 most-popular Optimize
 leftovers still blank for 4 seconds under Firefox strict / Pi-hole."
+
+## RESULTS — Tier 2 run by owner, 2026-07-03 (dev/research/results-top50.jsonl)
+
+Of the 50 most popular sites still flagged as running Google Optimize:
+- **47 have NO anti-flicker snippet** on their homepage (leftover optimize.js/global
+  only — harmless machinery, no hiding).
+- **1 errored** (nrl.com — client-side navigation destroys the eval context).
+- **2 still carry the snippet:**
+  - `tr.puma.com` — clean **824 ms** (Google's shim confirmed working in the wild,
+    independent of our page!), blocked **4,312 ms** → real 4s blank for
+    Firefox-strict/Pi-hole users on a Puma storefront, today.
+  - `m.guzzle.co.za` — clean **5,495 ms**(!): broken for *everyone*, apparently a
+    longer timeout config; blocked 4,776 ms.
+
+**Extrapolation:** ~2/49 ≈ 4% of Optimize leftovers still carry the snippet →
+25,009 × 4% ≈ **on the order of 1,000 affected sites** (wide error bars,
+~300–3,400). NOT "thousands of major sites". Harness caveat: our "stubbed" mode
+only stubs analytics.js, not gtm.js, so it understates real uBlock protection on
+GTM-loaded sites (tr.puma.com's stubbed 4,298 ms would be fast under real uBlock).
+
+**❌ Decision gate #2: the doom headline dies.** "The web serves blank pages to
+privacy users" is true for ~a thousand long-tail-ish sites and two nameable brands
+— an anecdote, not an epidemic.
+
+**➡️ The honest pivot (recommended):** the accumulated, verified story is the
+OPPOSITE of doom and much rarer in the genre: *the catastrophe kept refusing to
+happen.* A dead A/B product wired to hide entire websites, a dead analytics
+product, dead CDNs — and the blast radius was absorbed by (a) Google's unpaid
+compatibility shims (anti-flicker defusal, UA→GA4 bridge — both found by
+measurement), (b) ad blockers that actively defuse booby traps, (c) a web that
+cleaned up 90% of Optimize within a year. The residue: ~a thousand sites and one
+Puma storefront blanking for exactly the users nobody's analytics can see —
+resilience and rot as the same mechanism, failure made invisible instead of loud.
+All numbers already in hand: the personal two-shim story, the 27 ms / 4.0 s / shim
+measurements, the 239k→25k decay curve, the 2-of-50 sample, tr.puma.com live.
