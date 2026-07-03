@@ -4,14 +4,6 @@ title: My Website Was Blank for 4 Seconds on Every Visit
 subtitle: For three years, and I didn't notice a thing
 ---
 
-<!--
-  DRAFT for martin.ankerl.com — before publishing:
-  * sanity-check the numbers against my own records: the €8–9 → €1.6 RPM drop
-    (2026-07-01 commit message), 17% engagement / 65% mobile / ~4,850 sessions/mo
-    (dev/docs/analytics-summary.md)
-  * maybe add a cover-img
--->
-
 Back in 2012 I made a [keto calculator](https://keto-calculator.ankerl.com/)
 because I wanted exact macro numbers for my own diet, and all the advice online
 was too vague. I [posted it on /r/keto](https://www.reddit.com/r/keto/comments/127sm0/keto_calculator/),
@@ -63,7 +55,8 @@ happens, a safety timeout shows the page after 4000 milliseconds.
 Google shut down Optimize on September 30, 2023. The container script was gone,
 so the reveal callback never fired again. From that day on **every visitor saw
 a blank page for the full 4 seconds**, then the timeout kicked in and the page
-faded up as if nothing had happened.
+faded up as if nothing had happened. (Well — *almost* every visitor. See the
+update at the end for why I, of all people, never saw it.)
 
 My engagement rate over the last 12 months was 17%. Only one visitor in six
 stuck around. I always read that as "keto is over". A good part of it was five
@@ -171,3 +164,45 @@ probably not. But it was never really about the €60. It's the oldest thing I'v
 built that strangers still use every day, and it deserves better than spending
 three years hidden behind an `opacity: 0`, waiting for a callback that will
 never come.
+
+# Update: Why I, of All People, Never Saw It
+
+After publishing this I kept wondering about the obvious hole in the story: how
+do you not notice 4 seconds of white on your own website? I open that page too,
+after all. So I dug out the old page from git and measured it in a headless
+browser. Time until the page becomes visible:
+
+* Optimize container answering (how it worked before September 2023): **~220 ms**
+* Optimize container dead — what regular visitors got after the shutdown:
+  **~3,980 ms**, the full anti-flicker timeout
+* With uBlock Origin: **~27 ms**
+
+That last number is the answer. uBlock doesn't just *block* `analytics.js` — it
+[replaces it with a local stub](https://github.com/gorhill/uBlock/blob/master/src/web_accessible_resources/google-analytics_analytics.js),
+and one of the first things that stub does is call `dataLayer.hide.end()` — the
+anti-flicker reveal function — precisely to defuse snippets like mine
+([gorhill/uBlock#3075](https://github.com/gorhill/uBlock/issues/3075)).
+[AdGuard's browser extension does the same](https://github.com/AdguardTeam/Scriptlets/blob/master/src/redirects/google-analytics.js).
+
+So a browser running uBlock was structurally incapable of showing me the bug.
+The visitors generous enough to *not* run an ad blocker got the 4-second stare;
+the site's owner got the fastest version of the page. **My ad blocker had been
+quietly protecting me from my own dead ad-tech for years.**
+
+It layers deeper. I also run AdGuard DNS at home, and DNS-level blocking works
+the *opposite* way: it can't inject any code, so it can't call the reveal
+function — a DNS-blocked `analytics.js` simply fails, and the page waits out the
+full timeout. Blocking at the DNS level *causes* the blank rather than hiding
+it. The same is true for blockers that block without injecting stubs, like
+Safari content blockers and Firefox's strict tracking protection.
+
+Which means "every visitor since September 2023" above was actually the *best*
+case. For extension-less browsers behind a blocking DNS — a stock phone browser
+on my own home network, say — the blank page didn't start when Optimize died.
+It started when I added the snippet, back in 2017.
+
+One more lesson for the list, then: **the site's failure modes depended on the
+visitor's blocking setup, and mine was the one setup that hid every symptom.**
+If you want to see your page the way most of your visitors do, you have to test
+it the way you'd never browse yourself: no extensions, default DNS, clean
+profile.
