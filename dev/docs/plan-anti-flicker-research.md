@@ -46,17 +46,20 @@ The trend is a story on its own: the web's cleanup half-life after a product die
 **Q2 — the real number: sampled body scan for the snippet itself**
 
 ```sql
+-- response bodies live in crawl.requests (response_body column), not a separate table
 SELECT COUNT(DISTINCT page) AS pages_with_antiflicker_in_sample
-FROM `httparchive.crawl.response_bodies` TABLESAMPLE SYSTEM (1 PERCENT)
+FROM `httparchive.crawl.requests` TABLESAMPLE SYSTEM (1 PERCENT)
 WHERE date = '2026-06-01'
   AND client = 'mobile'
   AND is_root_page
-  AND REGEXP_CONTAINS(body, r'async-hide\{\s*opacity:\s*0');
+  AND is_main_document
+  AND REGEXP_CONTAINS(response_body, r'async-hide\s*\{\s*opacity\s*:\s*0');
 ```
 
-Multiply by ~100 for the estimate; report as "on the order of". If the estimated
-scan cost is still too high, drop to 0.1 PERCENT and multiply by ~1000. Also grab
-5–10 example URLs (add `LIMIT` with the page column) for Tier 2.
+Multiply by ~100 for the estimate; report as "on the order of". The requests table
+is far bigger than pages — check the dry-run estimate first; if too costly, drop to
+0.1 PERCENT and multiply by ~1000. For Tier 2, rerun with `SELECT page ... LIMIT 30`
+to grab sample URLs. The regex catches both pretty and minified snippet forms.
 
 **Decision gate:** if the extrapolated number is embarrassingly small (< ~1,000
 root pages), the research post thesis dies — fall back to publishing Tier 0 only,
