@@ -211,3 +211,18 @@ Publishing notes for the owner:
   duty shifts to: how the shim was found (FCP blind under opacity:0 + lab FCP 3.3s),
   and the honest footnote that 2023–2026 endpoint behavior can't be probed
   retroactively.
+
+### Second correction folded into the reboot (2026-07-03, later)
+
+Owner disproved the "analytics went dark July 2023" claim too — he has continuous
+GA4 data through the whole period (slow steady decline, no cliff; the 12-month
+GA4 analytics-summary.md, collected while the page carried only the UA tag, was
+the in-repo clue). Mechanism: Google's UA→GA4 auto-migration created the GA4
+property and kept it fed through the old analytics.js tag. The post now has an
+"Exhibit B: the analytics that refused to die" section — the SECOND Google
+compatibility shim — and the continuous, step-free traffic graphs double as field
+evidence that the 4s blank never hit the mainstream population (closing the
+"residual unknown" footnote above: the anti-flicker shim was evidently there all
+along). Lesson 3 is now "zero for two on deaths declared by reading source."
+Owner should sanity-check in GA4 Admin that the property is indeed the
+auto-created one before publishing that sentence verbatim.

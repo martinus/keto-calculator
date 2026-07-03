@@ -13,11 +13,11 @@ No backend, no build step, no database. A site like that should basically run
 forever.
 
 This June I had a close look at the page for the first time in years, and found
-that essentially every third-party `<script>` tag on it was dead. Not erroring —
-dead things error. These had all failed *politely*, each in its own way, some of
-them for close to a decade. This post is the autopsy, including the part where
-my first diagnosis was wrong and my own ad blocker turned out to be the reason
-I couldn't see the body.
+that every third-party `<script>` tag on it was abandoned — pointing at products
+that had been shut down, retired, or deleted years ago. This post is the
+autopsy. It includes the two places where my diagnosis was wrong, because it
+turns out *abandoned* and *dead* are not the same thing — and the reason I
+couldn't tell the difference myself was my own ad blocker.
 
 # Exhibit A: the snippet that hides your entire site
 
@@ -98,16 +98,32 @@ DNS-blocking crowd? Their setup also blocks analytics. The one population of
 victims was exactly the population that's invisible in every dashboard I could
 have looked at.
 
+# Exhibit B: the analytics that refused to die
+
+The page also still carried a Universal Analytics tag — a product Google shut
+down on July 1, 2023, two months *before* Optimize. So my second conclusion
+wrote itself just like the first one had: the one instrument that could have
+warned me about any of this went dark right before it mattered.
+
+Wrong again, same mistake. When I actually looked at the dashboards instead of
+the source code, the traffic data was all there — continuous through the UA
+sunset and back out the other side, the same visitor numbers, a slow steady
+decline and no cliff anywhere. Google hadn't just switched UA off. Its
+auto-migration had created a GA4 property from my UA one and kept it fed
+through the ancient `analytics.js` tag on my page. I never lifted a finger; the
+data never stopped.
+
+That's the second compatibility shim in this story, doing years of quiet unpaid
+work for a site whose owner wasn't looking. And it doubles as evidence for
+Exhibit A: if the anti-flicker snippet really had blanked every visitor for 4
+seconds starting in autumn 2023, those continuous graphs should show a step
+that day. They don't.
+
 # The rest of the body count
 
 The blank-page snippet was just the most dramatic corpse. The same page also
 carried:
 
-* **A dead analytics tag.** Universal Analytics stopped processing hits on
-  July 1, 2023 — two months *before* Optimize died. The one instrument that
-  could have shown me any of this went dark right before it mattered. A dead
-  instrument is worse than no instrument: it's a dashboard you trust and never
-  read.
 * **A JavaScript error on every click.** Hundreds of links had
   `onclick="return gatrack(this);"` — and at some point the *definition* of
   `gatrack` got commented out while every call site stayed. Uncaught
@@ -145,7 +161,8 @@ days because someone was.
 
 Still a single static HTML file, faster than it ever was: all Core Web Vitals
 green, lab total blocking time down from 490 ms to zero, first paint no longer
-hostage to anyone's servers. The dead scripts are gone, analytics works,
+hostage to anyone's servers. The abandoned scripts are gone, analytics runs on
+a proper GA4 tag instead of a migration shim,
 consent is region-scoped, and there's now a
 [German version](https://keto-calculator.ankerl.com/de/) and an
 [embeddable version](https://keto-calculator.ankerl.com/embed.html) if you run
@@ -165,8 +182,11 @@ the blank page, at proving me wrong with a headless browser.
    4-second blank wall for a third — depending entirely on their privacy
    setup. There is no longer such a thing as "the" experience of your page.
 3. **Measure; don't reason from source code.** "The container is gone,
-   therefore the callback never fires" was obvious, plausible, and wrong — the
-   callback had one caller left that I knew nothing about.
+   therefore the callback never fires" — obvious, plausible, wrong. "The
+   product is dead, therefore the data stopped" — obvious, plausible, wrong.
+   I went zero for two on deaths declared by reading source, because Google's
+   backward-compatibility machinery ran deeper than anything the source could
+   tell me.
 4. **Your own browsing setup lies to you.** If you want to see your page the
    way visitors do, test it the way you'd never browse yourself: clean
    profile, no extensions, default DNS. Then once more with strict privacy
