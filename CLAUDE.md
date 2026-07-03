@@ -263,7 +263,9 @@ tier**; Disqus was replaced by ad-free Cusdis on 2026-06-29, so that ad source i
 - `dev/docs/analytics-summary.md` – 12-month GA4 traffic/device/engagement findings
 - `dev/docs/peer.md` – the advisory "council" verdict that seeded the plan
 - `dev/docs/seo-action-plan.md`, `dev/docs/seo-audit-2026-06-29-v2.md` – SEO audit + actions
-- `dev/docs/blog-draft-blank-page.md` – draft story post for ankerl.com
+- (the former `dev/docs/blog-draft-blank-page.md` story post was published 2026-07-03 at
+  <https://martin.ankerl.com/2026/07/03/website-blank-for-4-seconds/> — source now lives in
+  `martinus.github.io/_posts/2026/`; the draft was removed from here)
 - `dev/docs/*.png` – GA4 screenshots
 
 > Note: `plan.md`'s "Already done" items (mobile layout, viewport fix) are present in
