@@ -155,3 +155,33 @@ Consequences worth using in the post/comments:
    4 s blank regardless of what Google serves today, because AdGuard DNS kills GA
    anyway. To test Google's live endpoint behavior post-sunset, repeat on mobile
    data / any network without AdGuard DNS.
+
+## ⚠️ CORRECTION 2026-07-03 — supersedes the two sections above
+
+The owner put the exact old page back online (https://keto-calculator.ankerl.com/old.html)
+and could NOT reproduce the 4s blank. Follow-up measurement found the flaw in the
+earlier analysis:
+
+- **FCP is blind under `opacity:0`** (measured: synthetic page, FCP fires only at the
+  4,032 ms reveal). Therefore the June audit's **pre-fix lab FCP of 3.3 s** proves the
+  hide was ending BEFORE the 4 s timeout in a clean environment — i.e. **Google's
+  endpoint still serves a hide-ending response for dead Optimize containers**
+  (`ga('require','GTM-TC6WLFB')` → analytics.js → gtm/js → `dataLayer.hide.end()`).
+  Field CrUX during the broken window (LCP 2.1 s green) agrees.
+- **Corrected reality table:**
+  | Visitor setup | First paint |
+  |---|---|
+  | Clean browser, real network (Google's shim answers) | gated on the GA round-trip: lab 3.3 s throttled, usually faster in field — a tax, not a 4 s blank |
+  | Blocked WITHOUT stub (Firefox strict ETP, Safari content blockers, AdGuard DNS / Pi-hole) | **full 4.0 s blank — since 2017** |
+  | uBlock/AdGuard extension (stub calls hide.end) | ~27 ms, bug invisible |
+- The post got a **Correction section** ("It Wasn't 4 Seconds for Everyone") replacing
+  the earlier suggested update — the "suggested update paragraph" above must NOT be
+  used. **Do not submit to HN until the correction is live on the blog.**
+- HN framing changes in our favor: "I published a plausible claim, my own repro
+  failed, here's the forensic truth (Google quietly defuses abandoned anti-flicker
+  snippets; the 4 s hit only the privacy-tools crowd, since 2017)" is a stronger,
+  more commentable story than the original — and it pre-empts the debunking comment
+  that would otherwise have topped the thread.
+- Residual unknown (honest footnote if asked): endpoint behavior between Oct 2023 and
+  June 2026 can't be probed retroactively; the June 2026 lab FCP is the earliest
+  direct evidence of the shim, and no evidence suggests it ever went dark.
