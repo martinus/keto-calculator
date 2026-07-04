@@ -190,3 +190,24 @@ Puma storefront blanking for exactly the users nobody's analytics can see —
 resilience and rot as the same mechanism, failure made invisible instead of loud.
 All numbers already in hand: the personal two-shim story, the 27 ms / 4.0 s / shim
 measurements, the 239k→25k decay curve, the 2-of-50 sample, tr.puma.com live.
+
+## TIER 3 DONE — final essay written 2026-07-03: `dev/docs/blog-post-catastrophe.md`
+
+**"The Web Catastrophe That Kept Refusing to Happen"** — the anti-doom essay built
+strictly from verified numbers. Supersedes and absorbs `blog-post-my-ad-blocker.md`
+(removed); the owner is also unpublishing the original 4-seconds post, so this is
+the ONLY post. Fact-check during writing corrected claims inherited from the first
+draft (they had described the frozen `app/` source tree, not the live page —
+verified against `5b235ce`):
+
+- The live page **never loaded jsDelivr's dead `/g/` endpoint** — dropped entirely.
+- The live page **was responsive** (device-width viewport + 830px media queries);
+  its real mobile sin was `user-scalable=no`, which iOS has ignored since iOS 10 —
+  reframed as another platform safety net.
+- `gatrack` call sites: exactly **52**, not "hundreds" — corrected.
+- New verified addition: charts loaded via `google.com/jsapi` (deprecated ~2016),
+  which Google turned into a forwarder to the modern loader — **shim #3**.
+
+HN title = the post title. The Tier 4 launch section applies unchanged; the "how
+did you find this" comment answer is the harness + old.html exhibit links already
+inside the post.
