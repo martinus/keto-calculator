@@ -141,6 +141,9 @@
 		a{color:#0e6e96;text-decoration:none;transition:color .15s ease;}
 		a:visited{color:#0e6e96;}
 		a:hover,a:visited:hover{color:#0a5675;text-decoration:underline;}
+		/* In-text links must not rely on color alone (WCAG 1.4.1). Masthead/CTA
+		   links keep their own styling; crumbs and footer links are opted in. */
+		#main p a,#main li a,#main td a,nav.crumbs a,#aboutmewidth a{text-decoration:underline;text-underline-offset:2px;}
 
 		/* masthead — the cyan brand bar, linked home */
 		#header{
@@ -263,7 +266,7 @@
 		table.examples caption{
 			caption-side:bottom;
 			font-size:13px;
-			color:#6b7a86;
+			color:#5a6b78;
 			margin-top:8px;
 			text-align:left;
 			font-style:italic;
