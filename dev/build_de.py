@@ -30,13 +30,23 @@ OUT = os.path.join(ROOT, "de", "index.html")
 
 html = open(SRC, encoding="utf-8").read()
 missing = []
+miscounted = []
 
 
-def rep(old, new):
-    """Replace ALL occurrences of `old`. Record a warning if not present."""
+def rep(old, new, count=1):
+    """Replace occurrences of `old`, requiring that the source contains
+    EXACTLY `count` of them (the handful of deliberate multi-hit
+    replacements declare their count). Presence alone is not enough: a
+    future edit that adds another occurrence of a matched substring would
+    otherwise get translated silently — and possibly wrongly, since entry
+    order matters. Records a warning on any mismatch."""
     global html
-    if old not in html:
+    n = html.count(old)
+    if n == 0:
         missing.append(old)
+        return
+    if n != count:
+        miscounted.append((old, count, n))
         return
     html = html.replace(old, new)
 
@@ -76,7 +86,7 @@ rep('<meta property="og:url" content="https://keto-calculator.ankerl.com/">',
 
 # JSON-LD url fields (WebApplication + publisher both use this exact line)
 rep('"url": "https://keto-calculator.ankerl.com/",',
-    '"url": "https://keto-calculator.ankerl.com/de/",')
+    '"url": "https://keto-calculator.ankerl.com/de/",', count=2)
 
 # ---------------------------------------------------------------------------
 # 2. Header / intro
@@ -127,8 +137,8 @@ rep('<input name="lbs" tabindex="3" type="number" step="0.1" value="" placeholde
 rep('<input name="feet" tabindex="4" type="number" value="" step="1" style="width:3.4em" placeholder="5">\' <input name="inch" tabindex="5" type="number" step="1" value="" style="width:3.8em" placeholder="9">" tall (<input name="height" type="number" value=""> cm)',
     '<input name="height" tabindex="4" type="number" value="" placeholder="180"> cm groß (<input name="feet" type="number" value="" step="1" style="width:3.4em">\' <input name="inch" type="number" step="1" value="" style="width:3.8em">")')
 
-rep('<tr><td>Date of birth: <input id="bday" name="bday" tabindex="6" type="text" placeholder="MM/DD/YYYY" style="width:7em" title="Write e.g. 8/30/1979">',
-    '<tr><td>Geburtsdatum: <input id="bday" name="bday" tabindex="6" type="text" placeholder="TT.MM.JJJJ" style="width:7em" title="z. B. 30.8.1979">')
+rep('<tr><td>Date of birth: <input id="bday" name="bday" tabindex="6" type="date">',
+    '<tr><td>Geburtsdatum: <input id="bday" name="bday" tabindex="6" type="date">')
 
 # Energy expenditure
 rep('<h3>Determine Your Energy Expenditure</h3>', '<h3>Bestimme deinen Energieverbrauch</h3>')
@@ -229,7 +239,7 @@ rep('<p>Also, you should not go below 30g of daily fat to prevent the formation 
 rep('<td width="33%">lowest intake</td>', '<td width="33%">niedrigste Zufuhr</td>')
 rep('<td width="33%">chosen intake</td>', '<td width="33%">gewählte Zufuhr</td>')
 rep('<td>maintenance</td>', '<td>Erhaltung</td>')
-rep('%&nbsp;deficit</td>', '%&nbsp;Defizit</td>')
+rep('%&nbsp;deficit</td>', '%&nbsp;Defizit</td>', count=3)
 rep('kcal&nbsp;min</td>', 'kcal&nbsp;min</td>')
 rep('kcal&nbsp;chosen</td>', 'kcal&nbsp;gewählt</td>')
 rep('kcal&nbsp;max</td>', 'kcal&nbsp;max</td>')
@@ -254,8 +264,8 @@ rep('<strong>These numbers are estimates, not medical advice.</strong> They come
     '<strong>Diese Zahlen sind Schätzungen, keine medizinische Beratung.</strong> Sie stammen aus der\n\t\t\t\t\t\tMifflin-St.-Jeor-Formel und deiner fettfreien Masse — ein solider Ausgangspunkt, aber jeder Mensch ist\n\t\t\t\t\t\tanders. Passe sie an dein Befinden und deine echten Ergebnisse an und sprich vor\n\t\t\t\t\t\tgrößeren Ernährungsumstellungen mit deinem Arzt, besonders bei Vorerkrankungen. Siehe den\n\t\t\t\t\t\t<a href="disclaimer.html" onclick="return gatrack(this);">vollständigen Haftungsausschluss</a>.')
 
 rep('>🔗 Share my macros</button>', '>🔗 Meine Makros teilen</button>')
-rep('<p style="font-size:smaller; color:#666; margin-top:-0.5em;">Copies a link that reopens this calculator with your numbers already filled in — handy for saving or sharing on Reddit.</p>',
-    '<p style="font-size:smaller; color:#666; margin-top:-0.5em;">Kopiert einen Link, der diesen Rechner mit deinen Werten bereits ausgefüllt öffnet — praktisch zum Speichern oder Teilen.</p>')
+rep('<p class="fineprint" style="margin-top:-0.5em;">Copies a link that reopens this calculator with your numbers already filled in — handy for saving or sharing on Reddit.</p>',
+    '<p class="fineprint" style="margin-top:-0.5em;">Kopiert einen Link, der diesen Rechner mit deinen Werten bereits ausgefüllt öffnet — praktisch zum Speichern oder Teilen.</p>')
 
 # Pies + projection
 rep('<p>Here is a visual representation of your macros and your deficit. The area of the circles is exactly scaled based on your ratios.</p>',
@@ -274,8 +284,8 @@ rep('<p>Now to the fun stuff: a weight and body fat forecast for one year, start
     '<p>Jetzt zum spannenden Teil: eine Gewichts- und Körperfett-Prognose für ein Jahr ab heute. Denk daran, dass dies eine grobe Schätzung ist und deine persönlichen Ergebnisse abweichen können.</p>')
 rep('<p>Choose lbs or kg, and then play around with your chosen fat intake to see how it affects weight loss.</p>',
     '<p>Wähle kg oder lbs und spiele dann mit deiner gewählten Fettzufuhr, um zu sehen, wie sie den Gewichtsverlust beeinflusst.</p>')
-rep('<li>Start on <input id="graphstartdate" name="graphstartdate" type="text" placeholder="MM/DD/YYYY" style="width:7em" title="Write e.g. 8/30/1979">.</li>',
-    '<li>Beginn am <input id="graphstartdate" name="graphstartdate" type="text" placeholder="TT.MM.JJJJ" style="width:7em" title="z. B. 30.8.1979">.</li>')
+rep('<li>Start on <input id="graphstartdate" name="graphstartdate" type="date">.</li>',
+    '<li>Beginn am <input id="graphstartdate" name="graphstartdate" type="date">.</li>')
 rep('<li>Show in <input name="chart_weight_type" type="radio" value="1">lbs or <input name="chart_weight_type" type="radio" value="0">kg</li>',
     '<li>Anzeigen in <input name="chart_weight_type" type="radio" value="0">kg oder <input name="chart_weight_type" type="radio" value="1">lbs</li>')
 rep('Please enter a date and click lbs or kg to show the graph.',
@@ -291,14 +301,16 @@ rep('<h2>Keto Calculator FAQ</h2>', '<h2>Keto-Rechner FAQ</h2>')
 # Q1
 rep('<h3>How many carbs can I eat on keto?</h3>', '<h3>Wie viele Kohlenhydrate darf ich bei Keto essen?</h3>')
 rep('"name": "How many carbs can I eat on keto?"', '"name": "Wie viele Kohlenhydrate darf ich bei Keto essen?"')
+# The FAQ answers exist twice each: the visible <p> and the FAQPage
+# JSON-LD "text" — hence count=2 on this cluster.
 rep('Most people stay in ketosis on 20–50 grams of net carbs per day. This calculator defaults to 25 grams, which works well for the majority. Get your carbs from vegetables, nuts, and a little fruit rather than from sugar and grains.',
-    'Die meisten bleiben mit 20–50 Gramm Netto-Kohlenhydraten pro Tag in der Ketose. Dieser Rechner ist auf 25 Gramm voreingestellt, was für die meisten gut passt. Hol dir die Kohlenhydrate aus Gemüse, Nüssen und etwas Obst statt aus Zucker und Getreide.')
+    'Die meisten bleiben mit 20–50 Gramm Netto-Kohlenhydraten pro Tag in der Ketose. Dieser Rechner ist auf 25 Gramm voreingestellt, was für die meisten gut passt. Hol dir die Kohlenhydrate aus Gemüse, Nüssen und etwas Obst statt aus Zucker und Getreide.', count=2)
 
 # Q2
 rep('<h3>How much protein should I eat on keto?</h3>', '<h3>Wie viel Eiweiß sollte ich bei Keto essen?</h3>')
 rep('"name": "How much protein should I eat on keto?"', '"name": "Wie viel Eiweiß sollte ich bei Keto essen?"')
 rep('Protein is set from your lean body mass, not your total weight — roughly 1.3 to 2.2 grams per kilogram of lean mass. The calculator gives you a personalized minimum and maximum so you keep muscle without eating so much that it interferes with ketosis.',
-    'Das Eiweiß richtet sich nach deiner fettfreien Masse, nicht nach deinem Gesamtgewicht — etwa 1,3 bis 2,2 Gramm pro Kilogramm fettfreie Masse. Der Rechner gibt dir ein persönliches Minimum und Maximum, damit du Muskeln erhältst, ohne so viel zu essen, dass es die Ketose stört.')
+    'Das Eiweiß richtet sich nach deiner fettfreien Masse, nicht nach deinem Gesamtgewicht — etwa 1,3 bis 2,2 Gramm pro Kilogramm fettfreie Masse. Der Rechner gibt dir ein persönliches Minimum und Maximum, damit du Muskeln erhältst, ohne so viel zu essen, dass es die Ketose stört.', count=2)
 
 # Q3
 rep('<h3>What is a macro?</h3>', '<h3>Was ist ein Makro?</h3>')
@@ -312,31 +324,31 @@ rep('"text": "Macro is short for macronutrient — the three nutrients that give
 rep('<h3>What is the difference between net carbs and total carbs?</h3>', '<h3>Was ist der Unterschied zwischen Netto- und Gesamt-Kohlenhydraten?</h3>')
 rep('"name": "What is the difference between net carbs and total carbs?"', '"name": "Was ist der Unterschied zwischen Netto- und Gesamt-Kohlenhydraten?"')
 rep('Net carbs are total carbohydrates minus fiber (and sugar alcohols). Fiber does not raise blood sugar, so keto counts net carbs. European labels already show net carbs; United States labels show total carbs, so subtract the fiber yourself.',
-    'Netto-Kohlenhydrate sind die Gesamt-Kohlenhydrate minus Ballaststoffe (und Zuckeralkohole). Ballaststoffe heben den Blutzucker nicht, deshalb zählt Keto die Netto-Kohlenhydrate. Europäische Etiketten zeigen bereits die Netto-Kohlenhydrate; in den USA stehen die Gesamt-Kohlenhydrate, dort musst du die Ballaststoffe selbst abziehen.')
+    'Netto-Kohlenhydrate sind die Gesamt-Kohlenhydrate minus Ballaststoffe (und Zuckeralkohole). Ballaststoffe heben den Blutzucker nicht, deshalb zählt Keto die Netto-Kohlenhydrate. Europäische Etiketten zeigen bereits die Netto-Kohlenhydrate; in den USA stehen die Gesamt-Kohlenhydrate, dort musst du die Ballaststoffe selbst abziehen.', count=2)
 
 # Q5
 rep('<h3>What foods are high in fat for keto?</h3>', '<h3>Welche Lebensmittel sind bei Keto reich an Fett?</h3>')
 rep('"name": "What foods are high in fat for keto?"', '"name": "Welche Lebensmittel sind bei Keto reich an Fett?"')
 rep('Good keto fat sources include avocado, olive oil, coconut oil, butter, nuts and seeds, fatty fish like salmon, eggs, and full-fat cheese. These let you reach your fat target while keeping carbs low.',
-    'Gute Fettquellen bei Keto sind Avocado, Olivenöl, Kokosöl, Butter, Nüsse und Samen, fetter Fisch wie Lachs, Eier und Vollfett-Käse. Damit erreichst du dein Fettziel und hältst die Kohlenhydrate niedrig.')
+    'Gute Fettquellen bei Keto sind Avocado, Olivenöl, Kokosöl, Butter, Nüsse und Samen, fetter Fisch wie Lachs, Eier und Vollfett-Käse. Damit erreichst du dein Fettziel und hältst die Kohlenhydrate niedrig.', count=2)
 
 # Q6
 rep('<h3>How fast will I lose weight on keto?</h3>', '<h3>Wie schnell nehme ich mit Keto ab?</h3>')
 rep('"name": "How fast will I lose weight on keto?"', '"name": "Wie schnell nehme ich mit Keto ab?"')
 rep('It depends on the calorie deficit you choose. A deficit that loses 0.5 to 1 kilogram per week is sustainable for most people. Expect a larger drop in the first week as your body sheds water weight, then a steadier loss after that.',
-    'Das hängt vom gewählten Kaloriendefizit ab. Ein Defizit von 0,5 bis 1 Kilogramm pro Woche ist für die meisten gut durchzuhalten. In der ersten Woche fällt der Wert stärker, weil dein Körper Wasser verliert, danach geht es gleichmäßiger weiter.')
+    'Das hängt vom gewählten Kaloriendefizit ab. Ein Defizit von 0,5 bis 1 Kilogramm pro Woche ist für die meisten gut durchzuhalten. In der ersten Woche fällt der Wert stärker, weil dein Körper Wasser verliert, danach geht es gleichmäßiger weiter.', count=2)
 
 # Q7
 rep('<h3>How does this keto calculator work?</h3>', '<h3>Wie funktioniert dieser Keto-Rechner?</h3>')
 rep('"name": "How does this keto calculator work?"', '"name": "Wie funktioniert dieser Keto-Rechner?"')
 rep('It estimates your Base Metabolic Rate with the Mifflin-St. Jeor formula, multiplies it by your activity level to get your daily energy needs, then subtracts your chosen deficit. Protein comes from your lean body mass and carbs from your chosen limit; the remaining calories become your fat target.',
-    'Er schätzt deinen Grundumsatz mit der Mifflin-St.-Jeor-Formel, multipliziert ihn mit deinem Aktivitätsgrad zum Tagesbedarf und zieht dann dein gewähltes Defizit ab. Das Eiweiß ergibt sich aus deiner fettfreien Masse und die Kohlenhydrate aus deinem gewählten Limit; die restlichen Kalorien werden zu deinem Fettziel.')
+    'Er schätzt deinen Grundumsatz mit der Mifflin-St.-Jeor-Formel, multipliziert ihn mit deinem Aktivitätsgrad zum Tagesbedarf und zieht dann dein gewähltes Defizit ab. Das Eiweiß ergibt sich aus deiner fettfreien Masse und die Kohlenhydrate aus deinem gewählten Limit; die restlichen Kalorien werden zu deinem Fettziel.', count=2)
 
 # Q8
 rep('<h3>Is this medical advice?</h3>', '<h3>Ist das eine medizinische Beratung?</h3>')
 rep('"name": "Is this medical advice?"', '"name": "Ist das eine medizinische Beratung?"')
 rep('No. This calculator provides general information to help you plan a ketogenic diet and is not a substitute for professional medical advice. It is designed for healthy adults who want to lose weight. If you are pregnant or breastfeeding, have type 1 diabetes, kidney disease, or a history of disordered eating, talk to your doctor before starting keto — the standard targets here may not be safe for you.',
-    'Nein. Dieser Rechner bietet allgemeine Informationen zur Planung einer ketogenen Ernährung und ersetzt keine professionelle medizinische Beratung. Er ist für gesunde Erwachsene gedacht, die abnehmen möchten. Wenn du schwanger bist oder stillst, Typ-1-Diabetes oder eine Nierenerkrankung hast oder eine Essstörung hattest, sprich mit deinem Arzt, bevor du mit Keto beginnst — die Standardwerte hier sind dann möglicherweise nicht sicher für dich.')
+    'Nein. Dieser Rechner bietet allgemeine Informationen zur Planung einer ketogenen Ernährung und ersetzt keine professionelle medizinische Beratung. Er ist für gesunde Erwachsene gedacht, die abnehmen möchten. Wenn du schwanger bist oder stillst, Typ-1-Diabetes oder eine Nierenerkrankung hast oder eine Essstörung hattest, sprich mit deinem Arzt, bevor du mit Keto beginnst — die Standardwerte hier sind dann möglicherweise nicht sicher für dich.', count=2)
 
 # ---------------------------------------------------------------------------
 # 6b. Guide links + "Keto Guides" section (the three guide pages are English;
@@ -394,8 +406,8 @@ rep('<h2>Embed This Calculator on Your Site</h2>', '<h2>Diesen Rechner auf deine
 rep("<p>Run a keto blog, coaching site, or forum? You can embed this calculator for free —\n                        paste this snippet into your page and you're done. It always serves the latest version.</p>",
     '<p>Du betreibst einen Keto-Blog, eine Coaching-Seite oder ein Forum? Du kannst diesen Rechner kostenlos einbetten — füge einfach diesen Schnipsel in deine Seite ein, fertig. Es wird immer die aktuelle Version geladen.</p>')
 rep('aria-label="HTML snippet to embed this calculator"', 'aria-label="HTML-Schnipsel zum Einbetten dieses Rechners"')
-rep("<p style=\"font-size:smaller; color:#666;\">Please keep the credit link below the iframe — it's how new people find the calculator.</p>",
-    '<p style="font-size:smaller; color:#666;">Bitte lass den Credit-Link unter dem iframe stehen — so finden neue Leute den Rechner.</p>')
+rep("<p class=\"fineprint\">Please keep the credit link below the iframe — it's how new people find the calculator.</p>",
+    '<p class="fineprint">Bitte lass den Credit-Link unter dem iframe stehen — so finden neue Leute den Rechner.</p>')
 
 rep('<h2>Got Questions?</h2>', '<h2>Noch Fragen?</h2>')
 rep('<h3>Post Your Question to /r/keto</h3>', '<h3>Stell deine Frage auf /r/keto</h3>')
@@ -408,7 +420,7 @@ rep('<h3>Comments</h3>', '<h3>Kommentare</h3>')
 rep('<p>Is this calculator useful to you? Share your thoughts!</p>',
     '<p>Ist dieser Rechner für dich nützlich? Teile deine Gedanken!</p>')
 rep('<noscript>Please enable JavaScript to view the comments.</noscript>',
-    '<noscript>Bitte aktiviere JavaScript, um die Kommentare zu sehen.</noscript>')
+    '<noscript>Bitte aktiviere JavaScript, um die Kommentare zu sehen.</noscript>', count=2)
 
 rep('<i class="sprite sprite-me" style="float:left; margin-right: 1em; margin-top:4px;" title="Martin Leitner-Ankerl"></i> Created by <b>Martin Leitner-Ankerl</b>. I\'m a software developer who has followed and researched the ketogenic diet for years. I first built this calculator and <a href="https://www.reddit.com/r/keto/comments/127sm0/keto_calculator/" onclick="return gatrack(this);">announced it on /r/keto in October 2012</a>, because the keto advice online was vague and I wanted exact numbers for myself. The math is based on the peer-reviewed Mifflin-St. Jeor equation and the protein and fat guidance in Phinney and Volek\'s <i>The Art and Science of Low Carbohydrate Living</i> — the book I learned the most from. I\'m not a doctor or dietitian; this is simply the tool I wished existed, shared freely. You can find me on <a href="https://www.reddit.com/user/martinus/" onclick="return gatrack(this);">reddit</a> and <a href="https://martin.ankerl.com/" onclick="return gatrack(this);">my blog</a>. Please read the <a href="disclaimer.html" onclick="return gatrack(this);">disclaimer and Cookie Consent</a>.',
     '<i class="sprite sprite-me" style="float:left; margin-right: 1em; margin-top:4px;" title="Martin Leitner-Ankerl"></i> Erstellt von <b>Martin Leitner-Ankerl</b>. Ich bin Softwareentwickler und beschäftige mich seit Jahren mit der ketogenen Ernährung. Ich habe diesen Rechner gebaut und <a href="https://www.reddit.com/r/keto/comments/127sm0/keto_calculator/" onclick="return gatrack(this);">im Oktober 2012 auf /r/keto vorgestellt</a>, weil die Keto-Ratschläge im Netz vage waren und ich für mich selbst genaue Zahlen wollte. Die Berechnung basiert auf der wissenschaftlich geprüften Mifflin-St.-Jeor-Formel und den Eiweiß- und Fett-Empfehlungen aus Phinney und Voleks <i>The Art and Science of Low Carbohydrate Living</i> — dem Buch, aus dem ich am meisten gelernt habe. Ich bin kein Arzt und kein Ernährungsberater; das hier ist einfach das Werkzeug, das ich mir selbst gewünscht habe — frei geteilt. Du findest mich auf <a href="https://www.reddit.com/user/martinus/" onclick="return gatrack(this);">Reddit</a> und in <a href="https://martin.ankerl.com/" onclick="return gatrack(this);">meinem Blog</a>. Bitte lies den <a href="disclaimer.html" onclick="return gatrack(this);">Haftungsausschluss und die Cookie-Zustimmung</a>.')
@@ -486,46 +498,13 @@ rep('4: "Custom expenditure: "', '4: "Eigener Verbrauch: "')
 
 # share feedback
 rep("fb.textContent = ' Link copied to clipboard!';", "fb.textContent = ' Link in die Zwischenablage kopiert!';")
-rep("window.prompt('Copy your shareable link:', url);", "window.prompt('Kopiere deinen Teilen-Link:', url);")
+rep("window.prompt('Copy your shareable link:', url);", "window.prompt('Kopiere deinen Teilen-Link:', url);", count=2)
 
 # ---------------------------------------------------------------------------
-# 9. Date localization (TT.MM.JJJJ) + datepicker German locale
+# 9. Dates need no localization anymore: the native <input type="date">
+#    fields display in the visitor's own locale and always store ISO
+#    (YYYY-MM-DD) values, which new Date() / calcAge() parse directly.
 # ---------------------------------------------------------------------------
-rep('''function calcAge(dateString) {
-		  var birthday = +new Date(dateString);
-		  // 24 * 3600 * 365.242 * 1000
-		  return (Date.now() - birthday) / 31556908800.0;
-		}''',
-    '''function de_date(s) {
-		  // German date format dd.mm.yyyy
-		  var p = String(s).split('.');
-		  return (p.length === 3) ? new Date(p[2], p[1] - 1, p[0]) : new Date(s);
-		}
-		function calcAge(dateString) {
-		  var birthday = +de_date(dateString);
-		  // 24 * 3600 * 365.242 * 1000
-		  return (Date.now() - birthday) / 31556908800.0;
-		}''')
-
-rep('new Date(graphstartdate)', 'de_date(graphstartdate)')
-
-rep('d.graphstartdate.value = (date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear() ;',
-    'd.graphstartdate.value = date.getDate() + "." + (date.getMonth()+1) + "." + date.getFullYear() ;')
-
-rep('format: "mm/dd/yyyy",', 'format: "dd.mm.yyyy",\n\t\t\tlanguage: "de",')
-
-rep('''		 // set datepicker's *after* loading, so that field keeps beeing there.
-		$('#bday').datepicker({''',
-    '''		$.fn.datepicker.dates['de'] = {
-			days: ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"],
-			daysShort: ["So","Mo","Di","Mi","Do","Fr","Sa"],
-			daysMin: ["So","Mo","Di","Mi","Do","Fr","Sa"],
-			months: ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"],
-			monthsShort: ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"],
-			today: "Heute", clear: "Löschen", weekStart: 1
-		};
-		 // set datepicker's *after* loading, so that field keeps beeing there.
-		$('#bday').datepicker({''')
 
 # ---------------------------------------------------------------------------
 # 10. Comments (Cusdis): separate German comment thread
@@ -535,7 +514,7 @@ rep('data-page-url="https://keto-calculator.ankerl.com/"', 'data-page-url="https
 # data-page-title="Keto Calculator" is localized by the blanket rep below.
 
 # Brand mentions left in plain content (after the specific reps above)
-rep('Keto Calculator', 'Keto-Rechner')
+rep('Keto Calculator', 'Keto-Rechner', count=6)
 
 # ---------------------------------------------------------------------------
 # 11. Asset paths: make root-absolute so they resolve from the /de/ subfolder
@@ -546,8 +525,7 @@ rep('href="launcher-icon-152x152.png"', 'href="/launcher-icon-152x152.png"')
 rep('href="manifest.json"', 'href="/manifest.json"')
 rep('href="logo-white-150.png"', 'href="/logo-white-150.png"')   # LCP preload
 rep('src="logo-white-150.png"', 'src="/logo-white-150.png"')     # header logo
-rep('src="books/', 'src="/books/')                               # 14 affiliate covers
-rep('url(fonts/', 'url(/fonts/')                                 # glyphicons webfont
+rep('src="books/', 'src="/books/', count=4)                      # 4 affiliate covers
 rep('url(spritesheet.png)', 'url(/spritesheet.png)')             # share/me sprite icons
 rep('height_warning_short.jpg', '/height_warning_short.jpg')     # JS warning images
 rep('height_warning_tall.jpg', '/height_warning_tall.jpg')
@@ -557,15 +535,23 @@ rep('proteintoohigh_small.jpg', '/proteintoohigh_small.jpg')
 # ---------------------------------------------------------------------------
 # write
 # ---------------------------------------------------------------------------
-os.makedirs(HERE, exist_ok=True)
+os.makedirs(os.path.dirname(OUT), exist_ok=True)
 open(OUT, "w", encoding="utf-8").write(html)
 
-if missing:
-    print("WARNING: %d source snippet(s) NOT FOUND in index.html." % len(missing))
-    print("The English text probably changed. Update the matching German entry and re-run.\n")
-    for m in missing:
-        preview = m[:90].replace("\n", " ")
-        print("  NOT FOUND: " + preview)
+if missing or miscounted:
+    if missing:
+        print("WARNING: %d source snippet(s) NOT FOUND in index.html." % len(missing))
+        print("The English text probably changed. Update the matching German entry and re-run.\n")
+        for m in missing:
+            preview = m[:90].replace("\n", " ")
+            print("  NOT FOUND: " + preview)
+    if miscounted:
+        print("WARNING: %d snippet(s) with an unexpected occurrence count." % len(miscounted))
+        print("A new occurrence of a matched substring appeared (or one vanished);")
+        print("check it should really be translated, then set the rep's count=.\n")
+        for m, want, got in miscounted:
+            preview = m[:90].replace("\n", " ")
+            print("  EXPECTED %dx, FOUND %dx: %s" % (want, got, preview))
     sys.exit(1)
 
 print("OK: wrote de/index.html (%d bytes)." % len(html))

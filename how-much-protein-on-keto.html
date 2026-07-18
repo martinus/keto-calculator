@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta charset="utf-8">
 	<!-- Google tag (gtag.js) — GA4 property G-4EDP644SXM — with Google Consent Mode v2.
 	     Same analytics/consent stack as the calculator page: consent defaults to
 	     granted worldwide, denied only in the EEA/UK (region-scoped); Google's own
@@ -36,8 +37,6 @@
 	  gtag('config', 'G-4EDP644SXM');
 	</script>
 
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<!-- fonts first; loaded non-render-blocking (display=swap shows fallback text immediately) -->
@@ -438,7 +437,7 @@
 
 	<!-- gatrack(): outbound-click tracking for GA4; same contract as the calculator page. -->
 	<script>
-		function gatrack(elem, fn) {
+		function gatrack(elem) {
 			try {
 				if (typeof gtag === 'function') {
 					gtag('event', 'click', {
@@ -448,7 +447,6 @@
 					});
 				}
 			} catch (e) {}
-			if (fn) { fn(); return false; }
 			return true;
 		}
 	</script>

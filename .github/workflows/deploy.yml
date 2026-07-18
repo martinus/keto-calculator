@@ -1,10 +1,15 @@
-# Deploys the site to GitHub Pages on every push to master.
+# Verifies the generated files and deploys the site to GitHub Pages.
 #
-# The repo root IS the website (no build step) — this workflow just strips the
+# The repo root IS the website (no build step) — the deploy job just strips the
 # dev-only files before uploading, so they never become live URLs on
 # keto-calculator.ankerl.com. Everything dev-only lives under dev/ (put new
 # dev files there and they're excluded automatically); the only root-level
 # dev files are the docs listed below.
+#
+# de/index.html, embed.html and the three guide pages are GENERATED from
+# index.html / dev/guides/ by the dev/build_*.py scripts and committed. The
+# verify job re-runs every generator and fails on any diff, so an edit to a
+# source that forgot the re-run can never deploy (or merge) a stale copy.
 #
 # Requires the repo's Pages setting: Settings → Pages → Source = "GitHub Actions".
 
@@ -13,6 +18,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [master]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -25,7 +31,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  verify-generated:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Regenerate derived files and require a clean tree
+        run: |
+          python3 dev/build_de.py
+          python3 dev/build_embed.py
+          python3 dev/build_guides.py
+          git diff --exit-code
+
   deploy:
+    if: github.event_name != 'pull_request'
+    needs: verify-generated
     runs-on: ubuntu-latest
     environment:
       name: github-pages
