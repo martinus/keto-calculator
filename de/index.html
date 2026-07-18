@@ -671,7 +671,8 @@
 
 		input[type=text],
 		input[type=email],
-		input[type=number]
+		input[type=number],
+		input[type=date]
 		{
 			border:1px solid #cdd4da;
 			border-radius:7px;
@@ -684,9 +685,16 @@
 			vertical-align:middle;
 		}
 
+		input[type=date]
+		{
+			text-align:left;    /* dates read left-to-right, unlike the numeric fields */
+			width:11em;         /* room for the localized date incl. year + picker icon */
+		}
+
 		input[type=text]:focus,
 		input[type=email]:focus,
-		input[type=number]:focus
+		input[type=number]:focus,
+		input[type=date]:focus
 		{
 			border-color:#33B5E5;
 			box-shadow: 0 0 0 3px rgba(51,181,229,0.20);
@@ -830,6 +838,14 @@
 			margin:0 0 0em;
 			padding-top:.3em;
 			padding-bottom: 0.3em;
+		}
+
+		/* Keep the logo centered on the wordmark (was Bootstrap's global
+		   img{vertical-align:middle}; without it the img sits on the text
+		   baseline — especially visible on Firefox). */
+		#logo
+		{
+			vertical-align:middle;
 		}
 
 		h2
