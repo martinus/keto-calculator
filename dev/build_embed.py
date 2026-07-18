@@ -26,7 +26,7 @@ What the embed deliberately does NOT contain:
     "Powered by" footer whose link opens the full site)
 
 Kept fully functional: all inputs, results card, food equivalents, pies,
-forecast + CSV, warnings, cookie persistence, URL-param prefill, and the
+forecast + CSV, warnings, settings persistence, URL-param prefill, and the
 "Share my macros" button (its link intentionally points at the FULL site,
 not the embed, so shares funnel people to keto-calculator.ankerl.com).
 """
@@ -79,8 +79,10 @@ rep('''	<!-- Google's consent message (Privacy & messaging) loads for EEA/UK vis
 # manifest + service-worker registration + the CMP loader (one contiguous block)
 cut('<!-- app service stuff start', '<!-- app service stuff end -->', include_end=True)
 
-# AdSense library
-cut('<!-- AdSense library', 'adsbygoogle.js"></script>', include_end=True)
+# AdSense library (modern ?client= + crossorigin loader form)
+cut('<!-- AdSense library',
+    'adsbygoogle.js?client=ca-pub-2398468033418589" crossorigin="anonymous"></script>',
+    include_end=True)
 
 # JSON-LD blocks: WebApplication (head) and FAQPage (body) — the embed is
 # noindex, and duplicate structured entities would only confuse crawlers.
@@ -127,8 +129,12 @@ cut('<details class="detail-block" id="detail_intro"', '</details>', include_end
 # inline book rec (affiliate links stay on the main page only)
 cut('<div class="recommended">', '<p>Macronutrients are nutrients that provide energy for your body.</p>')
 
-# Keto Bottom ad unit
-cut('<div class="fullwidthad">', '<!-- google adsense end -->\n\t\t\t\t\t\t</div>', include_end=True)
+# In-content ad units: Keto Top (with its explanatory comment) and Keto
+# Bottom. Each lives in a <div class="fullwidthad" ...>...</div> with no
+# nested divs. The assert catches any future third unit.
+cut('<!-- Keto Top', '</div>', include_end=True)
+cut('<div class="fullwidthad"', '</div>', include_end=True)
+assert '<div class="fullwidthad"' not in html, "unexpected extra in-content ad unit"
 
 # FAQ section (its JSON-LD was already removed above)
 cut('<div id="faq">', '<div id="questions">')
