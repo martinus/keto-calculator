@@ -124,10 +124,11 @@
 	</script>
 	-->
 	<!-- AdSense library (loaded once for the manual in-content units below).
-	     Auto Ads / page-level ads are intentionally NOT enabled here — they hand placement
-	     to Google and over-stuff the page (top anchor + side rails + extra in-text). See
+	     The ?client= form is required for the dashboard's Auto ads controls to
+	     apply — keep Auto ads' in-page formats OFF there (they over-stuff the
+	     page); only the anchor format + a low ad load should be enabled. See
 	     https://support.google.com/adsense/answer/3221666?hl=en-GB -->
-	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2398468033418589" crossorigin="anonymous"></script>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">		
@@ -1984,14 +1985,16 @@
 					<p style="font-size:smaller; color:#666; margin-top:-0.5em;">Kopiert einen Link, der diesen Rechner mit deinen Werten bereits ausgefüllt öffnet — praktisch zum Speichern oder Teilen.</p>
 
 					<p>
-						<div class="fullwidthad">
+						<div class="fullwidthad" style="min-height:280px;">
 							<!-- Keto Bottom -->
 							<ins class="adsbygoogle"
 								 style="display:block"
 								 data-ad-client="ca-pub-2398468033418589"
-								 data-ad-slot="1224707884"></ins>
+								 data-ad-slot="1224707884"
+								 data-ad-format="auto"
+								 data-full-width-responsive="true"></ins>
 							<script>
-							(adsbygoogle = window.adsbygoogle || []).push({ params: {google_ad_format: "auto" } });
+							(adsbygoogle = window.adsbygoogle || []).push({});
 							</script>
 							<!-- google adsense end -->
 						</div>
@@ -2064,6 +2067,27 @@
                         
 						<p>Für alle Daten-Fans: Du kannst <a id="csvdownload" download="KetoCalculatorForecast.csv" href="javascript:void(0)">eine CSV-Datei deines prognostizierten Gewichtsverlaufs herunterladen</a>. Sie enthält alle Daten der obigen Grafik.
                     </div>
+
+					<!-- Keto Top (7271241487) — second in-content unit. Placed on the
+					     section boundary between the weight-loss forecast and the FAQ:
+					     far enough below the input/Calculate flow to avoid invalid
+					     clicks, but still inside the results zone users scroll through
+					     (its old spot below the FAQ was outside ~95% of sessions'
+					     scroll depth, which starved the slot and dragged viewability —
+					     and with it the whole page's bid prices — down). min-height
+					     reserves the space so an unfilled/slow ad causes no layout
+					     shift (CLS). -->
+					<div class="fullwidthad" style="min-height:280px;">
+						<ins class="adsbygoogle"
+							 style="display:block"
+							 data-ad-client="ca-pub-2398468033418589"
+							 data-ad-slot="7271241487"
+							 data-ad-format="auto"
+							 data-full-width-responsive="true"></ins>
+						<script>
+						(adsbygoogle = window.adsbygoogle || []).push({});
+						</script>
+					</div>
 
 					<div id="faq">
 						<h2>Keto-Rechner FAQ</h2>
@@ -2168,23 +2192,6 @@
 
 
 
-
-					<!-- Keto Top (7271241487) — second in-content unit, the one that mobile
-					     visitors (65% of traffic) actually see beyond Keto Bottom. Deliberately
-					     placed HERE: after the FAQ, ~2,000 words below the input/Calculate flow
-					     (no invalid-click risk), on a section boundary. min-height reserves the
-					     space so an unfilled/slow ad causes no layout shift (CLS). -->
-					<div class="fullwidthad" style="min-height:280px;">
-						<ins class="adsbygoogle"
-							 style="display:block"
-							 data-ad-client="ca-pub-2398468033418589"
-							 data-ad-slot="7271241487"
-							 data-ad-format="auto"
-							 data-full-width-responsive="true"></ins>
-						<script>
-						(adsbygoogle = window.adsbygoogle || []).push({});
-						</script>
-					</div>
 
 					<style>
 						#keto_guides .guide-list { list-style:none; padding:0; margin:1.1em 0 0; max-width:650px; }
