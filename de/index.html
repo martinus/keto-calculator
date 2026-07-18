@@ -164,6 +164,9 @@
 	<style>
 		*, *::before, *::after { box-sizing: border-box; }
 		body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.42857143; color: #333; background-color: #fff; margin: 0; }
+		/* Keeps inline images (the header logo) centered on their text line
+		   instead of sitting on the baseline — especially visible on Firefox. */
+		img { vertical-align: middle; }
 	</style>
 
 	<!-- css sprite, generated with http://spritegen.website-performance.org/ -->
@@ -671,7 +674,8 @@
 
 		input[type=text],
 		input[type=email],
-		input[type=number]
+		input[type=number],
+		input[type=date]
 		{
 			border:1px solid #cdd4da;
 			border-radius:7px;
@@ -684,17 +688,19 @@
 			vertical-align:middle;
 		}
 
+		input[type=date]
+		{
+			text-align:left;    /* dates read left-to-right, unlike the numeric fields */
+			width:11em;         /* room for the localized date incl. year + picker icon */
+		}
+
 		input[type=text]:focus,
 		input[type=email]:focus,
-		input[type=number]:focus
+		input[type=number]:focus,
+		input[type=date]:focus
 		{
 			border-color:#33B5E5;
 			box-shadow: 0 0 0 3px rgba(51,181,229,0.20);
-		}
-
-		input[type=number]
-		{
-			text-align:right;
 		}
 
 		/* Computed / non-editable fields (BMR, expenditure, protein & deficit ranges):
@@ -1437,6 +1443,7 @@
 			input[type=text],
 			input[type=number],
 			input[type=email],
+			input[type=date],
 			select,
 			textarea {
 				font-family:Verdana, Arial, Helvetica, sans-serif;
