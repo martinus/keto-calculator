@@ -164,6 +164,9 @@
 	<style>
 		*, *::before, *::after { box-sizing: border-box; }
 		body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.42857143; color: #333; background-color: #fff; margin: 0; }
+		/* Keeps inline images (the header logo) centered on their text line
+		   instead of sitting on the baseline — especially visible on Firefox. */
+		img { vertical-align: middle; }
 	</style>
 
 	<!-- css sprite, generated with http://spritegen.website-performance.org/ -->
@@ -700,11 +703,6 @@
 			box-shadow: 0 0 0 3px rgba(51,181,229,0.20);
 		}
 
-		input[type=number]
-		{
-			text-align:right;
-		}
-
 		/* Computed / non-editable fields (BMR, expenditure, protein & deficit ranges):
 		   greyed cool fill + muted text + not-allowed cursor so they read as read-only
 		   outputs, clearly different from the white fields you fill in. */
@@ -838,14 +836,6 @@
 			margin:0 0 0em;
 			padding-top:.3em;
 			padding-bottom: 0.3em;
-		}
-
-		/* Keep the logo centered on the wordmark (was Bootstrap's global
-		   img{vertical-align:middle}; without it the img sits on the text
-		   baseline — especially visible on Firefox). */
-		#logo
-		{
-			vertical-align:middle;
 		}
 
 		h2
@@ -1453,6 +1443,7 @@
 			input[type=text],
 			input[type=number],
 			input[type=email],
+			input[type=date],
 			select,
 			textarea {
 				font-family:Verdana, Arial, Helvetica, sans-serif;
