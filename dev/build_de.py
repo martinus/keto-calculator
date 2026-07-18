@@ -146,23 +146,23 @@ rep('<h3>Determine Your Energy Expenditure</h3>', '<h3>Bestimme deinen Energieve
 rep('<p>Given that data, it is possible to calculate your <a href="https://en.wikipedia.org/wiki/Basal_metabolic_rate" onclick="return gatrack(this);">Base Metabolic Rate (BMR)</a>. This site uses the <a href="https://www.freedieting.com/calorie_needs.html" onclick="return gatrack(this);">Mifflin-St.Jeor-Formula</a> which was the most accurate in <a href="https://www.ncbi.nlm.nih.gov/pubmed/15883556" onclick="return gatrack(this);">two</a>&nbsp;<a href="https://www.ncbi.nlm.nih.gov/pubmed/18688113" onclick="return gatrack(this);">studies</a>.</p>',
     '<p>Mit diesen Daten lässt sich dein <a href="https://en.wikipedia.org/wiki/Basal_metabolic_rate" onclick="return gatrack(this);">Grundumsatz (BMR)</a> berechnen. Diese Seite verwendet die <a href="https://www.freedieting.com/calorie_needs.html" onclick="return gatrack(this);">Mifflin-St.-Jeor-Formel</a>, die in <a href="https://www.ncbi.nlm.nih.gov/pubmed/15883556" onclick="return gatrack(this);">zwei</a>&nbsp;<a href="https://www.ncbi.nlm.nih.gov/pubmed/18688113" onclick="return gatrack(this);">Studien</a> am genauesten war.</p>')
 
-rep('kcal Base Metabolic Rate</li>', 'kcal Grundumsatz</li>')
+rep('kcal Base Metabolic Rate</label></li>', 'kcal Grundumsatz</label></li>')
 
 rep("<p>The BMR resembles the resting metabolic rate. The real daily energy expenditure depends on how active you are on average. Based on that activity level we calculate your actual total daily energy expenditure (TDEE). This is the number of calories you need to consume each day when you do not want to lose weight.</p>",
     '<p>Der Grundumsatz entspricht in etwa dem Ruheumsatz. Dein tatsächlicher Tagesverbrauch hängt davon ab, wie aktiv du im Schnitt bist. Aus diesem Aktivitätsgrad berechnen wir deinen gesamten täglichen Energieverbrauch (TDEE). Das ist die Menge an Kalorien, die du täglich essen musst, wenn du dein Gewicht halten willst.</p>')
 
-rep('<tr><td><input name="level" type="radio" value="0" aria-label="Activity level: sedentary"></td><td>Sedentary. Typical desk job, little to no exercise.</td></tr>',
-    '<tr><td><input name="level" type="radio" value="0" aria-label="Aktivitätslevel: überwiegend sitzend"></td><td>Sitzend. Typischer Bürojob, kaum bis kein Sport.</td></tr>')
-rep('<tr><td><input name="level" type="radio" value="1" aria-label="Activity level: lightly active"></td><td>Lightly active. Walking around a good amount, retail jobs. 1–3 hours per week of light exercise.</td></tr>',
-    '<tr><td><input name="level" type="radio" value="1" aria-label="Aktivitätslevel: leicht aktiv"></td><td>Leicht aktiv. Viel auf den Beinen, z. B. im Einzelhandel. 1–3 Stunden leichter Sport pro Woche.</td></tr>')
-rep('<tr><td><input name="level" type="radio" value="2" aria-label="Activity level: moderately active"></td><td>Moderately active. 3–5 hours a week, e.g. daily 15 minutes biking and 3 times heavy lifting per week.</td></tr>',
-    '<tr><td><input name="level" type="radio" value="2" aria-label="Aktivitätslevel: mäßig aktiv"></td><td>Mäßig aktiv. 3–5 Stunden pro Woche, z. B. täglich 15 Minuten Rad fahren und 3-mal pro Woche Krafttraining.</td></tr>')
-rep('<tr><td><input name="level" type="radio" value="3" aria-label="Activity level: very active"></td><td>Very active. Construction workers, hard exercise 6–7 days per week</td></tr>',
-    '<tr><td><input name="level" type="radio" value="3" aria-label="Aktivitätslevel: sehr aktiv"></td><td>Sehr aktiv. Körperliche Arbeit, hartes Training an 6–7 Tagen pro Woche.</td></tr>')
+rep('<tr><td><input id="level0" name="level" type="radio" value="0"></td><td><label for="level0">Sedentary. Typical desk job, little to no exercise.</label></td></tr>',
+    '<tr><td><input id="level0" name="level" type="radio" value="0"></td><td><label for="level0">Sitzend. Typischer Bürojob, kaum bis kein Sport.</label></td></tr>')
+rep('<tr><td><input id="level1" name="level" type="radio" value="1"></td><td><label for="level1">Lightly active. Walking around a good amount, retail jobs. 1–3 hours per week of light exercise.</label></td></tr>',
+    '<tr><td><input id="level1" name="level" type="radio" value="1"></td><td><label for="level1">Leicht aktiv. Viel auf den Beinen, z. B. im Einzelhandel. 1–3 Stunden leichter Sport pro Woche.</label></td></tr>')
+rep('<tr><td><input id="level2" name="level" type="radio" value="2"></td><td><label for="level2">Moderately active. 3–5 hours a week, e.g. daily 15 minutes biking and 3 times heavy lifting per week.</label></td></tr>',
+    '<tr><td><input id="level2" name="level" type="radio" value="2"></td><td><label for="level2">Mäßig aktiv. 3–5 Stunden pro Woche, z. B. täglich 15 Minuten Rad fahren und 3-mal pro Woche Krafttraining.</label></td></tr>')
+rep('<tr><td><input id="level3" name="level" type="radio" value="3"></td><td><label for="level3">Very active. Construction workers, hard exercise 6–7 days per week</label></td></tr>',
+    '<tr><td><input id="level3" name="level" type="radio" value="3"></td><td><label for="level3">Sehr aktiv. Körperliche Arbeit, hartes Training an 6–7 Tagen pro Woche.</label></td></tr>')
 rep('<tr><td><input name="level" type="radio" value="4" aria-label="Activity level: custom"></td><td>Custom: <input disabled="disabled" name="custom_expenditure" type="number" value="" aria-label="Custom daily energy expenditure in kcal"> kcal</td></tr>',
     '<tr><td><input name="level" type="radio" value="4" aria-label="Aktivitätslevel: eigener Verbrauch"></td><td>Eigener Wert: <input disabled="disabled" name="custom_expenditure" type="number" value="" aria-label="Eigener täglicher Energieverbrauch in kcal"> kcal</td></tr>')
 
-rep('kcal daily energy expenditure</li>', 'kcal täglicher Energieverbrauch</li>')
+rep('kcal daily energy expenditure</label></li>', 'kcal täglicher Energieverbrauch</label></li>')
 
 # Body fat
 rep('<h3>How Much Body Fat do you Have?</h3>', '<h3>Wie hoch ist dein Körperfettanteil?</h3>')
@@ -170,8 +170,8 @@ rep('<h3>How Much Body Fat do you Have?</h3>', '<h3>Wie hoch ist dein Körperfet
 rep('<p>Let\'s find out your body fat percentage. Based on your height and weight, your body fat percentage might be <a href="https://www.ncbi.nlm.nih.gov/pubmed/16469982" onclick="return gatrack(this);">around <span class="estimated_bodyfat_percent"></span>%</a>. The most accurate measurement would be a <a href="https://en.wikipedia.org/wiki/Dual_energy_X-ray_absorptiometry" onclick="return gatrack(this);">DEXA</a>. Skin fold measurement with <a href="https://www.amazon.com/gp/product/B0000AN3UB/ref=as_li_ss_tl?ie=UTF8&amp;camp=1789&amp;creative=390957&amp;creativeASIN=B0000AN3UB&amp;linkCode=as2&amp;tag=martanke-20" onclick="return gatrack(this);">a good caliper</a> is also pretty accurate. The easiest way is to just estimate it from some <a href="https://martin.ankerl.com/2016/01/04/body-fat-comparison-pictures/" onclick="return gatrack(this);">comparison pictures</a>. More: <a href="https://www.builtlean.com/2012/09/24/body-fat-percentage-men-women/" onclick="return gatrack(this);">1</a>, <a href="https://www.leighpeele.com/body-fat-pictures-and-percentages" onclick="return gatrack(this);">2</a>, <a href="https://www.nerdfitness.com/blog/2012/07/02/body-fat-percentage/" onclick="return gatrack(this);">3</a>. You can also try <a href="https://www.healthcentral.com/cholesterol/home-body-fat-test-2774-143.html" onclick="return gatrack(this);">this calculator</a> but that can be inaccurate.</p>',
     '<p>Finden wir deinen Körperfettanteil heraus. Basierend auf Größe und Gewicht liegt er vermutlich <a href="https://www.ncbi.nlm.nih.gov/pubmed/16469982" onclick="return gatrack(this);">bei etwa <span class="estimated_bodyfat_percent"></span>%</a>. Am genauesten misst ein <a href="https://en.wikipedia.org/wiki/Dual_energy_X-ray_absorptiometry" onclick="return gatrack(this);">DEXA-Scan</a>. Auch die Messung der Hautfalten mit <a href="https://www.amazon.com/gp/product/B0000AN3UB/ref=as_li_ss_tl?ie=UTF8&amp;camp=1789&amp;creative=390957&amp;creativeASIN=B0000AN3UB&amp;linkCode=as2&amp;tag=martanke-20" onclick="return gatrack(this);">einem guten Caliper</a> ist recht genau. Am einfachsten schätzt du ihn anhand von <a href="https://martin.ankerl.com/2016/01/04/body-fat-comparison-pictures/" onclick="return gatrack(this);">Vergleichsbildern</a>. Mehr: <a href="https://www.builtlean.com/2012/09/24/body-fat-percentage-men-women/" onclick="return gatrack(this);">1</a>, <a href="https://www.leighpeele.com/body-fat-pictures-and-percentages" onclick="return gatrack(this);">2</a>, <a href="https://www.nerdfitness.com/blog/2012/07/02/body-fat-percentage/" onclick="return gatrack(this);">3</a>. Du kannst auch <a href="https://www.healthcentral.com/cholesterol/home-body-fat-test-2774-143.html" onclick="return gatrack(this);">diesen Rechner</a> ausprobieren, der kann aber ungenau sein.</p>')
 
-rep('<input name="bodyfat" type="number" value="" placeholder="20" aria-label="Body fat percentage"> % Body fat</li>',
-    '<input name="bodyfat" type="number" value="" placeholder="20" aria-label="Körperfettanteil in Prozent"> % Körperfett</li>')
+rep('<label><input name="bodyfat" type="number" value="" placeholder="20"> % Body fat</label></li>',
+    '<label><input name="bodyfat" type="number" value="" placeholder="20"> % Körperfett</label></li>')
 
 rep('<p>With <span class="bodyfat_percentage"></span>% body fat you have <span class="lean_lbs"></span>lbs (<span class="lean_kg"></span>kg) of lean body mass, and <span class="fat_lbs"></span>lbs (<span class="fat_kg"></span>kg) of body fat. This includes about <span class="essential_fat_lbs"></span>lbs (<span class="essential_fat_kg"></span>kg) of <a href="https://en.wikipedia.org/wiki/Body_fat_percentage#Typical_body_fat_amounts" onclick="return gatrack(this);">essential body fat</a> that you must not lose.</p>',
     '<p>Bei <span class="bodyfat_percentage"></span>% Körperfett hast du <span class="lean_kg"></span>kg (<span class="lean_lbs"></span>lbs) fettfreie Masse und <span class="fat_kg"></span>kg (<span class="fat_lbs"></span>lbs) Körperfett. Davon sind etwa <span class="essential_fat_kg"></span>kg (<span class="essential_fat_lbs"></span>lbs) <a href="https://en.wikipedia.org/wiki/Body_fat_percentage#Typical_body_fat_amounts" onclick="return gatrack(this);">essentielles Körperfett</a>, das du nicht verlieren darfst.</p>')
@@ -195,8 +195,8 @@ rep('<summary>Net carbs vs. fiber — what actually counts?</summary>',
 rep('<p>Total carbohydrate is made up of net carbs plus fiber. Net carbs are the part that turns into glucose and raises your blood sugar — exactly what you want to limit on keto, which is why most people aim for 20–25g a day. Fiber is the rest, and it\'s good for you: insoluble fiber passes straight through without touching your blood sugar, while gut bacteria ferment soluble fiber into fatty acids that add only a few calories and don\'t spike glucose. That\'s why keto counts net carbs and lets fiber off the hook.</p>',
     '<p>Die Gesamt-Kohlenhydrate setzen sich aus Netto-Kohlenhydraten plus Ballaststoffen zusammen. Die Netto-Kohlenhydrate sind der Teil, der zu Glukose wird und deinen Blutzucker hebt — genau das willst du bei Keto begrenzen, weshalb die meisten 20–25g pro Tag anpeilen. Ballaststoffe sind der Rest und sie tun dir gut: unlösliche Ballaststoffe wandern unverändert hindurch, ohne den Blutzucker zu beeinflussen, während Darmbakterien lösliche Ballaststoffe zu Fettsäuren vergären, die nur wenige Kalorien liefern und den Blutzucker nicht ansteigen lassen. Deshalb zählt Keto die Netto-Kohlenhydrate und lässt die Ballaststoffe außen vor.</p>')
 
-rep('<input name="carbs" type="number" value="25" aria-label="Daily net carbs in grams"> g daily net carbs (changeable)</li>',
-    '<input name="carbs" type="number" value="25" aria-label="Tägliche Netto-Kohlenhydrate in Gramm"> g Netto-Kohlenhydrate pro Tag (änderbar)</li>')
+rep('<label><input name="carbs" type="number" value="25"> g daily net carbs (changeable)</label></li>',
+    '<label><input name="carbs" type="number" value="25"> g Netto-Kohlenhydrate pro Tag (änderbar)</label></li>')
 
 # Protein
 rep('<h3>How Much Protein Should I Eat?</h3>', '<h3>Wie viel Eiweiß sollte ich essen?</h3>')
@@ -429,8 +429,10 @@ rep('<i class="sprite sprite-me" style="float:left; margin-right: 1em; margin-to
 # 8. JavaScript strings
 # ---------------------------------------------------------------------------
 # Created / last-reviewed line under the bio
-rep('<p style="font-size:smaller; color:#98a6b3; margin-top:0.6em;">Created October 2012 · last reviewed June 2026. The formulas are unchanged since publication and are reviewed periodically for accuracy.</p>',
-    '<p style="font-size:smaller; color:#6b7a86; margin-top:0.6em;">Erstellt im Oktober 2012 · zuletzt überprüft im Juni 2026. Die Formeln sind seit der Veröffentlichung unverändert und werden regelmäßig auf Richtigkeit überprüft.</p>')
+# Text-only on purpose: the <p style=...> wrapper flows through untranslated,
+# so a styling change on the English side can never desync the German page.
+rep('Created October 2012 · last reviewed June 2026. The formulas are unchanged since publication and are reviewed periodically for accuracy.',
+    'Erstellt im Oktober 2012 · zuletzt überprüft im Juni 2026. Die Formeln sind seit der Veröffentlichung unverändert und werden regelmäßig auf Richtigkeit überprüft.')
 
 # Food equivalents
 rep('var berries = Math.max(1, Math.round(carbs_g / 12));',
@@ -504,8 +506,7 @@ rep("window.prompt('Copy your shareable link:', url);", "window.prompt('Kopiere 
 # 8b. Screen-reader labels (aria-label) for inputs whose visible text is
 #     not programmatically associated with them
 # ---------------------------------------------------------------------------
-rep('aria-label="Base Metabolic Rate in kcal"', 'aria-label="Grundumsatz in kcal"')
-rep('aria-label="Daily energy expenditure in kcal"', 'aria-label="Täglicher Energieverbrauch in kcal"')
+rep('aria-label="Activity level"', 'aria-label="Aktivitätslevel"')
 rep('aria-label="Minimum protein in grams"', 'aria-label="Minimales Eiweiß in Gramm"')
 rep('aria-label="Chosen protein in grams"', 'aria-label="Gewähltes Eiweiß in Gramm"')
 rep('aria-label="Maximum protein in grams"', 'aria-label="Maximales Eiweiß in Gramm"')
