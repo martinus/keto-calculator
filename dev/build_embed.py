@@ -129,6 +129,10 @@ cut('<details class="detail-block" id="detail_intro"', '</details>', include_end
 # inline book rec (affiliate links stay on the main page only)
 cut('<div class="recommended">', '<p>Macronutrients are nutrients that provide energy for your body.</p>')
 
+# The ad-collapse fallback JS pairs with the (cut) ad units — the embed has
+# no slots for it to stamp, so it must not ship in the widget.
+cut('\t\t// If the AdSense script never loaded', '}, 3500);\n\t\t});\n', include_end=True)
+
 # In-content ad units: Keto Top (with its explanatory comment) and Keto
 # Bottom. Each lives in a <div class="fullwidthad" ...>...</div> with no
 # nested divs. The assert catches any future third unit.

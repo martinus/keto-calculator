@@ -1220,7 +1220,8 @@
 		}
 
 		/* Sticky desktop sidebar ad. The 160x600 box is reserved up front so the
-		   ad load causes no layout shift (CLS). position:sticky follows the reader
+		   ad load causes no layout shift (CLS); it collapses when no ad renders —
+		   see the ad-collapse rules further down. position:sticky follows the reader
 		   down the long page; it can travel because #content is a flex row at
 		   >=830px, which stretches #sidebar to #main's height. */
 		.sidebar-ad
@@ -1392,21 +1393,21 @@
 		.btn-cta { cursor:pointer; padding:11px 20px; font-size:16px; font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif; font-weight:600; letter-spacing:0.2px; border:none; border-radius:9px; background:linear-gradient(135deg,#33B5E5,#1294c8); color:#fff; box-shadow:0 4px 12px rgba(18,148,200,0.32); }
 		.fineprint { font-size:smaller; color:#666; }
 
-		/* Reserve the in-content ad slots' height up front so a loading ad
-		   doesn't shift the page (CLS) — but give the space back when no ad
-		   renders: AdSense marks no-fill slots with data-ad-status="unfilled",
-		   and .ad-idle is set by JS when the ad script never loaded at all
-		   (ad blocker / consent denied), so the reservation doesn't sit
-		   around as a 280px hole. */
+		/* Reserve the in-content ad slots' height up front (the sidebar's 600px
+		   reservation lives on .sidebar-ad) so a loading ad doesn't shift the
+		   page (CLS) — but give the space back instead of leaving a permanent
+		   hole when no ad renders. One signal covers both failure modes:
+		   AdSense marks no-fill slots with data-ad-status="unfilled" (its
+		   documented collapse idiom), and the load handler near the bottom of
+		   the page stamps the same attribute when the ad script never loaded
+		   at all (ad blocker, consent denied).
+		   !important: the slots carry inline display/size styles. */
 		.fullwidthad { min-height:280px; }
-		/* !important: the slots carry inline display/size styles */
-		ins.adsbygoogle[data-ad-status="unfilled"] { display:none !important; }
-		.fullwidthad:has(ins[data-ad-status="unfilled"]),
-		.fullwidthad.ad-idle { min-height:0; }
-		.ad-idle ins.adsbygoogle { display:none !important; }
-		.sidebar-ad:has(ins[data-ad-status="unfilled"]),
-		.sidebar-ad.ad-idle { height:auto; }
+		ins[data-ad-status="unfilled"] { display:none !important; }
+		.fullwidthad:has(ins[data-ad-status="unfilled"]) { min-height:0; }
+		.sidebar-ad:has(ins[data-ad-status="unfilled"]) { height:auto; }
 
+		/* ---- viewport media queries only below this line; base rules above ---- */
 		@media only screen and (max-width: 830px) {
 			.fullwidthad {
 				width: 107.06638%;
@@ -3468,17 +3469,18 @@
 		}
 
 		// If the AdSense script never loaded (ad blocker, consent denied), no
-		// slot will ever fill — mark the containers so CSS reclaims the
-		// reserved space. Slots the loaded script leaves unfilled are marked
-		// by AdSense itself with data-ad-status="unfilled" (handled in CSS).
+		// slot will ever fill — stamp the slots with the same attribute AdSense
+		// uses for no-fill responses, so the CSS reclaims their reserved space.
+		// Timing is safe: async scripts delay the load event, so a slow network
+		// never lands here — only a script that failed outright. The 3.5s is
+		// margin for consent-manager-style late injection; if the script does
+		// turn up and fill a slot, it overwrites the attribute.
 		window.addEventListener('load', function () {
 			setTimeout(function () {
 				if (window.adsbygoogle && window.adsbygoogle.loaded) { return; }
 				var ads = document.getElementsByClassName('adsbygoogle');
 				for (var i = 0; i < ads.length; ++i) {
-					if (ads[i].parentElement) {
-						ads[i].parentElement.classList.add('ad-idle');
-					}
+					ads[i].setAttribute('data-ad-status', 'unfilled');
 				}
 			}, 3500);
 		});

@@ -56,6 +56,8 @@ def rep(old, new, count=1):
 # ---------------------------------------------------------------------------
 rep('<html lang="en">', '<html lang="de">')
 
+rep('"alternateName": "Keto Macro Calculator",', '"alternateName": "Keto-Makro-Rechner",')
+
 rep('<title>Free Keto Macro Calculator – Find Your Macros for the Ketogenic Diet</title>',
     '<title>Kostenloser Keto-Rechner – Makros für die ketogene Ernährung berechnen</title>')
 
