@@ -116,6 +116,7 @@
 	  "@context": "https://schema.org",
 	  "@type": "WebApplication",
 	  "name": "Keto-Rechner",
+	  "alternateName": "Keto Macro Calculator",
 	  "url": "https://keto-calculator.ankerl.com/de/",
 	  "applicationCategory": "HealthApplication",
 	  "operatingSystem": "All",
@@ -1388,11 +1389,26 @@
 		}
 		
 		
-		@media only screen and (max-width: 830px) {
-			.btn-cta { cursor:pointer; padding:11px 20px; font-size:16px; font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif; font-weight:600; letter-spacing:0.2px; border:none; border-radius:9px; background:linear-gradient(135deg,#33B5E5,#1294c8); color:#fff; box-shadow:0 4px 12px rgba(18,148,200,0.32); }
+		.btn-cta { cursor:pointer; padding:11px 20px; font-size:16px; font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif; font-weight:600; letter-spacing:0.2px; border:none; border-radius:9px; background:linear-gradient(135deg,#33B5E5,#1294c8); color:#fff; box-shadow:0 4px 12px rgba(18,148,200,0.32); }
 		.fineprint { font-size:smaller; color:#666; }
 
-		.fullwidthad {
+		/* Reserve the in-content ad slots' height up front so a loading ad
+		   doesn't shift the page (CLS) — but give the space back when no ad
+		   renders: AdSense marks no-fill slots with data-ad-status="unfilled",
+		   and .ad-idle is set by JS when the ad script never loaded at all
+		   (ad blocker / consent denied), so the reservation doesn't sit
+		   around as a 280px hole. */
+		.fullwidthad { min-height:280px; }
+		/* !important: the slots carry inline display/size styles */
+		ins.adsbygoogle[data-ad-status="unfilled"] { display:none !important; }
+		.fullwidthad:has(ins[data-ad-status="unfilled"]),
+		.fullwidthad.ad-idle { min-height:0; }
+		.ad-idle ins.adsbygoogle { display:none !important; }
+		.sidebar-ad:has(ins[data-ad-status="unfilled"]),
+		.sidebar-ad.ad-idle { height:auto; }
+
+		@media only screen and (max-width: 830px) {
+			.fullwidthad {
 				width: 107.06638%;
 				margin-left: -3.53319%;
 			}
@@ -1823,7 +1839,7 @@
 					<p class="fineprint" style="margin-top:-0.5em;">Kopiert einen Link, der diesen Rechner mit deinen Werten bereits ausgefüllt öffnet — praktisch zum Speichern oder Teilen.</p>
 
 					<p>
-						<div class="fullwidthad" style="min-height:280px;">
+						<div class="fullwidthad">
 							<!-- Keto Bottom -->
 							<ins class="adsbygoogle"
 								 style="display:block"
@@ -1893,10 +1909,10 @@
 					     clicks, but still inside the results zone users scroll through
 					     (its old spot below the FAQ was outside ~95% of sessions'
 					     scroll depth, which starved the slot and dragged viewability —
-					     and with it the whole page's bid prices — down). min-height
-					     reserves the space so an unfilled/slow ad causes no layout
-					     shift (CLS). -->
-					<div class="fullwidthad" style="min-height:280px;">
+					     and with it the whole page's bid prices — down). The .fullwidthad
+					     rule reserves the space so a loading ad causes no layout shift,
+					     and collapses it when no ad renders. -->
+					<div class="fullwidthad">
 						<ins class="adsbygoogle"
 							 style="display:block"
 							 data-ad-client="ca-pub-2398468033418589"
@@ -3449,6 +3465,22 @@
 		function select_all_handler(e) {
 			e.target.select();
 		}
+
+		// If the AdSense script never loaded (ad blocker, consent denied), no
+		// slot will ever fill — mark the containers so CSS reclaims the
+		// reserved space. Slots the loaded script leaves unfilled are marked
+		// by AdSense itself with data-ad-status="unfilled" (handled in CSS).
+		window.addEventListener('load', function () {
+			setTimeout(function () {
+				if (window.adsbygoogle && window.adsbygoogle.loaded) { return; }
+				var ads = document.getElementsByClassName('adsbygoogle');
+				for (var i = 0; i < ads.length; ++i) {
+					if (ads[i].parentElement) {
+						ads[i].parentElement.classList.add('ad-idle');
+					}
+				}
+			}, 3500);
+		});
 		
 		// Add event listeners once the DOM has fully loaded by listening for the
 		// `DOMContentLoaded` event on the document, and adding your listeners to
