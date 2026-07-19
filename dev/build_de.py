@@ -56,6 +56,8 @@ def rep(old, new, count=1):
 # ---------------------------------------------------------------------------
 rep('<html lang="en">', '<html lang="de">')
 
+rep('"alternateName": "Keto Macro Calculator",', '"alternateName": "Keto-Makro-Rechner",')
+
 rep('<title>Free Keto Macro Calculator – Find Your Macros for the Ketogenic Diet</title>',
     '<title>Kostenloser Keto-Rechner – Makros für die ketogene Ernährung berechnen</title>')
 
@@ -102,7 +104,7 @@ rep('                    By <a href="https://keto-calculator.ankerl.com/">keto-c
     '                    Von <a href="https://keto-calculator.ankerl.com/de/">keto-calculator.ankerl.com</a> &middot; <a href="../" hreflang="en">English</a>')
 
 # Lead paragraph
-rep('This free keto calculator finds your personal macros — the exact grams of fat, protein, and net carbs to eat each day to lose weight on the <a href="https://www.reddit.com/r/keto/wiki/faq" onclick="return gatrack(this);">ketogenic diet</a>. Enter a few details below and get your numbers in under a minute.',
+rep('This free keto macro calculator finds your personal targets — the exact grams of fat, protein, and net carbs to eat each day to lose weight on the <a href="https://www.reddit.com/r/keto/wiki/faq" onclick="return gatrack(this);">ketogenic diet</a>. Enter a few details below and get your numbers in under a minute.',
     'Dieser kostenlose Keto-Rechner ermittelt deine persönlichen Makros — die genaue Menge an Fett, Eiweiß und Netto-Kohlenhydraten, die du täglich essen solltest, um mit der <a href="https://www.reddit.com/r/keto/wiki/faq" onclick="return gatrack(this);">ketogenen Ernährung</a> abzunehmen. Gib unten ein paar Angaben ein und erhalte deine Werte in unter einer Minute.')
 
 # Byline

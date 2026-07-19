@@ -116,6 +116,7 @@
 	  "@context": "https://schema.org",
 	  "@type": "WebApplication",
 	  "name": "Keto-Rechner",
+	  "alternateName": "Keto-Makro-Rechner",
 	  "url": "https://keto-calculator.ankerl.com/de/",
 	  "applicationCategory": "HealthApplication",
 	  "operatingSystem": "All",
@@ -1219,7 +1220,8 @@
 		}
 
 		/* Sticky desktop sidebar ad. The 160x600 box is reserved up front so the
-		   ad load causes no layout shift (CLS). position:sticky follows the reader
+		   ad load causes no layout shift (CLS); it collapses when no ad renders —
+		   see the ad-collapse rules further down. position:sticky follows the reader
 		   down the long page; it can travel because #content is a flex row at
 		   >=830px, which stretches #sidebar to #main's height. */
 		.sidebar-ad
@@ -1388,11 +1390,26 @@
 		}
 		
 		
-		@media only screen and (max-width: 830px) {
-			.btn-cta { cursor:pointer; padding:11px 20px; font-size:16px; font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif; font-weight:600; letter-spacing:0.2px; border:none; border-radius:9px; background:linear-gradient(135deg,#33B5E5,#1294c8); color:#fff; box-shadow:0 4px 12px rgba(18,148,200,0.32); }
+		.btn-cta { cursor:pointer; padding:11px 20px; font-size:16px; font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif; font-weight:600; letter-spacing:0.2px; border:none; border-radius:9px; background:linear-gradient(135deg,#33B5E5,#1294c8); color:#fff; box-shadow:0 4px 12px rgba(18,148,200,0.32); }
 		.fineprint { font-size:smaller; color:#666; }
 
-		.fullwidthad {
+		/* Reserve the in-content ad slots' height up front (the sidebar's 600px
+		   reservation lives on .sidebar-ad) so a loading ad doesn't shift the
+		   page (CLS) — but give the space back instead of leaving a permanent
+		   hole when no ad renders. One signal covers both failure modes:
+		   AdSense marks no-fill slots with data-ad-status="unfilled" (its
+		   documented collapse idiom), and the load handler near the bottom of
+		   the page stamps the same attribute when the ad script never loaded
+		   at all (ad blocker, consent denied).
+		   !important: the slots carry inline display/size styles. */
+		.fullwidthad { min-height:280px; }
+		ins[data-ad-status="unfilled"] { display:none !important; }
+		.fullwidthad:has(ins[data-ad-status="unfilled"]) { min-height:0; }
+		.sidebar-ad:has(ins[data-ad-status="unfilled"]) { height:auto; }
+
+		/* ---- viewport media queries only below this line; base rules above ---- */
+		@media only screen and (max-width: 830px) {
+			.fullwidthad {
 				width: 107.06638%;
 				margin-left: -3.53319%;
 			}
@@ -1823,7 +1840,7 @@
 					<p class="fineprint" style="margin-top:-0.5em;">Kopiert einen Link, der diesen Rechner mit deinen Werten bereits ausgefüllt öffnet — praktisch zum Speichern oder Teilen.</p>
 
 					<p>
-						<div class="fullwidthad" style="min-height:280px;">
+						<div class="fullwidthad">
 							<!-- Keto Bottom -->
 							<ins class="adsbygoogle"
 								 style="display:block"
@@ -1893,10 +1910,10 @@
 					     clicks, but still inside the results zone users scroll through
 					     (its old spot below the FAQ was outside ~95% of sessions'
 					     scroll depth, which starved the slot and dragged viewability —
-					     and with it the whole page's bid prices — down). min-height
-					     reserves the space so an unfilled/slow ad causes no layout
-					     shift (CLS). -->
-					<div class="fullwidthad" style="min-height:280px;">
+					     and with it the whole page's bid prices — down). The .fullwidthad
+					     rule reserves the space so a loading ad causes no layout shift,
+					     and collapses it when no ad renders. -->
+					<div class="fullwidthad">
 						<ins class="adsbygoogle"
 							 style="display:block"
 							 data-ad-client="ca-pub-2398468033418589"
@@ -3449,6 +3466,23 @@
 		function select_all_handler(e) {
 			e.target.select();
 		}
+
+		// If the AdSense script never loaded (ad blocker, consent denied), no
+		// slot will ever fill — stamp the slots with the same attribute AdSense
+		// uses for no-fill responses, so the CSS reclaims their reserved space.
+		// Timing is safe: async scripts delay the load event, so a slow network
+		// never lands here — only a script that failed outright. The 3.5s is
+		// margin for consent-manager-style late injection; if the script does
+		// turn up and fill a slot, it overwrites the attribute.
+		window.addEventListener('load', function () {
+			setTimeout(function () {
+				if (window.adsbygoogle && window.adsbygoogle.loaded) { return; }
+				var ads = document.getElementsByClassName('adsbygoogle');
+				for (var i = 0; i < ads.length; ++i) {
+					ads[i].setAttribute('data-ad-status', 'unfilled');
+				}
+			}, 3500);
+		});
 		
 		// Add event listeners once the DOM has fully loaded by listening for the
 		// `DOMContentLoaded` event on the document, and adding your listeners to
