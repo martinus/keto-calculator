@@ -11,6 +11,12 @@
 # verify job re-runs every generator and fails on any diff, so an edit to a
 # source that forgot the re-run can never deploy (or merge) a stale copy.
 #
+# The test job runs dev/test/run.js — headless Chrome over CDP, no npm deps.
+# It gates the deploy. If it ever goes flaky, drop `test` from the deploy job's
+# `needs:` rather than deleting the suite; the checks pin real defects that
+# reached production before (ads served into a display:none container, a
+# malformed share link taking down page init, "5 ft 12 in").
+#
 # Requires the repo's Pages setting: Settings → Pages → Source = "GitHub Actions".
 
 name: Deploy to GitHub Pages
@@ -43,9 +49,22 @@ jobs:
           python3 dev/build_guides.py
           git diff --exit-code
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'   # for the built-in WebSocket the harness drives Chrome with
+
+      # ubuntu-latest ships Chrome; the harness finds it via CHROME_BIN or PATH.
+      - name: Run the browser + static checks
+        run: node dev/test/run.js
+
   deploy:
     if: github.event_name != 'pull_request'
-    needs: verify-generated
+    needs: [verify-generated, test]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
