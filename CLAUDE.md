@@ -80,9 +80,10 @@ favicon.png, logo-white-150.png, launcher-icon-*.png, spritesheet.png, share_160
   *_warning_*.jpg, proteintoohigh_small.jpg – images
 books/            – Amazon affiliate book covers
 fonts/            – local fonts
-dev/              – ALL dev-only files (never deployed): build_embed.py + build_de.py
-                    (the generators), TRANSLATION.md, docs/ (planning + analytics, see
-                    below), design/ (logo sources: .svg/.xcf, logo-white.png,
+dev/              – ALL dev-only files (never deployed): build_embed.py + build_de.py +
+                    build_guides.py (the generators), TRANSLATION.md, guides/ (guide template
+                    + per-page parts), test/ (the check suite, see below), docs/ (planning +
+                    analytics), design/ (logo sources: .svg/.xcf, logo-white.png,
                     proteintoohigh.jpg original)
 .github/workflows/deploy.yml – the Pages deploy (strips dev files, publishes the rest)
 LICENSE.txt (CC BY-SA 3.0), README.md – not deployed
@@ -285,6 +286,34 @@ in-content box). Verified in headless Chrome incl. the desktop case where the si
 first. `embed.html` asserts (in `dev/build_embed.py`) that no `data-ad-lazy` or `adsbygoogle`
 survives into the widget.
 
+## Tests
+
+```
+node dev/test/run.js        # ~40s, no npm deps, no package.json
+```
+
+Starts a static server and headless Chrome, drives the page over the DevTools Protocol
+(Node 22's built-in `WebSocket` — that's the whole reason there are no dependencies), runs
+three suites, tears everything down. **CI gates the deploy on this.**
+
+- `links.test.js` — static: internal links, local assets, `de/` has no relative `.html`
+  links (two disclaimer links 404'd on every German page view until 2026-08-01), `old.html`
+  stays noindex.
+- `ads.test.js` — what gets requested, when, and **into which box**. The load-order check is
+  the important one: `adsbygoogle.push({})` binds to the next *uninitialised* `<ins>` in
+  document order, and on desktop the sidebar pushes first.
+- `app.test.js` — console health on all 7 pages, Mifflin-St Jeor/TDEE/protein maths, the
+  /r/keto copy-paste box, share-URL roundtrip + legacy links, and mangled URLs.
+
+Every check corresponds to something that actually broke in production — none are
+speculative. If you add a fix, add the check next to its siblings.
+
+> The suite was mutation-tested when written: re-introducing three of the fixed bugs was
+> confirmed to turn it red. The first attempt did **not** go red, because a reused Chrome
+> profile was serving a cached `index.html` — hence `Network.setCacheDisabled` in `lib.js`
+> and a fresh profile per run in `run.js`. Don't remove either; without them the suite
+> reports green against code that isn't there.
+
 ## Working on this codebase
 
 - **No build step.** Edit files directly; test by opening `index.html` or
@@ -296,6 +325,9 @@ survives into the widget.
 
 ## Planning docs (in `dev/docs/`)
 
+- `dev/docs/ad-viewability-followup-2026-08.md` – **read first for anything ad-related**:
+  the 2026-08-01 lazy-load change, the pre-change per-unit baseline to measure against, and
+  the decision tree for the 2026-08-15 review
 - `dev/docs/revenue-plan-2026-07.md` – **the current live plan** (revenue growth, 2026-07-02) —
   supersedes `plan.md`'s minimal scope
 - `dev/docs/plan.md` – the redesign roadmap (durable SEO / speed / UX / ad-placement wins)
