@@ -307,6 +307,10 @@
 		}
 
 		.adwrap{max-width:650px;margin:2.4em 0;}
+		/* AdSense's documented collapse idiom: it marks no-fill slots itself, and
+		   the lazy loader stamps the same attribute when the ad script never
+		   loaded at all (ad blocker, consent denied). */
+		ins[data-ad-status="unfilled"]{display:none !important;}
 
 		/* footer — author + freshness, the dark band the calculator uses */
 		#bottom1{background-color:#f8f8f8;}
@@ -380,6 +384,70 @@
 			} catch (e) {}
 			return true;
 		}
+	</script>
+
+	<!-- Lazy ad loader; same contract and the same reasoning as the calculator
+	     page (see the long comment there). The article unit sits mid-page, so
+	     pushing it on load fired an impression whether or not the reader ever
+	     scrolled that far — and on this site impression RPM tracks Active View
+	     viewability almost exactly. Requesting on approach trades unseen
+	     impressions for a much higher viewable rate. The <ins> is built here
+	     rather than in the markup because adsbygoogle.push({}) binds to the next
+	     uninitialised <ins> in document order; creating and pushing together
+	     keeps every slot matched to its own box. -->
+	<script>
+		(function () {
+			var AD_CLIENT = 'ca-pub-2398468033418589';
+			var boxes = document.querySelectorAll('[data-ad-lazy]');
+			var blocked = false;
+
+			function request(box) {
+				if (blocked || box.getAttribute('data-ad-done')) { return; }
+				box.setAttribute('data-ad-done', '1');
+
+				var ins = document.createElement('ins');
+				ins.className = 'adsbygoogle';
+				ins.setAttribute('data-ad-client', AD_CLIENT);
+				ins.setAttribute('data-ad-slot', box.getAttribute('data-ad-lazy'));
+				ins.style.display = 'block';
+				ins.setAttribute('data-ad-format', 'auto');
+				ins.setAttribute('data-full-width-responsive', 'true');
+
+				box.appendChild(ins);
+				(window.adsbygoogle = window.adsbygoogle || []).push({});
+			}
+
+			// Ad script blocked outright (ad blocker, consent denied): stop
+			// requesting, and hide any <ins> already injected. .adwrap reserves no
+			// height of its own, so there is no container to collapse here —
+			// unlike the calculator page.
+			window.addEventListener('load', function () {
+				setTimeout(function () {
+					if (window.adsbygoogle && window.adsbygoogle.loaded) { return; }
+					blocked = true;
+					for (var i = 0; i < boxes.length; ++i) {
+						var ins = boxes[i].querySelector('ins.adsbygoogle');
+						if (ins) { ins.setAttribute('data-ad-status', 'unfilled'); }
+					}
+				}, 3500);
+			});
+
+			if (!('IntersectionObserver' in window)) {
+				for (var i = 0; i < boxes.length; ++i) { request(boxes[i]); }
+				return;
+			}
+
+			var io = new IntersectionObserver(function (entries) {
+				for (var i = 0; i < entries.length; ++i) {
+					if (entries[i].isIntersecting) {
+						io.unobserve(entries[i].target);
+						request(entries[i].target);
+					}
+				}
+			}, { rootMargin: '600px 0px' });
+
+			for (var j = 0; j < boxes.length; ++j) { io.observe(boxes[j]); }
+		})();
 	</script>
 </body>
 </html>

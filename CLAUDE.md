@@ -48,13 +48,14 @@ and `deploy.sh` was retired — its exclude list became the workflow's strip lis
 
 ```
 index.html        – The whole page. ALL CSS is inlined in <style> blocks (normalize +
-                    Bootstrap 3.3.1 + bootstrap-datepicker + sprite rules + custom layout) and
-                    stays in <head>. The inlined JS (jQuery 1.11.1 + scrolldepth + Bootstrap +
-                    bootstrap-datepicker + the calculator JS) was moved OUT of <head> to the end
-                    of <body> (2026-06-28) so it no longer blocks first paint; it sits right
-                    before the datepicker-init script, in order jQuery+plugins → Bootstrap →
-                    calculator. There is NO external stylesheet link (only Google Fonts).
-disclaimer.html   – Disclaimer + cookie policy (Cookiebot)
+                    Bootstrap 3.3.1 + sprite rules + custom layout) and stays in <head>. The
+                    JS is the calculator only (~50 KB) and sits at the END of <body> so it never
+                    blocks first paint. jQuery, Bootstrap JS, bootstrap-datepicker and the
+                    scrolldepth plugin were ALL REMOVED (commit 1c8e368, ~300 KB): the date field
+                    is a native <input type="date"> and nothing else needed them. Don't
+                    reintroduce a library for a one-off — there is no $ on the page.
+                    There is NO external stylesheet link (only Google Fonts).
+disclaimer.html   – Disclaimer + cookie policy
 embed.html        – Embeddable widget (GENERATED — run `python3 dev/build_embed.py` after
                     editing index.html; never hand-edit). No ads, noindex, powered-by backlink.
 de/index.html     – German page (GENERATED — run `python3 dev/build_de.py` after editing
@@ -65,7 +66,12 @@ how-fast-will-i-lose-weight-on-keto.html
                     Keto Bottom ad + links back to the calculator). Hand-maintained, English
                     only. (Their 2026-06-29 creation in the then-separate live repo was the
                     final live-drifts-ahead incident that motivated the single-repo merge.)
-service-worker.js – PWA service worker
+old.html          – The pre-2026 page, kept live ON PURPOSE as the try-it-yourself exhibit
+                    for the anti-flicker blog post (dev/docs/blog-post-catastrophe.md). Carries
+                    dead Optimize/UA/OneSignal tags — that IS the exhibit, don't "fix" it. It is
+                    noindex + canonical→/ because it shares the real page's <title>.
+                    NOTE: it registers service-worker.js, which does not exist in this repo.
+llms.txt, sitemap.xml – AI-crawler summary and the sitemap (referenced from robots.txt)
 manifest.json     – PWA manifest
 robots.txt
 CNAME             – keto-calculator.ankerl.com
@@ -131,12 +137,12 @@ LICENSE.txt (CC BY-SA 3.0), README.md – not deployed
 | Thing | Current |
 |-------|---------|
 | Layout | Inlined CSS: `#content` is a **flex row** at ≥830px (so `#sidebar` stretches to `#main`'s height for the sticky ad); `#main`/`#sidebar` still carry legacy float rules (ignored under flex). An `@media (max-width:830px)` mobile block collapses `#sidebar` and makes `#main` full-width. Responsive. |
-| JS libs | jQuery 1.11.1, Bootstrap 3.3.1 JS, bootstrap-datepicker — all **inlined** in `index.html`, at the **end of `<body>`** (moved out of `<head>` 2026-06-28 to unblock first paint) |
+| JS libs | **None.** Plain ES5 DOM code, ~50 KB inlined at the end of `<body>`. jQuery / Bootstrap JS / bootstrap-datepicker / scrolldepth were all deleted in commit `1c8e368`. |
 | Charts | Google Charts (Visualization API) via the modern `gstatic.com/charts/loader.js` + `google.charts.load('current', …)` (migrated off the deprecated `google.com/jsapi`) |
-| Analytics | **GA4 `gtag.js`, property `G-4EDP644SXM`** (added 2026-06-28, top of `<head>`, `async`). Replaced the prior dead stack — a Universal Analytics tag (`UA-36863101-1`, stopped collecting 2023-07-01), a dead Google Optimize anti-flicker snippet, and the jQuery ScrollDepth plugin (removed 2026-06-28 — it only pushed UA/GTM-format `dataLayer` objects that GA4 `gtag.js` never forwards; GA4 tracks scroll natively). **Google Consent Mode v2** is wired: defaults are denied (`gtag('consent','default',…)` before config), and a Cookiebot bridge (`CookiebotOnConsentReady` → `gtag('consent','update',…)`, statistics→`analytics_storage`, marketing→`ad_*`) grants on consent — so EU/Safari non-consenting traffic is modelled, not lost. Search Console is powered by the `google-site-verification` meta, independent of analytics. |
+| Analytics | **GA4 `gtag.js`, property `G-4EDP644SXM`** (added 2026-06-28, top of `<head>`, `async`). Replaced the prior dead stack — a Universal Analytics tag (`UA-36863101-1`, stopped collecting 2023-07-01), a dead Google Optimize anti-flicker snippet, and the jQuery ScrollDepth plugin (removed 2026-06-28 — it only pushed UA/GTM-format `dataLayer` objects that GA4 `gtag.js` never forwards; GA4 tracks scroll natively). **Google Consent Mode v2** is wired: consent defaults to **granted worldwide** and is denied only in the EEA/UK via a region-scoped second `gtag('consent','default',…)`, where Google's own CMP message then updates it. No manual consent bridge — Google's CMP reports into Consent Mode itself, so non-consenting EU traffic is modelled, not lost. Search Console is powered by the `google-site-verification` meta, independent of analytics. |
 | Push | **Removed** (was OneSignal) — SDK script, init/notifyButton, both service workers, and `manifest.json`'s `gcm_sender_id` all deleted |
-| Cookie consent | Cookiebot (`6ba27c9d-…`) |
-| Comments | **Cusdis** (lightweight, ad-free, no login to comment) — replaced Disqus 2026-06-29. Lazy-loaded on scroll near page bottom (`load_cusdis()`); embed `<div id="cusdis_thread">` with `data-app-id="YOUR_CUSDIS_APP_ID"` **(placeholder — paste the real App ID from a free cusdis.com site or comments stay empty)**. German page uses `data-page-id="/de/"` for a separate thread. |
+| Cookie consent | **Google's own certified CMP** (AdSense → Privacy & messaging), shown to EEA/UK visitors only and reporting straight into Consent Mode v2. Cookiebot is gone. |
+| Comments | **Cusdis** (lightweight, ad-free, no login to comment) — replaced Disqus 2026-06-29. Lazy-loaded via `IntersectionObserver` on `#comments` (`load_cusdis()`); App ID `12c12213-53aa-4286-a49e-225c1fb40f62` is configured and live. German page uses `data-page-id="/de/"` for a separate thread. |
 | Ads | AdSense `ca-pub-2398468033418589` |
 
 ## Design system (established 2026-06-28 — keep consistent)
@@ -218,7 +224,10 @@ fat=blue (dots, charts, anything). 3. Amber is **only** for required-input cues 
   card (`#food_equiv`) with everyday-food equivalents; hidden until all three macros are valid
 - `update_csv(data)` – CSV download link
 - `update_warnings()` – input validation + the fun warnings
-- `load_cookie()` / `set_cookie()` – persist inputs in cookies
+- `save_settings()` / `load_settings()` – persist inputs as ONE `localStorage` JSON blob
+  (`keto_settings`). The old per-field cookies are still read once as a legacy fallback.
+- `set_feet_inch(d, cm)` – the single cm→ft/in conversion. Rounds to whole inches FIRST,
+  then splits, so inches can never land on 12
 - `load_url_params()` – prefill from URL query params, e.g.
   `?carbs=25&target_deficit_form=20` (used for sharing; **must keep working**)
 
@@ -248,6 +257,33 @@ Your Optimal Macronutrient Ratio") for E-E-A-T/trust, not revenue. All three uni
 — keep them OFF (see `dev/docs/plan.md` §8). Note: Auto ads can still be re-enabled from the **AdSense
 dashboard** (Ads → By site) independent of code. (The old "forum" ads came from **Disqus's free
 tier**; Disqus was replaced by ad-free Cusdis on 2026-06-29, so that ad source is gone.)
+
+### All units are lazy-loaded (2026-08-01) — don't put an `<ins>` back in the HTML
+
+Every slot is now an **empty container** carrying `data-ad-lazy="<slot id>"` (plus
+`data-ad-size="160x600"` for the fixed sidebar); the `<ins>` is created and pushed by the
+**lazy ad loader** at the bottom of `index.html`, only once the slot comes within 600px of the
+viewport. Same loader in `dev/guides/template.html` for the three guides. Two reasons, both
+load-bearing:
+
+- **Viewability is what prices this site.** The 2026-07-22..28 report: mobile Keto Top 18%
+  viewable / €0.81 impression RPM and Keto Bottom 31% / €0.90, against the same units on desktop
+  at 36% / €2.41 and 55% / €3.42. Pushing on load fired impressions nobody ever scrolled to,
+  which repriced the whole account downward.
+- **It fixed a silent leak.** The sidebar pushed at every width even though `#sidebar` is
+  `display:none` under 830px — AdSense fills a *fixed-size* unit regardless of container
+  visibility, so 214 mobile impressions/week were served at **exactly 0%** viewable. A
+  `display:none` element never intersects, so the loader now simply never requests it there,
+  while a landscape phone above 830px still gets its ad.
+
+**The one rule when touching this:** a bare `adsbygoogle.push({})` binds to the next
+*uninitialised* `<ins>` in **document order** — you cannot name the element you mean. On scroll,
+order is whatever the reader does, so the loader creates the `<ins>` and pushes in the same
+breath, making the pushed slot always the only uninitialised one. Reintroducing a static `<ins>`
+alongside the lazy ones would mis-bind creatives (a 160x600 skyscraper landing in a full-width
+in-content box). Verified in headless Chrome incl. the desktop case where the sidebar pushes
+first. `embed.html` asserts (in `dev/build_embed.py`) that no `data-ad-lazy` or `adsbygoogle`
+survives into the widget.
 
 ## Working on this codebase
 

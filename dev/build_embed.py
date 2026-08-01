@@ -129,15 +129,16 @@ cut('<details class="detail-block" id="detail_intro"', '</details>', include_end
 # inline book rec (affiliate links stay on the main page only)
 cut('<div class="recommended">', '<p>Macronutrients are nutrients that provide energy for your body.</p>')
 
-# The ad-collapse fallback JS pairs with the (cut) ad units — the embed has
-# no slots for it to stamp, so it must not ship in the widget.
-cut('\t\t// If the AdSense script never loaded', '}, 3500);\n\t\t});\n', include_end=True)
+# The lazy ad loader pairs with the (cut) ad units — the embed has no slots
+# for it to fill, so it must not ship in the widget.
+cut('\t\t/* ---- Lazy ad loader', 'io.observe(boxes[j]); }\n\t\t})();\n', include_end=True)
 
-# In-content ad units: Keto Top (with its explanatory comment) and Keto
-# Bottom. Each lives in a <div class="fullwidthad" ...>...</div> with no
-# nested divs. The assert catches any future third unit.
+# In-content ad units: Keto Top and Keto Bottom. Each is now an empty
+# <div class="fullwidthad" data-ad-slot="..."></div> preceded by an
+# explanatory comment; cut from the comment so no dangling reference to a
+# removed unit is left behind. The assert catches any future third unit.
 cut('<!-- Keto Top', '</div>', include_end=True)
-cut('<div class="fullwidthad"', '</div>', include_end=True)
+cut('<!-- Keto Bottom', '</div>', include_end=True)
 assert '<div class="fullwidthad"' not in html, "unexpected extra in-content ad unit"
 
 # FAQ section (its JSON-LD was already removed above)
@@ -184,5 +185,12 @@ e += len('<noscript>Please enable JavaScript to view the comments.</noscript>')
 html = html[:s] + html[e:]
 
 # --- write ------------------------------------------------------------------
+
+# The widget must ship ad-free: the three slots (both in-content units and the
+# sidebar skyscraper) and the loader that fills them are all cut above. Checked
+# here, after every cut, rather than next to any one of them.
+assert 'data-ad-lazy' not in html, "an ad slot survived into the embed"
+assert 'adsbygoogle' not in html, "ad code survived into the embed"
+
 open(OUT, "w", encoding="utf-8").write(html)
 print("OK: wrote embed.html (%d bytes)." % len(html))

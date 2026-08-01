@@ -314,6 +314,10 @@
 		}
 
 		.adwrap{max-width:650px;margin:2.4em 0;}
+		/* AdSense's documented collapse idiom: it marks no-fill slots itself, and
+		   the lazy loader stamps the same attribute when the ad script never
+		   loaded at all (ad blocker, consent denied). */
+		ins[data-ad-status="unfilled"]{display:none !important;}
 
 		/* footer — author + freshness, the dark band the calculator uses */
 		#bottom1{background-color:#f8f8f8;}
@@ -370,17 +374,9 @@
 			<p>The worry goes like this: eat more protein than you need and your body converts the excess into glucose through <a href="https://en.wikipedia.org/wiki/Gluconeogenesis" onclick="return gatrack(this);">gluconeogenesis</a>, which raises blood sugar and stops ketosis. It sounds plausible, but it isn't how the body works.</p>
 			<p>Gluconeogenesis is mostly <b>demand-driven</b>, not supply-driven: your liver makes about as much glucose as your body actually needs, at a fairly steady rate — it doesn't ramp up just because extra protein is available. A large steak doesn't spike your blood sugar the way a bowl of rice does. For most people, eating to the higher end of their protein range has little measurable effect on ketone levels. The far more common mistake is the opposite one — eating too <em>little</em> protein and quietly losing muscle. So don't fear protein; just don't massively overshoot, and you'll be fine.</p>
 
-			<div class="adwrap">
-				<ins class="adsbygoogle"
-					 style="display:block"
-					 data-ad-client="ca-pub-2398468033418589"
-					 data-ad-slot="1224707884"
-					 data-ad-format="auto"
-					 data-full-width-responsive="true"></ins>
-				<script>
-				(adsbygoogle = window.adsbygoogle || []).push({});
-				</script>
-			</div>
+			<!-- Empty on purpose: the <ins> is injected and requested only once the
+			     slot nears the viewport — see the lazy ad loader in template.html. -->
+			<div class="adwrap" data-ad-lazy="1224707884"></div>
 
 			<h2>How much? Set it from lean body mass</h2>
 			<p>The key is to base protein on your <b>lean body mass</b> (your weight minus your body fat), not your total weight. Two people who weigh the same can carry very different amounts of muscle, and it's the muscle that needs protecting — basing the target on total weight would over-feed protein to someone carrying more fat.</p>
@@ -452,6 +448,70 @@
 			} catch (e) {}
 			return true;
 		}
+	</script>
+
+	<!-- Lazy ad loader; same contract and the same reasoning as the calculator
+	     page (see the long comment there). The article unit sits mid-page, so
+	     pushing it on load fired an impression whether or not the reader ever
+	     scrolled that far — and on this site impression RPM tracks Active View
+	     viewability almost exactly. Requesting on approach trades unseen
+	     impressions for a much higher viewable rate. The <ins> is built here
+	     rather than in the markup because adsbygoogle.push({}) binds to the next
+	     uninitialised <ins> in document order; creating and pushing together
+	     keeps every slot matched to its own box. -->
+	<script>
+		(function () {
+			var AD_CLIENT = 'ca-pub-2398468033418589';
+			var boxes = document.querySelectorAll('[data-ad-lazy]');
+			var blocked = false;
+
+			function request(box) {
+				if (blocked || box.getAttribute('data-ad-done')) { return; }
+				box.setAttribute('data-ad-done', '1');
+
+				var ins = document.createElement('ins');
+				ins.className = 'adsbygoogle';
+				ins.setAttribute('data-ad-client', AD_CLIENT);
+				ins.setAttribute('data-ad-slot', box.getAttribute('data-ad-lazy'));
+				ins.style.display = 'block';
+				ins.setAttribute('data-ad-format', 'auto');
+				ins.setAttribute('data-full-width-responsive', 'true');
+
+				box.appendChild(ins);
+				(window.adsbygoogle = window.adsbygoogle || []).push({});
+			}
+
+			// Ad script blocked outright (ad blocker, consent denied): stop
+			// requesting, and hide any <ins> already injected. .adwrap reserves no
+			// height of its own, so there is no container to collapse here —
+			// unlike the calculator page.
+			window.addEventListener('load', function () {
+				setTimeout(function () {
+					if (window.adsbygoogle && window.adsbygoogle.loaded) { return; }
+					blocked = true;
+					for (var i = 0; i < boxes.length; ++i) {
+						var ins = boxes[i].querySelector('ins.adsbygoogle');
+						if (ins) { ins.setAttribute('data-ad-status', 'unfilled'); }
+					}
+				}, 3500);
+			});
+
+			if (!('IntersectionObserver' in window)) {
+				for (var i = 0; i < boxes.length; ++i) { request(boxes[i]); }
+				return;
+			}
+
+			var io = new IntersectionObserver(function (entries) {
+				for (var i = 0; i < entries.length; ++i) {
+					if (entries[i].isIntersecting) {
+						io.unobserve(entries[i].target);
+						request(entries[i].target);
+					}
+				}
+			}, { rootMargin: '600px 0px' });
+
+			for (var j = 0; j < boxes.length; ++j) { io.observe(boxes[j]); }
+		})();
 	</script>
 </body>
 </html>

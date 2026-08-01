@@ -1396,16 +1396,19 @@
 		/* Reserve the in-content ad slots' height up front (the sidebar's 600px
 		   reservation lives on .sidebar-ad) so a loading ad doesn't shift the
 		   page (CLS) — but give the space back instead of leaving a permanent
-		   hole when no ad renders. One signal covers both failure modes:
+		   hole when no ad renders. Two failure modes, two signals:
 		   AdSense marks no-fill slots with data-ad-status="unfilled" (its
-		   documented collapse idiom), and the load handler near the bottom of
-		   the page stamps the same attribute when the ad script never loaded
-		   at all (ad blocker, consent denied).
+		   documented collapse idiom), and when the ad script never loaded at
+		   all (ad blocker, consent denied) the loader near the bottom of the
+		   page adds .ad-collapsed to the container — by then the slot may hold
+		   no <ins> at all to stamp, since the units are injected on scroll.
 		   !important: the slots carry inline display/size styles. */
 		.fullwidthad { min-height:280px; }
 		ins[data-ad-status="unfilled"] { display:none !important; }
 		.fullwidthad:has(ins[data-ad-status="unfilled"]) { min-height:0; }
 		.sidebar-ad:has(ins[data-ad-status="unfilled"]) { height:auto; }
+		.fullwidthad.ad-collapsed { min-height:0; }
+		.sidebar-ad.ad-collapsed { height:auto; }
 
 		/* ---- viewport media queries only below this line; base rules above ---- */
 		@media only screen and (max-width: 830px) {
@@ -1840,19 +1843,10 @@
 					<p class="fineprint" style="margin-top:-0.5em;">Copies a link that reopens this calculator with your numbers already filled in — handy for saving or sharing on Reddit.</p>
 
 					<p>
-						<div class="fullwidthad">
-							<!-- Keto Bottom -->
-							<ins class="adsbygoogle"
-								 style="display:block"
-								 data-ad-client="ca-pub-2398468033418589"
-								 data-ad-slot="1224707884"
-								 data-ad-format="auto"
-								 data-full-width-responsive="true"></ins>
-							<script>
-							(adsbygoogle = window.adsbygoogle || []).push({});
-							</script>
-							<!-- google adsense end -->
-						</div>
+						<!-- Keto Bottom. Empty on purpose: the <ins> is injected and
+						     requested only once the slot nears the viewport — see the
+						     lazy ad loader at the bottom of the page. -->
+						<div class="fullwidthad" data-ad-lazy="1224707884"></div>
 					</p>
 					
 				
@@ -1912,18 +1906,9 @@
 					     scroll depth, which starved the slot and dragged viewability —
 					     and with it the whole page's bid prices — down). The .fullwidthad
 					     rule reserves the space so a loading ad causes no layout shift,
-					     and collapses it when no ad renders. -->
-					<div class="fullwidthad">
-						<ins class="adsbygoogle"
-							 style="display:block"
-							 data-ad-client="ca-pub-2398468033418589"
-							 data-ad-slot="7271241487"
-							 data-ad-format="auto"
-							 data-full-width-responsive="true"></ins>
-						<script>
-						(adsbygoogle = window.adsbygoogle || []).push({});
-						</script>
-					</div>
+					     and collapses it when no ad renders. Empty on purpose: the <ins>
+					     is injected and requested on scroll — see the lazy ad loader. -->
+					<div class="fullwidthad" data-ad-lazy="7271241487"></div>
 
 					<div id="faq">
 						<h2>Keto Calculator FAQ</h2>
@@ -2138,16 +2123,17 @@
 				     single inline "Books I recommend" rec keeps the E-E-A-T/trust value.
 				     Slot = "Keto Sidebar" (8747974681) — a real display unit (formerly
 				     "Keto Mid", repurposed from its old in-form placement and renamed in
-				     the AdSense dashboard). Real unit = proper per-unit reporting. -->
-				<div class="sidebar-ad">
-					<ins class="adsbygoogle"
-						 style="display:inline-block;width:160px;height:600px"
-						 data-ad-client="ca-pub-2398468033418589"
-						 data-ad-slot="8747974681"></ins>
-					<script>
-					(adsbygoogle = window.adsbygoogle || []).push({});
-					</script>
-				</div>
+				     the AdSense dashboard). Real unit = proper per-unit reporting.
+
+				     This used to push on page load, which requested a 160x600 even at
+				     phone widths where #sidebar is display:none — AdSense fills a
+				     fixed-size unit whether or not its container is visible, so the
+				     2026-07-22..28 report shows 214 mobile impressions at *exactly* 0%
+				     Active View viewable. Injecting on intersection fixes that for free:
+				     a display:none element never intersects, so no request is made at
+				     phone widths — while a landscape phone above 830px, where the
+				     sidebar really is visible, still gets its ad. -->
+				<div class="sidebar-ad" data-ad-lazy="8747974681" data-ad-size="160x600"></div>
 			</div>	
 		</div>
 		
@@ -2284,6 +2270,17 @@
 			try { localStorage.setItem("keto_settings", JSON.stringify(data)); } catch (err) {}
 		}
 
+
+		// cm -> the feet/inch pair. Round to whole inches FIRST, then split into
+		// feet and inches, so the carry happens for free. Rounding the inches
+		// within an already-fixed foot (the old way) let them round up to 12 and
+		// display "5 ft 12 in" — every foot mark had a ~0.3 cm band that did it:
+		// 182.8, 152.3, 121.8 and so on.
+		function set_feet_inch(d, cm) {
+			var total_inch = Math.round(cm / 2.54);
+			d.feet.value = Math.floor(total_inch / 12);
+			d.inch.value = total_inch % 12;
+		}
 
 		function radio_val(r) {
 			for (var i=0; i<r.length; i++) {
@@ -2504,7 +2501,7 @@
 						} else {
 							msg += "2000 kcal for a boy.";
 						}
-						msg += " See the <a href=\"https://www.nhlbi.nih.gov/health/educational/wecan/downloads/calreqtips.pdf\">PDF from the National Insitutes of Health</a> for more info!";
+						msg += " See the <a href=\"https://www.nhlbi.nih.gov/health/educational/wecan/downloads/calreqtips.pdf\">PDF from the National Institutes of Health</a> for more info!";
 						update_by_id("date_warning", msg);
 						update_by_id("date_warning_at_calorie_selection", msg);
 					}
@@ -2559,11 +2556,13 @@
 				if (e.target == d.height) {
 					var cm = parseFloat(d.height.value);
 					if (!isNaN(cm)) {
-						var feet = Math.floor(0.032808399 * cm);
-						var inch = Math.round((cm - (feet / 0.032808399)) / 2.54);
-						d.feet.value = feet;
-						d.inch.value = inch
+						set_feet_inch(d, cm);
 					} else {
+						// Clearing cm clears the imperial pair too — same as clearing
+						// kg clears lbs. Leaving a stale "5 ft 11 in" behind made the
+						// form claim a height it no longer had.
+						d.feet.value = "";
+						d.inch.value = "";
 					}
 				} else if (e.target == d.feet || e.target == d.inch) {
 					var feet = parseFloat(d.feet.value);
@@ -2591,9 +2590,7 @@
 				var feet = parseFloat(d.feet.value);
 				var inch = parseFloat(d.inch.value);
 				if (!isNaN(cm)) {
-					var f = Math.floor(0.032808399 * cm);
-					d.feet.value = f;
-					d.inch.value = Math.round((cm - (f / 0.032808399)) / 2.54);
+					set_feet_inch(d, cm);
 				} else if (!isNaN(feet) && !isNaN(inch)) {
 					d.height.value = Math.round(feet / 0.032808399 + inch * 2.54);
 				}
@@ -3007,12 +3004,29 @@
 			
 			
 			// generate reddit_post_str
+			//
+			// Only once there is something worth posting. Before the form is
+			// complete every figure below is NaN and level_to_shorttext[NaN] is
+			// undefined, so the box used to sit there offering
+			//   NaN/M/'" | CW  | % BF | undefined
+			//   * NaN kcal Goal, a NaN% deficit. (NaN min, NaN max)
+			// ready to paste straight into /r/keto — which is a real traffic
+			// source for this site, so it went out in public looking broken.
+			var reddit_ready = !(isNaN(age) || isNaN(carbs_g) || isNaN(protein_g)
+				|| isNaN(fat_g) || isNaN(target_kcal));
+			if (!reddit_ready) {
+				d.reddit_copypaste.value = "Fill in the calculator above and your macros will appear here, ready to paste into /r/keto.";
+				update_by_name("redditsubmit", "");
+				mark_empty_fields(d);
+				return;
+			}
+
 			var version = document.getElementById("version_number").innerHTML;
 			// remove leading and trailing whitespace
 			version = version.replace(/^\s+|\s+$/g, '');
-			
+
 			var nl = "\n"
-			
+
 			var str = "Replace this line with your question\n"
 			str += "\n---" + nl
 			str += "*Generated by [Keto Calculator](https://keto-calculator.ankerl.com) " + version + "*" + nl + nl;
@@ -3048,23 +3062,35 @@
 			
 			d.reddit_copypaste.value = str;
 			
-			// build url
-			var url = "http://www.reddit.com/r/keto/submit?"
+			// build url. https, and the href is quoted — it was bare, which only
+			// worked because encodeURIComponent leaves no spaces to terminate the
+			// attribute on. rel=noopener because the link opens a new tab.
+			var url = "https://www.reddit.com/r/keto/submit?"
 			url += "text=" + encodeURIComponent("\n\n" + str);
-			
-			update_by_name("redditsubmit", "<a href="+url+" target=\"_blank\">Create a /r/keto post</a>");
+
+			update_by_name("redditsubmit", "<a href=\""+url+"\" target=\"_blank\" rel=\"noopener\">Create a /r/keto post</a>");
 			
 			mark_empty_fields(d);
 			
 			
 		}
 
+		// Shared links get mangled in the wild — chat clients trim them, forum
+		// software escapes them, people hand-edit them. A stray '%' makes
+		// decodeURIComponent throw URIError, and this runs at the top of an
+		// init script: one bad parameter used to take down everything after it,
+		// so saved settings never loaded and the required-field cues never
+		// appeared. Skip the parameters we can't read and keep the rest.
 		function get_url_params(search) {
     		var hashes = search.slice(search.indexOf('?') + 1).split('&');
     		var params = {};
 			hashes.forEach(function (hash) {
-				var keyVal = hash.split('=');
-        		params[keyVal[0]] = decodeURIComponent(keyVal[1]);
+				if (!hash) { return; }
+				var eq = hash.indexOf('=');
+				if (eq < 1) { return; }   // no '=', or an empty key
+				try {
+					params[decodeURIComponent(hash.slice(0, eq))] = decodeURIComponent(hash.slice(eq + 1));
+				} catch (err) {}
 			});
 
 		    return params;
@@ -3101,14 +3127,21 @@
 				set_by_key(key, value);
 			})
 
-			// make sure updates work correctly
+			// Pick which target drives the recalculation. New links carry exactly
+			// one, so this is a formality for them — it matters for links shared
+			// before that change, which carry all three. Prefer the most precise:
+			// the three are mutually consistent in the sender's form, and the only
+			// thing that separates them is rounding, so recomputing from whole
+			// kcal loses <1 kcal where recomputing from whole grams of fat loses
+			// up to ~4.5 (1 g fat = 9 kcal). Kcal is also the figure the sender
+			// actually read off the page.
 			var d = document.data;
-			if (!isNaN(parseFloat(d.target_fat_form.value))) {
-				last_updated_target = d.target_fat_form;
+			if (!isNaN(parseFloat(d.target_kcal_form.value))) {
+				last_updated_target = d.target_kcal_form;
 			} else if (!isNaN(parseFloat(d.target_deficit_form.value))) {
 				last_updated_target = d.target_deficit_form;
-			} else if (!isNaN(parseFloat(d.target_kcal_form.value))) {
-				last_updated_target = d.target_kcal_form;
+			} else if (!isNaN(parseFloat(d.target_fat_form.value))) {
+				last_updated_target = d.target_fat_form;
 			}
 
 			// remove from URL
@@ -3128,7 +3161,7 @@
 		function build_share_url() {
 			var d = document.data;
 			var fields = ['sex','kg','height','bday','bodyfat','level','custom_expenditure',
-				'carbs','protein_chosen','target_deficit_form','target_fat_form','target_kcal_form'];
+				'carbs','protein_chosen'];
 			var parts = [];
 			fields.forEach(function(name) {
 				var el = d.elements[name];
@@ -3138,6 +3171,18 @@
 					parts.push(name + '=' + encodeURIComponent(val));
 				}
 			});
+
+			// Only the target the visitor actually drove — never all three.
+			// The three are derived from each other, so sending them all made the
+			// recipient's load_url_params pick by its own priority (fat first) and
+			// recompute from a *rounded* fat gram figure. A link built from a 20%
+			// deficit came back as 1521 kcal instead of 1525. Sending just the
+			// driver reproduces the sender's numbers exactly, and load_url_params
+			// then has only one candidate to choose. Links made before this change
+			// still carry all three and still resolve the way they always did.
+			if (last_updated_target && last_updated_target.name && last_updated_target.value !== '') {
+				parts.push(last_updated_target.name + '=' + encodeURIComponent(last_updated_target.value));
+			}
 			var base = location.protocol + '//' + location.host + location.pathname;
 			return base + (parts.length ? '?' + parts.join('&') : '');
 		}
@@ -3468,22 +3513,99 @@
 			e.target.select();
 		}
 
-		// If the AdSense script never loaded (ad blocker, consent denied), no
-		// slot will ever fill — stamp the slots with the same attribute AdSense
-		// uses for no-fill responses, so the CSS reclaims their reserved space.
-		// Timing is safe: async scripts delay the load event, so a slow network
-		// never lands here — only a script that failed outright. The 3.5s is
-		// margin for consent-manager-style late injection; if the script does
-		// turn up and fill a slot, it overwrites the attribute.
-		window.addEventListener('load', function () {
-			setTimeout(function () {
-				if (window.adsbygoogle && window.adsbygoogle.loaded) { return; }
-				var ads = document.getElementsByClassName('adsbygoogle');
-				for (var i = 0; i < ads.length; ++i) {
-					ads[i].setAttribute('data-ad-status', 'unfilled');
+		/* ---- Lazy ad loader -------------------------------------------------
+		   Every display unit on this page used to sit in the HTML and push on
+		   load, which fired an impression whether or not the reader ever
+		   scrolled to it. The AdSense report for 2026-07-22..28 shows what that
+		   costs: on mobile, Keto Top was 18% and Keto Bottom 31% Active View
+		   viewable, earning EUR 0.81 / 0.90 impression RPM — while the same
+		   units on desktop, at 36% / 55% viewable, earned EUR 2.41 / 3.42.
+		   Price tracks viewability almost exactly, so flooding the auction with
+		   impressions nobody saw was repricing the whole site downward.
+		   Requesting an ad only when its slot nears the viewport trades unseen
+		   impressions for a far higher viewable rate.
+
+		   Why the <ins> is built here instead of living in the HTML: a bare
+		   adsbygoogle.push({}) binds to the next *uninitialised* <ins> in
+		   document order — you cannot name the element you mean. Pushing slots
+		   out of order (and on scroll, order is whatever the reader does) would
+		   drop one slot's creative into another slot's box, e.g. a 160x600
+		   skyscraper into a full-width in-content space. Creating the element
+		   and pushing in the same breath sidesteps that entirely: the slot being
+		   pushed is always the only uninitialised one, whatever the order. */
+		(function () {
+			var AD_CLIENT = 'ca-pub-2398468033418589';
+			var boxes = document.querySelectorAll('[data-ad-lazy]');
+			var blocked = false;
+
+			function request(box) {
+				if (blocked || box.getAttribute('data-ad-done')) { return; }
+				box.setAttribute('data-ad-done', '1');
+
+				var ins = document.createElement('ins');
+				ins.className = 'adsbygoogle';
+				ins.setAttribute('data-ad-client', AD_CLIENT);
+				ins.setAttribute('data-ad-slot', box.getAttribute('data-ad-lazy'));
+
+				// A fixed size (the sidebar's 160x600) or a responsive unit that
+				// fills the content column.
+				var size = box.getAttribute('data-ad-size');
+				if (size) {
+					var wh = size.split('x');
+					ins.style.cssText = 'display:inline-block;width:' + wh[0] + 'px;height:' + wh[1] + 'px';
+				} else {
+					ins.style.display = 'block';
+					ins.setAttribute('data-ad-format', 'auto');
+					ins.setAttribute('data-full-width-responsive', 'true');
 				}
-			}, 3500);
-		});
+
+				box.appendChild(ins);
+				(window.adsbygoogle = window.adsbygoogle || []).push({});
+			}
+
+			// If the AdSense script never loaded (ad blocker, consent denied) no
+			// slot can ever fill, and unlike before there may be no <ins> to stamp
+			// with data-ad-status — so collapse the containers directly and stop
+			// requesting. Timing is safe: async scripts delay the load event, so a
+			// slow network never lands here, only a script that failed outright.
+			// The 3.5s is margin for consent-manager-style late injection.
+			window.addEventListener('load', function () {
+				setTimeout(function () {
+					if (window.adsbygoogle && window.adsbygoogle.loaded) { return; }
+					blocked = true;
+					for (var i = 0; i < boxes.length; ++i) {
+						boxes[i].classList.add('ad-collapsed');
+						// A slot already in view when the page loaded (the desktop
+						// sidebar) was requested before the script could be declared
+						// dead, so it holds an <ins> still sized by its inline style.
+						// Stamp it with AdSense's own no-fill attribute so the CSS
+						// hides it — collapsing the container alone leaves the 600px.
+						var ins = boxes[i].querySelector('ins.adsbygoogle');
+						if (ins) { ins.setAttribute('data-ad-status', 'unfilled'); }
+					}
+				}, 3500);
+			});
+
+			if (!('IntersectionObserver' in window)) {
+				for (var i = 0; i < boxes.length; ++i) { request(boxes[i]); }
+				return;
+			}
+
+			// 600px of lead time: enough for the creative to render before it
+			// scrolls into view (a blank slot the reader scrolls past is the one
+			// failure mode worse than loading slightly early), tight enough that
+			// the ad is genuinely on its way to being seen.
+			var io = new IntersectionObserver(function (entries) {
+				for (var i = 0; i < entries.length; ++i) {
+					if (entries[i].isIntersecting) {
+						io.unobserve(entries[i].target);
+						request(entries[i].target);
+					}
+				}
+			}, { rootMargin: '600px 0px' });
+
+			for (var j = 0; j < boxes.length; ++j) { io.observe(boxes[j]); }
+		})();
 		
 		// Add event listeners once the DOM has fully loaded by listening for the
 		// `DOMContentLoaded` event on the document, and adding your listeners to
@@ -3528,17 +3650,25 @@
 			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
 		}
 
-		// only load comments near the bottom.
-		window.onscroll = function(e) {
-			if ((window.innerHeight*3 + window.scrollY) >= document.body.offsetHeight) {
-				// hit one window.innerHeight above bottom of page
-				if (!cusdis_loaded) {
-					cusdis_loaded = true;
-					window.onscroll = null;  // one job, done
-					load_cusdis();
-				};
-			}
-		};
+		// Only load comments once the reader nears them. This used to be a
+		// window.onscroll handler that read document.body.offsetHeight on every
+		// scroll event — a forced layout per frame, on the 65%-mobile audience
+		// least able to afford it. An observer costs nothing until it fires, and
+		// it can't be clobbered the way the global onscroll slot could.
+		(function () {
+			var target = document.getElementById('comments');
+			if (!target) { return; }
+			var start = function () {
+				if (cusdis_loaded) { return; }
+				cusdis_loaded = true;
+				load_cusdis();
+			};
+			if (!('IntersectionObserver' in window)) { start(); return; }
+			var io = new IntersectionObserver(function (entries) {
+				if (entries[0].isIntersecting) { io.disconnect(); start(); }
+			}, { rootMargin: '1200px 0px' });   // ~2 phone viewports of lead time
+			io.observe(target);
+		})();
 	</script>
 	<noscript>Please enable JavaScript to view the comments.</noscript>
 </body>
