@@ -208,7 +208,7 @@ as a "readout". Don't add competing decorative accents elsewhere — boldness is
   pulsing glow (`@keyframes needsInputPulse`), radios get a circular ring; respects
   `prefers-reduced-motion`. The cue is amber **because** the rest of the UI is cyan — keep that split.
 - `.userinputs` — the data-entry table: row padding, hairline separators, vertically centered.
-- Primary button (e.g. "Share my macros"): cyan gradient, radius 9px, soft shadow, Space Grotesk 600.
+- Primary button (`.btn-cta`, e.g. "Copy my link"): cyan gradient, radius 9px, soft shadow, Space Grotesk 600.
 
 ### Rules when extending
 1. Numbers/labels → Space Grotesk; prose → PT Serif. 2. Macros always carbs=red / protein=green /

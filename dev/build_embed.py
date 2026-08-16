@@ -21,14 +21,17 @@ What the embed deliberately does NOT contain:
     policy risk; the widget's value is the backlink + brand traffic)
   - the consent-message loader (no ads -> no ad consent needed; the GA4
     consent-mode defaults stay, so EEA analytics remains denied-by-default)
-  - manifest / service-worker registration, FAQ + its JSON-LD, comments,
-    the book rec, the sidebar, the about-me footer (replaced by a compact
-    "Powered by" footer whose link opens the full site)
+  - manifest / service-worker registration, FAQ + its JSON-LD, the guides
+    list, the "Embed This Calculator" pitch, comments, the book rec, the
+    sidebar, the about-me footer (replaced by a compact "Powered by" footer
+    whose link opens the full site)
 
 Kept fully functional: all inputs, results card, food equivalents, pies,
 forecast + CSV, warnings, settings persistence, URL-param prefill, and the
-"Share my macros" button (its link intentionally points at the FULL site,
-not the embed, so shares funnel people to keto-calculator.ankerl.com).
+whole "Share Your Macros" block — the copy-link button, the /r/keto post and
+its prefilled submit link. Every link in it points at the FULL site, not the
+embed, so an embed on someone else's page funnels people back here; that
+backlink is what the widget is for.
 """
 
 import os
@@ -45,7 +48,10 @@ def cut(start_marker, end_marker, replacement="", include_end=False):
     """Remove [start_marker, end_marker) (or through end_marker when
     include_end) and insert `replacement`. Asserts both anchors exist."""
     global html
-    s = html.index(start_marker)          # raises ValueError if missing
+    assert start_marker in html, "cut(): start anchor gone from index.html: %r" % start_marker
+    s = html.index(start_marker)
+    assert end_marker in html[s:], ("cut(): end anchor %r not found after %r"
+                                    % (end_marker, start_marker))
     e = html.index(end_marker, s)
     if include_end:
         e += len(end_marker)
@@ -141,15 +147,13 @@ cut('<!-- Keto Top', '</div>', include_end=True)
 cut('<!-- Keto Bottom', '</div>', include_end=True)
 assert '<div class="fullwidthad"' not in html, "unexpected extra in-content ad unit"
 
-# FAQ section (its JSON-LD was already removed above) and the guides list.
-# The "Share Your Macros" block is deliberately NOT cut: it sits up in the
-# results, it carries reddit_copypaste (which the calculator JS writes to on
-# every recalculation), and its links point at the full site — an embed on
-# someone else's page is exactly where a way back here earns its keep.
-cut('<div id="faq">', '<div id="embedcalc">')
-
-# "Embed This Calculator" — the widget doesn't advertise embedding itself.
-cut('<div id="embedcalc">', '<div id="comments">')
+# Everything from the FAQ to the comments: the FAQ (its JSON-LD went above),
+# the guides list, and the "Embed This Calculator" pitch — a widget doesn't
+# advertise embedding itself. The "Share Your Macros" block survives because it
+# sits further up in the results: it carries reddit_copypaste (which the
+# calculator JS writes to on every recalculation) and its links point at the
+# full site, so an embed on someone else's page is a way back here.
+cut('<div id="faq">', '<div id="comments">')
 
 # comments section
 cut('<div id="comments">', '</form>')
@@ -172,6 +176,9 @@ cut('<div id="bottom1">', '<!-- track outbound links start -->',
 
 	''')
 
+rep("The link reopens this calculator with your numbers already",
+    "The link opens the full calculator with your numbers already")
+
 # "Share my macros" from an embed hands out the FULL site's URL
 rep("		var base = location.protocol + '//' + location.host + location.pathname;",
     "		var base = 'https://keto-calculator.ankerl.com/';  // embed: shares open the full site")
@@ -188,6 +195,14 @@ html = html[:s] + html[e:]
 # The widget must ship ad-free: the three slots (both in-content units and the
 # sidebar skyscraper) and the loader that fills them are all cut above. Checked
 # here, after every cut, rather than next to any one of them.
+# Positional cuts remove whatever happens to sit between their anchors, so a
+# section that moves into a range would vanish silently, with both anchors
+# present and a clean exit. State the outcome instead of trusting the ranges.
+for gone in ('id="faq"', 'id="keto_guides"', 'id="embedcalc"', 'id="comments"', 'id="sidebar"'):
+    assert gone not in html, "section survived into the embed: " + gone
+for kept in ('id="share"', 'name="reddit_copypaste"', 'id="redditsubmit"', 'id="yourpersonalresults"'):
+    assert kept in html, "section lost from the embed: " + kept
+
 assert 'data-ad-lazy' not in html, "an ad slot survived into the embed"
 assert 'adsbygoogle' not in html, "ad code survived into the embed"
 

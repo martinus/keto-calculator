@@ -1271,7 +1271,7 @@
             #logo { display:none; }
             #sidebar { display:none; }
             #comments { display:none; }
-            #questions { display:none; }
+            #share { display:none; }
             
             h1,h2,h3,h4,h5 { white-space: normal; }
             h1 { font-size:3em }
@@ -1340,10 +1340,10 @@
 		/* The two share buttons sit on one line and wrap together on narrow
 		   screens; the /r/keto one stays hidden until there is a post to make. */
 		.share-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
-		#redditsubmit[hidden] { display:none; }
+		/* has to out-rank the #main p a.btn-cta rule above, which sets display */
+		#main p a.btn-cta[hidden] { display:none; }
 		#share_feedback { color:#1a8a55; font-size:smaller; }
 		#share details.detail-block { margin-left:0; }
-		#share details.detail-block > summary { font-size:14px; }
 
 		/* Reserve the in-content ad slots' height up front (the sidebar's 600px
 		   reservation lives on .sidebar-ad) so a loading ad doesn't shift the
@@ -1789,13 +1789,13 @@
 							<span id="share_feedback"></span>
 						</p>
 
-						<p class="fineprint">The link reopens this calculator with your numbers already
+						<p class="fineprint">The link opens the full calculator with your numbers already
 						filled in. The /r/keto button opens a new post with them written up as a table —
 						replace the first line with your question and hit post.</p>
 
 						<details class="detail-block">
-							<summary>Show the /r/keto post text</summary>
-							<textarea class="copytext" cols="2" name="reddit_copypaste" readonly="readonly" rows="20" aria-label="Reddit post text"></textarea>
+							<summary>Show the post text — your macros as a table</summary>
+							<textarea class="copytext" name="reddit_copypaste" readonly="readonly" rows="20" aria-label="Reddit post text"></textarea>
 							<p class="fineprint">Rather do it by hand? Click the box to select it, copy with Ctrl+C, then
 							<a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">go to the /r/keto submit page</a>
 							and paste it into the text field.</p>
@@ -2263,6 +2263,11 @@
 		}
 
 		function calc_handler(e) {
+			// No event means a programmatic recalculation — restored settings or a
+			// shared link — which carries no record of which target the visitor
+			// drove, so work it out from the values themselves.
+			if (!e) { infer_target_driver(); }
+
 			// perform fast updates immediately, no need to wait
 			update_calculations(e);
 
@@ -2777,9 +2782,10 @@
 			var reddit_ready = !(isNaN(age) || isNaN(carbs_g) || isNaN(protein_g)
 				|| isNaN(fat_g) || isNaN(target_kcal) || isNaN(expenditure)
 				|| isNaN(kcal_min) || isNaN(fat_g_min));
+			var cta = document.getElementById("redditsubmit");
+			cta.hidden = !reddit_ready;
 			if (!reddit_ready) {
 				d.reddit_copypaste.value = "Fill in the calculator above and your macros will appear here, ready to paste into /r/keto.";
-				document.getElementById("redditsubmit").hidden = true;
 				mark_empty_fields(d);
 				return;
 			}
@@ -2839,10 +2845,8 @@
 			d.reddit_copypaste.value = str;
 			
 			// Reddit prefills the composer's body from ?text=. The button lives in
-			// the markup; only its href and visibility are ours to set.
-			var cta = document.getElementById("redditsubmit");
+			// the markup; only its href is ours to set (visibility above).
 			cta.href = "https://www.reddit.com/r/keto/submit?text=" + encodeURIComponent(str);
-			cta.hidden = false;
 			
 			mark_empty_fields(d);
 			
@@ -2922,11 +2926,6 @@
 				set_by_key(key, value);
 			})
 
-			// New links carry exactly one target, so this is a formality for
-			// them; it matters for links shared before that change, which carry
-			// all three.
-			infer_target_driver();
-
 			// remove from URL
 			var url = [location.protocol, '//', location.host, location.pathname].join('');
 			window.history.replaceState({}, document.title, url);
@@ -2973,7 +2972,7 @@
 		function share_my_macros() {
 			var url = build_share_url();
 			var fb = document.getElementById('share_feedback');
-			var ok = function() { if (fb) { fb.textContent = ' Link copied to clipboard!'; } };
+			var ok = function() { if (fb) { fb.textContent = 'Link copied to clipboard!'; } };
 			if (navigator.clipboard && navigator.clipboard.writeText) {
 				navigator.clipboard.writeText(url).then(ok, function() { window.prompt('Copy your shareable link:', url); });
 			} else {
@@ -3001,10 +3000,6 @@
 				loaded = true;
 			}
 			if (loaded) {
-				// The saved blob has no record of which target the visitor drove,
-				// so work it out before recalculating — otherwise their share
-				// link goes out without one.
-				infer_target_driver();
 				// initiate recalculation
 				calc_handler(null);
 			}

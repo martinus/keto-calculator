@@ -278,7 +278,8 @@ rep('''<p class="fineprint">The link reopens this calculator with your numbers a
     '''<p class="fineprint">Der Link öffnet diesen Rechner mit deinen Werten bereits
 						ausgefüllt. Der /r/keto-Button öffnet einen neuen Beitrag, in dem sie als Tabelle
 						aufbereitet sind — ersetze die erste Zeile durch deine Frage und poste ihn.</p>''')
-rep('<summary>Show the /r/keto post text</summary>', '<summary>Text für den /r/keto-Beitrag anzeigen</summary>')
+rep('<summary>Show the post text — your macros as a table</summary>',
+    '<summary>Beitragstext anzeigen — deine Makros als Tabelle</summary>')
 rep('''<p class="fineprint">Rather do it by hand? Click the box to select it, copy with Ctrl+C, then
 							<a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">go to the /r/keto submit page</a>
 							and paste it into the text field.</p>''',
@@ -419,7 +420,7 @@ rep('<span class="guide-desc">Why the first week is mostly water, and how your c
     '<span class="guide-desc">Warum die erste Woche vor allem Wasser ist und wie dein Kaloriendefizit das echte Abnehmtempo bestimmt.</span>')
 
 # ---------------------------------------------------------------------------
-# 7. Embed section / questions / comments / sidebar / about
+# 7. Embed section / comments / sidebar / about
 # ---------------------------------------------------------------------------
 rep('<h2>Embed This Calculator on Your Site</h2>', '<h2>Diesen Rechner auf deiner Website einbetten</h2>')
 rep("<p>Run a keto blog, coaching site, or forum? You can embed this calculator for free —\n                        paste this snippet into your page and you're done. It always serves the latest version.</p>",
@@ -546,7 +547,7 @@ rep('3: "Very active",', '3: "Sehr aktiv",')
 rep('4: "Custom expenditure: "', '4: "Eigener Verbrauch: "')
 
 # share feedback
-rep("fb.textContent = ' Link copied to clipboard!';", "fb.textContent = ' Link in die Zwischenablage kopiert!';")
+rep("fb.textContent = 'Link copied to clipboard!';", "fb.textContent = 'Link in die Zwischenablage kopiert!';")
 rep("window.prompt('Copy your shareable link:', url);", "window.prompt('Kopiere deinen Teilen-Link:', url);", count=2)
 
 # ---------------------------------------------------------------------------

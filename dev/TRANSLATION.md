@@ -44,11 +44,12 @@ matching section and re-run.
 - [ ] **4. Macronutrient section** — carbs / protein / fat headings, all body
   copy, the three `<details>` blocks, table headers (min/chosen/max, etc.).
 - [ ] **5. Results card** — kcal label, macro names (Kohlenhydrate/Eiweiß/Fett),
-  food-equivalent note, results disclaimer, share button, pie labels,
+  food-equivalent note, results disclaimer, share section (copy link +
+  /r/keto post and its buttons), pie labels,
   projection + MFP copy, weight-loss forecast.
 - [ ] **6. FAQ** — all 8 questions/answers in BOTH the visible HTML and the
   `FAQPage` JSON-LD (Google requires they match — translate them identically).
-- [ ] **7. Questions / comments / sidebar / about** — Reddit helper, comments,
+- [ ] **7. Embed / comments / sidebar / about** — embed snippet, comments,
   book-collection heading, "Created by" bio.
 - [ ] **8. JavaScript strings** — food equivalents, the 10 `deficit_levels`
   messages, all `update_warnings()` messages (incl. the funny dwarf/giant/elf
