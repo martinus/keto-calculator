@@ -6,7 +6,7 @@ This is the **single repo** — both development source and deployment — for t
 macro calculator served at **keto-calculator.ankerl.com**. As of 2026-06-28 it is a
 **flat, static, no-build** site: the files in the repo root *are* the website. Edit
 them directly and open in a browser. Created by Martin Ankerl. Revenue via Google
-AdSense + Amazon affiliate links. Current version: **10.0** (in the `#version_number`
+AdSense + Amazon affiliate links. Current version: **10.1.0** (in the `#version_number`
 element).
 
 ### How it deploys (single repo, since 2026-07-03)
