@@ -106,15 +106,38 @@ module.exports = async function run(base) {
 
     await fillForm(page);
     const done = await page.waitFor(
-      `/kcal Goal/.test(document.data.reddit_copypaste.value)
+      `/kcal a day/.test(document.data.reddit_copypaste.value)
          ? document.data.reddit_copypaste.value : null`, { what: 'reddit post text' });
     t.check('complete form: real post text, still no NaN', !/NaN|undefined/.test(done),
       JSON.stringify((done.split('\n').filter(Boolean)[3] || '').slice(0, 50)));
+
+    // The macro table is the part a reader sees. Markdown needs the header
+    // separator row, and the columns are padded so the raw text lines up in
+    // the textarea too -- so every table row is the same length.
+    const rows = done.split('\n').filter(l => l.indexOf('|') === 0);
+    t.check('post carries a markdown table with a separator row',
+      rows.length === 5 && /^\|:-+\|-+:\|-+:\|$/.test(rows[1]), rows[1]);
+    t.check('table columns are padded to equal width',
+      rows.every(l => l.length === rows[0].length), rows.map(l => l.length).join(','));
+
+    // A question line that markdown would swallow as a setext heading, or a
+    // post without the share link, both defeat the point of the box.
+    t.check('blank line between the question and the rule',
+      done.indexOf('question.\n\n---\n') > -1);
+    const share = (done.match(/\]\((https?:\/\/[^)]*\?[^)]*)\)/) || [])[1];
+    t.check('post links back with the poster\'s own numbers prefilled',
+      !!share && /kg=80/.test(share) && /bodyfat=20/.test(share), (share || '').slice(-40));
+
     const href = await page.eval(`(document.querySelector('.redditsubmit a') || {}).getAttribute('href')`);
     t.check('submit link is https with a quoted href',
       !!href && href.indexOf('https://www.reddit.com/r/keto/submit?') === 0, (href || '').slice(0, 44));
     t.check('submit link has rel=noopener',
       (await page.eval(`(document.querySelector('.redditsubmit a') || {}).rel`)) === 'noopener');
+    // Reddit drops absurdly long prefills; the post plus its share URL has to
+    // stay comfortably inside what a browser will send.
+    t.check('prefilled submit URL stays under 4k', href.length < 4000, href.length + ' chars');
+    t.check('submit link is presented as the primary action',
+      (await page.eval(`(document.querySelector('.redditsubmit a') || {}).className`)) === 'btn-cta');
     await page.close();
   }
 
