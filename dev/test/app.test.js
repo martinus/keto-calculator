@@ -102,7 +102,7 @@ module.exports = async function run(base) {
     t.check('incomplete form: nothing NaN/undefined offered for pasting',
       !/NaN|undefined/.test(empty), JSON.stringify(empty.slice(0, 60)));
     t.check('incomplete form: submit link hidden',
-      (await page.eval(`(document.querySelector('.reddit-cta') || {}).hidden`)) === true);
+      (await page.eval(`(document.getElementById('redditsubmit') || {}).hidden`)) === true);
 
     await fillForm(page);
     // Wait on the state, not the wording: a reworded sentence should fail a
@@ -134,10 +134,21 @@ module.exports = async function run(base) {
     const cta = await page.eval(`(function () {
       var a = document.getElementById('redditsubmit');
       return a ? { href: a.getAttribute('href'), rel: a.rel, cls: a.className,
-                   shown: !a.parentNode.hidden } : null; })()`);
+                   shown: !a.hidden } : null; })()`);
     t.check('submit link is https with a prefilled body',
       !!cta && cta.href.indexOf('https://www.reddit.com/r/keto/submit?text=') === 0,
       (cta && cta.href || '').slice(0, 44));
+    t.check('prefilled body starts at the question, no leading blank lines',
+      !!cta && decodeURIComponent(cta.href.split('text=')[1] || '').indexOf('Replace') === 0,
+      JSON.stringify(decodeURIComponent((cta && cta.href || '').split('text=')[1] || '').slice(0, 20)));
+
+    // Both share actions belong to one section now.
+    const together = await page.eval(`(function () {
+      var sec = document.getElementById('share');
+      return !!sec && !!sec.querySelector('#redditsubmit')
+             && !!sec.querySelector('button[onclick*="share_my_macros"]')
+             && !!sec.querySelector('[name="reddit_copypaste"]'); })()`);
+    t.check('link button, /r/keto button and post text share one section', together === true);
     t.check('submit link has rel=noopener', !!cta && cta.rel === 'noopener');
     // Reddit drops absurdly long prefills; the post plus its share URL has to
     // stay comfortably inside what a browser will send.
@@ -164,8 +175,34 @@ module.exports = async function run(base) {
     t.check('body fat cleared: no NaN offered for pasting',
       !/NaN|undefined/.test(partial), JSON.stringify(String(partial).slice(0, 60)));
     t.check('body fat cleared: submit link goes back into hiding',
-      (await page.eval(`(document.querySelector('.reddit-cta') || {}).hidden`)) === true);
+      (await page.eval(`(document.getElementById('redditsubmit') || {}).hidden`)) === true);
     await page.close();
+  }
+
+  // A session restored from localStorage has no record of which target the
+  // visitor drove, so the share link used to go out with none of the three and
+  // the recipient recomputed from the default deficit.
+  t.section('share URL after a reload');
+  {
+    const first = await Page.open(base + '/', { block: THIRD_PARTY });
+    await fillForm(first);
+    await first.set('target_deficit_form', '25');
+    await first.waitFor(`document.data.target_kcal_form.value ? 'ok' : null`, { what: 'a target' });
+    // the settings blob is written from the debounced path
+    await first.waitFor(`/target_deficit_form/.test(localStorage.getItem('keto_settings') || '')
+                           ? 'saved' : null`, { what: 'settings to persist' });
+    await first.close();
+
+    // same origin, so the second visit restores from localStorage
+    const again = await Page.open(base + '/', { block: THIRD_PARTY });
+    await again.waitFor(`document.data.kg.value === '${PERSON.kg}' ? 'restored' : null`,
+      { what: 'settings to come back' });
+    const url = await again.eval('build_share_url()');
+    t.check('restored session still shares one of the three targets',
+      /target_(kcal|deficit|fat)_form=/.test(url), url.split('?')[1]);
+    t.check('restored session kept the chosen deficit',
+      (await again.eval('document.data.target_deficit_form.value')) === '25');
+    await again.close();
   }
 
   // --- share links -------------------------------------------------------

@@ -141,17 +141,15 @@ cut('<!-- Keto Top', '</div>', include_end=True)
 cut('<!-- Keto Bottom', '</div>', include_end=True)
 assert '<div class="fullwidthad"' not in html, "unexpected extra in-content ad unit"
 
-# FAQ section (its JSON-LD was already removed above)
-cut('<div id="faq">', '<div id="questions">')
+# FAQ section (its JSON-LD was already removed above) and the guides list.
+# The "Share Your Macros" block is deliberately NOT cut: it sits up in the
+# results, it carries reddit_copypaste (which the calculator JS writes to on
+# every recalculation), and its links point at the full site — an embed on
+# someone else's page is exactly where a way back here earns its keep.
+cut('<div id="faq">', '<div id="embedcalc">')
 
-# The questions section AND the embed-snippet section that now follows it
-# (the calculator JS still writes to reddit_copypaste, so keep a hidden one).
-cut('<div id="questions">', '<div id="comments">',
-    replacement='''<!-- The calculator JS fills this on every recalculation; the visible
-					     /r/keto section lives on the main page only. -->
-					<textarea name="reddit_copypaste" readonly="readonly" style="display:none" aria-hidden="true"></textarea>
-
-					''')
+# "Embed This Calculator" — the widget doesn't advertise embedding itself.
+cut('<div id="embedcalc">', '<div id="comments">')
 
 # comments section
 cut('<div id="comments">', '</form>')
