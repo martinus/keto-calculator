@@ -265,9 +265,27 @@ rep('Rough daily comparisons spread across all your meals — mix and match real
 rep('<strong>These numbers are estimates, not medical advice.</strong> They come from the\n\t\t\t\t\t\tMifflin-St. Jeor equation and your lean body mass — a solid starting point, but everyone is\n\t\t\t\t\t\tdifferent. Adjust based on how you feel and your real results, and talk to your doctor before\n\t\t\t\t\t\tbig dietary changes, especially if you have a health condition. See the\n\t\t\t\t\t\t<a href="disclaimer.html" onclick="return gatrack(this);">full disclaimer</a>.',
     '<strong>Diese Zahlen sind Schätzungen, keine medizinische Beratung.</strong> Sie stammen aus der\n\t\t\t\t\t\tMifflin-St.-Jeor-Formel und deiner fettfreien Masse — ein solider Ausgangspunkt, aber jeder Mensch ist\n\t\t\t\t\t\tanders. Passe sie an dein Befinden und deine echten Ergebnisse an und sprich vor\n\t\t\t\t\t\tgrößeren Ernährungsumstellungen mit deinem Arzt, besonders bei Vorerkrankungen. Siehe den\n\t\t\t\t\t\t<a href="disclaimer.html" onclick="return gatrack(this);">vollständigen Haftungsausschluss</a>.')
 
-rep('>🔗 Share my macros</button>', '>🔗 Meine Makros teilen</button>')
-rep('<p class="fineprint" style="margin-top:-0.5em;">Copies a link that reopens this calculator with your numbers already filled in — handy for saving or sharing on Reddit.</p>',
-    '<p class="fineprint" style="margin-top:-0.5em;">Kopiert einen Link, der diesen Rechner mit deinen Werten bereits ausgefüllt öffnet — praktisch zum Speichern oder Teilen.</p>')
+# --- the "Share Your Macros" section (link + /r/keto post in one place) ---
+rep('<h3>Share Your Macros</h3>', '<h3>Deine Makros teilen</h3>')
+rep('''<p>Save your numbers, send them to someone, or get a second opinion from
+						/r/keto — all three start here.</p>''',
+    '''<p>Werte speichern, jemandem schicken oder eine zweite Meinung von /r/keto
+						holen — alles beginnt hier.</p>''')
+rep('>🔗 Copy my link</button>', '>🔗 Meinen Link kopieren</button>')
+rep('''<p class="fineprint">The link reopens this calculator with your numbers already
+						filled in. The /r/keto button opens a new post with them written up as a table —
+						replace the first line with your question and hit post.</p>''',
+    '''<p class="fineprint">Der Link öffnet diesen Rechner mit deinen Werten bereits
+						ausgefüllt. Der /r/keto-Button öffnet einen neuen Beitrag, in dem sie als Tabelle
+						aufbereitet sind — ersetze die erste Zeile durch deine Frage und poste ihn.</p>''')
+rep('<summary>Show the post text — your macros as a table</summary>',
+    '<summary>Beitragstext anzeigen — deine Makros als Tabelle</summary>')
+rep('''<p class="fineprint">Rather do it by hand? Click the box to select it, copy with Ctrl+C, then
+							<a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">go to the /r/keto submit page</a>
+							and paste it into the text field.</p>''',
+    '''<p class="fineprint">Lieber selbst? Klick ins Feld, kopiere mit Strg+C, geh dann
+							<a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">zur /r/keto-Seite</a>
+							und füge den Text ins Textfeld ein.</p>''')
 
 # Pies + projection
 rep('<p>Here is a visual representation of your macros and your deficit. The area of the circles is exactly scaled based on your ratios.</p>',
@@ -402,7 +420,7 @@ rep('<span class="guide-desc">Why the first week is mostly water, and how your c
     '<span class="guide-desc">Warum die erste Woche vor allem Wasser ist und wie dein Kaloriendefizit das echte Abnehmtempo bestimmt.</span>')
 
 # ---------------------------------------------------------------------------
-# 7. Embed section / questions / comments / sidebar / about
+# 7. Embed section / comments / sidebar / about
 # ---------------------------------------------------------------------------
 rep('<h2>Embed This Calculator on Your Site</h2>', '<h2>Diesen Rechner auf deiner Website einbetten</h2>')
 rep("<p>Run a keto blog, coaching site, or forum? You can embed this calculator for free —\n                        paste this snippet into your page and you're done. It always serves the latest version.</p>",
@@ -411,20 +429,6 @@ rep('aria-label="HTML snippet to embed this calculator"', 'aria-label="HTML-Schn
 rep("<p class=\"fineprint\">Please keep the credit link below the iframe — it's how new people find the calculator.</p>",
     '<p class="fineprint">Bitte lass den Credit-Link unter dem iframe stehen — so finden neue Leute den Rechner.</p>')
 
-rep('<h2>Got Questions?</h2>', '<h2>Noch Fragen?</h2>')
-rep('<h3>Post Your Question to /r/keto</h3>', '<h3>Stell deine Frage auf /r/keto</h3>')
-rep('''<p>The /r/keto community is good at this. Once your numbers are in, the box below
-                        holds a ready-made post and the button opens /r/keto with it already filled in —
-                        replace the first line with your question and hit post.</p>''',
-    '''<p>Die /r/keto-Community hilft gern. Sobald deine Werte drin sind, steht unten ein
-                        fertiger Beitrag, und der Button öffnet /r/keto damit vorausgefüllt —
-                        ersetze die erste Zeile durch deine Frage und poste ihn.</p>''')
-rep('''<p class="fineprint">Rather do it by hand? Click the box to select it, copy with Ctrl+C, then
-                        <a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">go to the /r/keto submit page</a>
-                        and paste it into the text field.</p>''',
-    '''<p class="fineprint">Lieber selbst? Klick ins Feld, kopiere mit Strg+C, geh dann
-                        <a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">zur /r/keto-Seite</a>
-                        und füge den Text ins Textfeld ein.</p>''')
 
 rep('<h3>Comments</h3>', '<h3>Kommentare</h3>')
 rep('<p>Is this calculator useful to you? Share your thoughts!</p>',
@@ -543,7 +547,7 @@ rep('3: "Very active",', '3: "Sehr aktiv",')
 rep('4: "Custom expenditure: "', '4: "Eigener Verbrauch: "')
 
 # share feedback
-rep("fb.textContent = ' Link copied to clipboard!';", "fb.textContent = ' Link in die Zwischenablage kopiert!';")
+rep("fb.textContent = 'Link copied to clipboard!';", "fb.textContent = 'Link in die Zwischenablage kopiert!';")
 rep("window.prompt('Copy your shareable link:', url);", "window.prompt('Kopiere deinen Teilen-Link:', url);", count=2)
 
 # ---------------------------------------------------------------------------

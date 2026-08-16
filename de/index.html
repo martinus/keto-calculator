@@ -1331,7 +1331,7 @@
             #logo { display:none; }
             #sidebar { display:none; }
             #comments { display:none; }
-            #questions { display:none; }
+            #share { display:none; }
             
             h1,h2,h3,h4,h5 { white-space: normal; }
             h1 { font-size:3em }
@@ -1397,7 +1397,13 @@
 		#main p a.btn-cta, #main p a.btn-cta:hover, #main p a.btn-cta:visited {
 			display:inline-block; color:#fff; text-decoration:none;
 		}
-		.reddit-cta[hidden] { display:none; }
+		/* The two share buttons sit on one line and wrap together on narrow
+		   screens; the /r/keto one stays hidden until there is a post to make. */
+		.share-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+		/* has to out-rank the #main p a.btn-cta rule above, which sets display */
+		#main p a.btn-cta[hidden] { display:none; }
+		#share_feedback { color:#1a8a55; font-size:smaller; }
+		#share details.detail-block { margin-left:0; }
 
 		/* Reserve the in-content ad slots' height up front (the sidebar's 600px
 		   reservation lives on .sidebar-ad) so a loading ad doesn't shift the
@@ -1842,11 +1848,31 @@
 						<a href="/disclaimer.html" onclick="return gatrack(this);">vollständigen Haftungsausschluss</a>.
 					</p>
 
-					<p>
-						<button type="button" onclick="share_my_macros()" class="btn-cta">🔗 Meine Makros teilen</button>
-						<span id="share_feedback" style="color:#1a8a55; font-size:smaller;"></span>
-					</p>
-					<p class="fineprint" style="margin-top:-0.5em;">Kopiert einen Link, der diesen Rechner mit deinen Werten bereits ausgefüllt öffnet — praktisch zum Speichern oder Teilen.</p>
+					<div id="share">
+						<h3>Deine Makros teilen</h3>
+
+						<p>Werte speichern, jemandem schicken oder eine zweite Meinung von /r/keto
+						holen — alles beginnt hier.</p>
+
+						<p class="share-actions">
+							<button type="button" onclick="share_my_macros()" class="btn-cta">🔗 Meinen Link kopieren</button>
+							<a class="btn-cta" id="redditsubmit" href="#" target="_blank" rel="noopener"
+							   onclick="return gatrack(this);" hidden>Das auf /r/keto posten</a>
+							<span id="share_feedback"></span>
+						</p>
+
+						<p class="fineprint">Der Link öffnet diesen Rechner mit deinen Werten bereits
+						ausgefüllt. Der /r/keto-Button öffnet einen neuen Beitrag, in dem sie als Tabelle
+						aufbereitet sind — ersetze die erste Zeile durch deine Frage und poste ihn.</p>
+
+						<details class="detail-block">
+							<summary>Beitragstext anzeigen — deine Makros als Tabelle</summary>
+							<textarea class="copytext" name="reddit_copypaste" readonly="readonly" rows="20" aria-label="Text für den Reddit-Beitrag"></textarea>
+							<p class="fineprint">Lieber selbst? Klick ins Feld, kopiere mit Strg+C, geh dann
+							<a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">zur /r/keto-Seite</a>
+							und füge den Text ins Textfeld ein.</p>
+						</details>
+					</div>
 
 					<p>
 						<!-- Keto Bottom. Empty on purpose: the <ins> is injected and
@@ -2056,28 +2082,6 @@
 							</li>
 						</ul>
 					</div>
-
-                    <div id="questions">
-                        <h2>Noch Fragen?</h2>
-                        <h3>Stell deine Frage auf /r/keto</h3>
-
-                        <p>Die /r/keto-Community hilft gern. Sobald deine Werte drin sind, steht unten ein
-                        fertiger Beitrag, und der Button öffnet /r/keto damit vorausgefüllt —
-                        ersetze die erste Zeile durch deine Frage und poste ihn.</p>
-
-                        <p class="reddit-cta" hidden><a class="btn-cta" id="redditsubmit" href="#"
-                           target="_blank" rel="noopener" onclick="return gatrack(this);">Das auf /r/keto posten</a></p>
-
-                        <p>
-                            <center>
-                                <textarea class="copytext" cols="2" name="reddit_copypaste" readonly="readonly" rows="20" aria-label="Text für den Reddit-Beitrag"></textarea>
-                            </center>
-                        </p>
-
-                        <p class="fineprint">Lieber selbst? Klick ins Feld, kopiere mit Strg+C, geh dann
-                        <a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">zur /r/keto-Seite</a>
-                        und füge den Text ins Textfeld ein.</p>
-                    </div>
 
                     <div id="embedcalc">
                         <h2>Diesen Rechner auf deiner Website einbetten</h2>
@@ -2552,6 +2556,11 @@
 		}
 
 		function calc_handler(e) {
+			// No event means a programmatic recalculation — restored settings or a
+			// shared link — which carries no record of which target the visitor
+			// drove, so work it out from the values themselves.
+			if (!e) { infer_target_driver(); }
+
 			// perform fast updates immediately, no need to wait
 			update_calculations(e);
 
@@ -3066,9 +3075,10 @@
 			var reddit_ready = !(isNaN(age) || isNaN(carbs_g) || isNaN(protein_g)
 				|| isNaN(fat_g) || isNaN(target_kcal) || isNaN(expenditure)
 				|| isNaN(kcal_min) || isNaN(fat_g_min));
+			var cta = document.getElementById("redditsubmit");
+			cta.hidden = !reddit_ready;
 			if (!reddit_ready) {
 				d.reddit_copypaste.value = "Fülle den Rechner oben aus, dann erscheinen deine Makros hier - fertig zum Posten in /r/keto.";
-				document.getElementById("redditsubmit").parentNode.hidden = true;
 				mark_empty_fields(d);
 				return;
 			}
@@ -3128,10 +3138,8 @@
 			d.reddit_copypaste.value = str;
 			
 			// Reddit prefills the composer's body from ?text=. The button lives in
-			// the markup; only its href and visibility are ours to set.
-			var cta = document.getElementById("redditsubmit");
-			cta.href = "https://www.reddit.com/r/keto/submit?text=" + encodeURIComponent("\n\n" + str);
-			cta.parentNode.hidden = false;
+			// the markup; only its href is ours to set (visibility above).
+			cta.href = "https://www.reddit.com/r/keto/submit?text=" + encodeURIComponent(str);
 			
 			mark_empty_fields(d);
 			
@@ -3182,22 +3190,17 @@
 			}
 		}
 
-		function load_url_params() {
-			var hasParams = window.location.search.indexOf('=') !== -1;
-			var params = get_url_params(window.location.search);
-			Object.keys(params).forEach(function (key) {
-				var value = params[key]
-				set_by_key(key, value);
-			})
-
-			// Pick which target drives the recalculation. New links carry exactly
-			// one, so this is a formality for them — it matters for links shared
-			// before that change, which carry all three. Prefer the most precise:
-			// the three are mutually consistent in the sender's form, and the only
-			// thing that separates them is rounding, so recomputing from whole
-			// kcal loses <1 kcal where recomputing from whole grams of fat loses
-			// up to ~4.5 (1 g fat = 9 kcal). Kcal is also the figure the sender
-			// actually read off the page.
+		// Which of the three mutually-derived targets should drive the numbers,
+		// and travel in a share link? A live edit records the field the visitor
+		// drove (see calc_handler), but a session restored from localStorage —
+		// or an old link carrying all three — has no such event. Without this,
+		// a returning visitor's link went out with no target at all and the
+		// recipient recomputed from the default deficit. Prefer the most
+		// precise: the three are mutually consistent and only rounding
+		// separates them, so recomputing from whole kcal loses <1 kcal where
+		// whole grams of fat loses up to ~4.5 (1 g fat = 9 kcal). Kcal is also
+		// the figure the sender read off the page.
+		function infer_target_driver() {
 			var d = document.data;
 			if (!isNaN(parseFloat(d.target_kcal_form.value))) {
 				last_updated_target = d.target_kcal_form;
@@ -3206,6 +3209,15 @@
 			} else if (!isNaN(parseFloat(d.target_fat_form.value))) {
 				last_updated_target = d.target_fat_form;
 			}
+		}
+
+		function load_url_params() {
+			var hasParams = window.location.search.indexOf('=') !== -1;
+			var params = get_url_params(window.location.search);
+			Object.keys(params).forEach(function (key) {
+				var value = params[key]
+				set_by_key(key, value);
+			})
 
 			// remove from URL
 			var url = [location.protocol, '//', location.host, location.pathname].join('');
@@ -3253,7 +3265,7 @@
 		function share_my_macros() {
 			var url = build_share_url();
 			var fb = document.getElementById('share_feedback');
-			var ok = function() { if (fb) { fb.textContent = ' Link in die Zwischenablage kopiert!'; } };
+			var ok = function() { if (fb) { fb.textContent = 'Link in die Zwischenablage kopiert!'; } };
 			if (navigator.clipboard && navigator.clipboard.writeText) {
 				navigator.clipboard.writeText(url).then(ok, function() { window.prompt('Kopiere deinen Teilen-Link:', url); });
 			} else {
