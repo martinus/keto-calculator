@@ -632,9 +632,11 @@
 
 		textarea.copytext {
 			width:100%;
-			font:small verdana,arial,helvetica,sans-serif;
-			font-weight:400;
-			overflow:hidden;
+			/* Pre-formatted content (the padded markdown table, the embed
+			   snippet): monospace so the columns line up here too, and
+			   overflow:auto rather than clipping the long lines. */
+			font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+			overflow:auto;
 			margin-bottom:-2px;
 			padding:0;			
 		}
@@ -1392,6 +1394,10 @@
 		
 		.btn-cta { cursor:pointer; padding:11px 20px; font-size:16px; font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif; font-weight:600; letter-spacing:0.2px; border:none; border-radius:9px; background:linear-gradient(135deg,#33B5E5,#1294c8); color:#fff; box-shadow:0 4px 12px rgba(18,148,200,0.32); }
 		.fineprint { font-size:smaller; color:#666; }
+		#main p a.btn-cta, #main p a.btn-cta:hover, #main p a.btn-cta:visited {
+			display:inline-block; color:#fff; text-decoration:none;
+		}
+		.reddit-cta[hidden] { display:none; }
 
 		/* Reserve the in-content ad slots' height up front (the sidebar's 600px
 		   reservation lives on .sidebar-ad) so a loading ad doesn't shift the
@@ -1522,7 +1528,7 @@
 
 
 <body>
-	<div id="version_number">10.0</div>
+	<div id="version_number">10.1.0</div>
 
 	<div id="page">
 		<div id="header">
@@ -2051,6 +2057,28 @@
 						</ul>
 					</div>
 
+                    <div id="questions">
+                        <h2>Noch Fragen?</h2>
+                        <h3>Stell deine Frage auf /r/keto</h3>
+
+                        <p>Die /r/keto-Community hilft gern. Sobald deine Werte drin sind, steht unten ein
+                        fertiger Beitrag, und der Button öffnet /r/keto damit vorausgefüllt —
+                        ersetze die erste Zeile durch deine Frage und poste ihn.</p>
+
+                        <p class="reddit-cta" hidden><a class="btn-cta" id="redditsubmit" href="#"
+                           target="_blank" rel="noopener" onclick="return gatrack(this);">Das auf /r/keto posten</a></p>
+
+                        <p>
+                            <center>
+                                <textarea class="copytext" cols="2" name="reddit_copypaste" readonly="readonly" rows="20" aria-label="Text für den Reddit-Beitrag"></textarea>
+                            </center>
+                        </p>
+
+                        <p class="fineprint">Lieber selbst? Klick ins Feld, kopiere mit Strg+C, geh dann
+                        <a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">zur /r/keto-Seite</a>
+                        und füge den Text ins Textfeld ein.</p>
+                    </div>
+
                     <div id="embedcalc">
                         <h2>Diesen Rechner auf deiner Website einbetten</h2>
                         <p>Du betreibst einen Keto-Blog, eine Coaching-Seite oder ein Forum? Du kannst diesen Rechner kostenlos einbetten — füge einfach diesen Schnipsel in deine Seite ein, fertig. Es wird immer die aktuelle Version geladen.</p>
@@ -2059,21 +2087,6 @@
 &lt;p&gt;Free &lt;a href="https://keto-calculator.ankerl.com/"&gt;keto macro calculator&lt;/a&gt; by keto-calculator.ankerl.com&lt;/p&gt;</textarea>
                         </p>
                         <p class="fineprint">Bitte lass den Credit-Link unter dem iframe stehen — so finden neue Leute den Rechner.</p>
-                    </div>
-
-                    <div id="questions">
-                        <h2>Noch Fragen?</h2>
-                        <h3>Stell deine Frage auf /r/keto</h3>						
-
-                        <p>Wir helfen dir gern. <span class="redditsubmit"></span> und ersetze die erste Textzeile durch deine Frage. Oder klick in dieses Feld:</p>
-                                
-                        <p>
-                            <center>
-                                <textarea class="copytext" cols="2" name="reddit_copypaste" readonly="readonly" rows="13" aria-label="Text für den Reddit-Beitrag"></textarea>
-                            </center>
-                        </p>
-                        
-                        <p>Kopiere den Text mit Strg+C. <a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">Geh zur /r/keto-Seite</a>, klick ins „text“-Feld, füge ihn mit Strg+V ein und <strong>ersetze die erste Zeile durch deine Frage</strong>.</p>
                     </div>
 
 					<div id="comments">
@@ -2250,6 +2263,36 @@
 			decPlaces -= Math.floor(Math.log(Math.abs(n)) / Math.log(10)) + 1;
 			var f = Math.pow(10, decPlaces);
 			return Math.round(n * f) / f;
+		}
+
+		// Render a markdown table with padded columns. Reddit turns the pipes
+		// into a real table, but people read the raw text in the textarea first
+		// (and some paste it into places that never render markdown), so the
+		// columns have to line up as plain text too.
+		// The first column is left-aligned, the rest right-aligned. Widths are
+		// measured rather than hardcoded because the German titles are twice as
+		// long as the English ones.
+		function md_table(titles, rows) {
+			var w = titles.map(function (t, c) {
+				return rows.reduce(function (m, r) { return Math.max(m, r[c].length); }, t.length);
+			});
+			function line(cells) {
+				return "| " + cells.map(function (cell, c) {
+					var fill = new Array(w[c] - cell.length + 1).join(" ");
+					return c ? fill + cell : cell + fill;
+				}).join(" | ") + " |";
+			}
+			var sep = "|" + w.map(function (n, c) {
+				var dashes = new Array(n + 2).join("-");
+				return c ? dashes + ":" : ":" + dashes;
+			}).join("|") + "|";
+			return [line(titles), sep].concat(rows.map(line)).join("\n");
+		}
+
+		// Imperial first, metric in brackets. /r/keto is worldwide, so the post
+		// carries both; the German build swaps which one leads.
+		function units(imperial, metric) {
+			return metric + " (" + imperial + ")";
 		}
 
 		// Persist the form inputs as ONE localStorage JSON blob. This used to be
@@ -2527,6 +2570,9 @@
 			// 1 kg = 0.453592 pound
 			// is about 31.4
 			var max_kcal_per_lb_per_day = 290 * 0.239005736 * 0.453592;
+
+			// first-month loss, formatted once for the page and the /r/keto post
+			var loss_kg_txt, loss_lbs_txt;
 			
 
 			var d = document.data;
@@ -2917,8 +2963,10 @@
 				data = calc_expected_loss_kg(30, max_kcal_per_lb_per_day, bodyfat, essential_bodyfat_kg, target_kcal, kg, height, age, sex, bmr_fact);
 				var expected_loss_kg = data[0];
 				
-				update_by_name("chosen_loss_kg", abbrNum(-expected_loss_kg, 2));
-				update_by_name("chosen_loss_lbs", abbrNum(-expected_loss_kg/0.45359237, 2));
+				loss_kg_txt = abbrNum(-expected_loss_kg, 2);
+				loss_lbs_txt = abbrNum(-expected_loss_kg/0.45359237, 2);
+				update_by_name("chosen_loss_kg", loss_kg_txt);
+				update_by_name("chosen_loss_lbs", loss_lbs_txt);
 				
 				var max_loss_kg = calc_expected_loss_kg(30, max_kcal_per_lb_per_day, bodyfat, essential_bodyfat_kg, kcal_min, kg, height, age, sex, bmr_fact)[0];
 				update_by_name("max_loss_kg", abbrNum(max_loss_kg, 2));
@@ -2951,7 +2999,10 @@
 				d.fat_max_form.value = Math.floor(fat_g_max);
 			} 
 			
-			// calculate percentage based on kcal
+			// calculate percentage based on kcal. pct_ok stays false when the
+			// block doesn't run, so both the page and the /r/keto post fall
+			// back to "-" rather than showing a nonsense split.
+			var pct_ok = false;
 			if (!isNaN(fat_g)
 				&& !isNaN(carbs_g)
 				&& !isNaN(protein_g)
@@ -2967,7 +3018,8 @@
 				var fat_cal = Math.round(target_kcal) - protein_cal - carbs_cal;
 				maintainence_fat_protein_carbs = [expenditure, fat_cal, protein_cal, carbs_cal];
 				
-				if (carbs_proc > 100 || carbs_proc < 0 || protein_proc > 100 || protein_proc < 0) {
+				pct_ok = !(carbs_proc > 100 || carbs_proc < 0 || protein_proc > 100 || protein_proc < 0);
+				if (!pct_ok) {
 					update_by_name("carbs_proc", "-");
 					update_by_name("protein_proc", "-");
 					update_by_name("fat_proc", "-");
@@ -3012,10 +3064,11 @@
 			// ready to paste straight into /r/keto — which is a real traffic
 			// source for this site, so it went out in public looking broken.
 			var reddit_ready = !(isNaN(age) || isNaN(carbs_g) || isNaN(protein_g)
-				|| isNaN(fat_g) || isNaN(target_kcal));
+				|| isNaN(fat_g) || isNaN(target_kcal) || isNaN(expenditure)
+				|| isNaN(kcal_min) || isNaN(fat_g_min));
 			if (!reddit_ready) {
 				d.reddit_copypaste.value = "Fülle den Rechner oben aus, dann erscheinen deine Makros hier - fertig zum Posten in /r/keto.";
-				update_by_name("redditsubmit", "");
+				document.getElementById("redditsubmit").parentNode.hidden = true;
 				mark_empty_fields(d);
 				return;
 			}
@@ -3024,21 +3077,8 @@
 			// remove leading and trailing whitespace
 			version = version.replace(/^\s+|\s+$/g, '');
 
-			var nl = "\n"
+			var nl = "\n";
 
-			var str = "Ersetze diese Zeile durch deine Frage\n"
-			str += "\n---" + nl
-			str += "*Erstellt mit [Keto-Rechner](https://keto-calculator.ankerl.com/de/) " + version + "*" + nl + nl;
-			str += Math.floor(age) + "/";
-			if (is_female) {
-				str += "F";
-			} else {
-				str += "M";
-			}
-			str += "/" + d.feet.value + "'" + d.inch.value + "\" | ";
-			str += "CW " + d.lbs.value + " | "
-			str += d.bodyfat.value + "% BF | ";
-			
 			var level_to_shorttext = {
 				0: "Überwiegend sitzend",
 				1: "Leicht aktiv",
@@ -3046,28 +3086,52 @@
 				3: "Sehr aktiv",
 				4: "Eigener Verbrauch: "
 			}
-			str += level_to_shorttext[level];
+			var level_txt = level_to_shorttext[level];
 			if (level == 4) {
-				str += expenditure + " kcal";
+				level_txt += expenditure + " kcal";
 			}
-			str += nl + nl;
-			
-			str += "* " + Math.round(target_kcal) + " kcal Ziel, ein " + Math.round(target_deficit) + "% Defizit. (" + Math.round(kcal_min) + " min, " + Math.round(expenditure) + " max)"+ nl;
-			str += "* " + carbs_g + "g Kohlenhydrate" + nl;
-			str += "* " + protein_g + "g Eiweiß (" + d.protein_min.value + "g min, " + d.protein_max.value + "g max)" + nl;
-			str += "* " + Math.round(fat_g) + "g Fett (" + fat_g_min + "g min, " + Math.floor(fat_g_max) + "g max)" + nl;
-			str += nl;
-			str += "----" + nl;
-			
+
+			// A month of loss is the figure people actually discuss, but it is
+			// only computed once the forecast has run (undefined < 0 is false).
+			var loss_txt = "";
+			if (expected_loss_kg < 0) {
+				loss_txt = ", etwa **" + units(loss_lbs_txt + " lb", loss_kg_txt + " kg") + "** im ersten Monat";
+			}
+
+			// A blank line has to sit between the question and the rule, or
+			// markdown reads "text\n---" as a setext heading and swallows it.
+			var str = "Ersetze diese Zeile durch deine Frage." + nl + nl;
+			str += "---" + nl + nl;
+
+			str += "**" + Math.floor(age) + (is_female ? "F" : "M") + " · "
+				+ units(d.feet.value + "'" + d.inch.value + "\"", d.height.value + " cm") + " · "
+				+ units(d.lbs.value + " lb", d.kg.value + " kg") + " · "
+				+ d.bodyfat.value + "% Körperfett · " + level_txt + "**" + nl + nl;
+
+			str += md_table(
+				["Makro", "Pro Tag", "% kcal"],
+				[["Netto-Kohlenhydrate", carbs_g + " g", pct_ok ? carbs_proc + "%" : "-"],
+				 ["Eiweiß", protein_g + " g", pct_ok ? protein_proc + "%" : "-"],
+				 ["Fett", Math.round(fat_g) + " g", pct_ok ? fat_proc + "%" : "-"]]) + nl + nl;
+
+			str += "**" + Math.round(target_kcal) + " kcal am Tag** — ein " + Math.round(target_deficit)
+				+ "% Defizit von " + Math.round(expenditure) + " kcal Erhaltungsbedarf" + loss_txt + "." + nl;
+			str += "Eiweiß " + d.protein_min.value + "–" + d.protein_max.value + " g · Fett "
+				+ fat_g_min + "–" + Math.floor(fat_g_max) + " g · nie unter " + Math.round(kcal_min) + " kcal." + nl + nl;
+
+			// The share link is the point of the whole box: a reader clicks it and
+			// lands on the calculator with the poster's numbers already in place,
+			// one edit away from their own.
+			str += "*Makros vom [Keto-Rechner](https://keto-calculator.ankerl.com/de/) v" + version
+				+ " — [diese Werte im Rechner öffnen](" + build_share_url() + ")*" + nl;
+
 			d.reddit_copypaste.value = str;
 			
-			// build url. https, and the href is quoted — it was bare, which only
-			// worked because encodeURIComponent leaves no spaces to terminate the
-			// attribute on. rel=noopener because the link opens a new tab.
-			var url = "https://www.reddit.com/r/keto/submit?"
-			url += "text=" + encodeURIComponent("\n\n" + str);
-
-			update_by_name("redditsubmit", "<a href=\""+url+"\" target=\"_blank\" rel=\"noopener\">Create a /r/keto post</a>");
+			// Reddit prefills the composer's body from ?text=. The button lives in
+			// the markup; only its href and visibility are ours to set.
+			var cta = document.getElementById("redditsubmit");
+			cta.href = "https://www.reddit.com/r/keto/submit?text=" + encodeURIComponent("\n\n" + str);
+			cta.parentNode.hidden = false;
 			
 			mark_empty_fields(d);
 			
