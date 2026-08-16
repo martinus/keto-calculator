@@ -413,12 +413,12 @@ rep("<p class=\"fineprint\">Please keep the credit link below the iframe — it'
 
 rep('<h2>Got Questions?</h2>', '<h2>Noch Fragen?</h2>')
 rep('<h3>Post Your Question to /r/keto</h3>', '<h3>Stell deine Frage auf /r/keto</h3>')
-rep('''<p>The /r/keto community is good at this, and your numbers are already written up
-                        below — the button opens a new post with everything filled in. Replace the first
-                        line with your question and hit post.</p>''',
-    '''<p>Die /r/keto-Community hilft gern, und deine Werte stehen unten schon fertig — der
-                        Button öffnet einen neuen Beitrag mit allem darin. Ersetze die erste Zeile
-                        durch deine Frage und poste ihn.</p>''')
+rep('''<p>The /r/keto community is good at this. Once your numbers are in, the box below
+                        holds a ready-made post and the button opens /r/keto with it already filled in —
+                        replace the first line with your question and hit post.</p>''',
+    '''<p>Die /r/keto-Community hilft gern. Sobald deine Werte drin sind, steht unten ein
+                        fertiger Beitrag, und der Button öffnet /r/keto damit vorausgefüllt —
+                        ersetze die erste Zeile durch deine Frage und poste ihn.</p>''')
 rep('''<p class="fineprint">Rather do it by hand? Click the box to select it, copy with Ctrl+C, then
                         <a href="https://www.reddit.com/r/keto/submit" onclick="return gatrack(this);">go to the /r/keto submit page</a>
                         and paste it into the text field.</p>''',
@@ -506,19 +506,17 @@ rep('''		function units(imperial, metric) {
 rep('var str = "Replace this line with your question." + nl + nl;',
     'var str = "Ersetze diese Zeile durch deine Frage." + nl + nl;')
 
-rep('''				loss_txt = ", about **" + units(abbrNum(-expected_loss_kg / 0.45359237, 2) + " lb",
-					abbrNum(-expected_loss_kg, 2) + " kg") + "** off in the first month";''',
-    '''				loss_txt = ", etwa **" + units(abbrNum(-expected_loss_kg / 0.45359237, 2) + " lb",
-					abbrNum(-expected_loss_kg, 2) + " kg") + "** im ersten Monat";''')
+rep('loss_txt = ", about **" + units(loss_lbs_txt + " lb", loss_kg_txt + " kg") + "** off in the first month";',
+    'loss_txt = ", etwa **" + units(loss_lbs_txt + " lb", loss_kg_txt + " kg") + "** im ersten Monat";')
 
 rep('+ d.bodyfat.value + "% body fat · " + level_txt + "**" + nl + nl;',
     '+ d.bodyfat.value + "% Körperfett · " + level_txt + "**" + nl + nl;')
 
-rep('''				[{title: "Macro"}, {title: "Per day", right: true}, {title: "% of kcal", right: true}],
+rep('''				["Macro", "Per day", "% of kcal"],
 				[["Net carbs", carbs_g + " g", pct_ok ? carbs_proc + "%" : "-"],
 				 ["Protein", protein_g + " g", pct_ok ? protein_proc + "%" : "-"],
 				 ["Fat", Math.round(fat_g) + " g", pct_ok ? fat_proc + "%" : "-"]]) + nl + nl;''',
-    '''				[{title: "Makro"}, {title: "Pro Tag", right: true}, {title: "% kcal", right: true}],
+    '''				["Makro", "Pro Tag", "% kcal"],
 				[["Netto-Kohlenhydrate", carbs_g + " g", pct_ok ? carbs_proc + "%" : "-"],
 				 ["Eiweiß", protein_g + " g", pct_ok ? protein_proc + "%" : "-"],
 				 ["Fett", Math.round(fat_g) + " g", pct_ok ? fat_proc + "%" : "-"]]) + nl + nl;''')
@@ -537,8 +535,7 @@ rep('''			str += "*Macros from [keto-calculator.ankerl.com](https://keto-calcula
     '''			str += "*Makros vom [Keto-Rechner](https://keto-calculator.ankerl.com/de/) v" + version
 				+ " — [diese Werte im Rechner öffnen](" + build_share_url() + ")*" + nl;''')
 
-rep('rel=\\"noopener\\" onclick=\\"return gatrack(this);\\">Post this to /r/keto</a>',
-    'rel=\\"noopener\\" onclick=\\"return gatrack(this);\\">Das auf /r/keto posten</a>')
+rep('>Post this to /r/keto</a>', '>Das auf /r/keto posten</a>')
 rep('0: "Mostly sedentary",', '0: "Überwiegend sitzend",')
 rep('1: "Lightly active",', '1: "Leicht aktiv",')
 rep('2: "Moderately active",', '2: "Mäßig aktiv",')

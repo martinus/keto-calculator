@@ -102,11 +102,13 @@ module.exports = async function run(base) {
     t.check('incomplete form: nothing NaN/undefined offered for pasting',
       !/NaN|undefined/.test(empty), JSON.stringify(empty.slice(0, 60)));
     t.check('incomplete form: submit link hidden',
-      !(await page.eval(`(document.querySelector('.redditsubmit') || {}).innerHTML`)));
+      (await page.eval(`(document.querySelector('.reddit-cta') || {}).hidden`)) === true);
 
     await fillForm(page);
+    // Wait on the state, not the wording: a reworded sentence should fail a
+    // check, not time out the whole suite with no clue why.
     const done = await page.waitFor(
-      `/kcal a day/.test(document.data.reddit_copypaste.value)
+      `document.data.reddit_copypaste.value.indexOf('|') > -1
          ? document.data.reddit_copypaste.value : null`, { what: 'reddit post text' });
     t.check('complete form: real post text, still no NaN', !/NaN|undefined/.test(done),
       JSON.stringify((done.split('\n').filter(Boolean)[3] || '').slice(0, 50)));
@@ -123,21 +125,46 @@ module.exports = async function run(base) {
     // A question line that markdown would swallow as a setext heading, or a
     // post without the share link, both defeat the point of the box.
     t.check('blank line between the question and the rule',
-      done.indexOf('question.\n\n---\n') > -1);
+      /\n\n---\n/.test(done));
     const share = (done.match(/\]\((https?:\/\/[^)]*\?[^)]*)\)/) || [])[1];
     t.check('post links back with the poster\'s own numbers prefilled',
-      !!share && /kg=80/.test(share) && /bodyfat=20/.test(share), (share || '').slice(-40));
+      !!share && share.indexOf('kg=' + PERSON.kg) > -1
+        && share.indexOf('bodyfat=' + PERSON.bodyfat) > -1, (share || '').slice(-40));
 
-    const href = await page.eval(`(document.querySelector('.redditsubmit a') || {}).getAttribute('href')`);
-    t.check('submit link is https with a quoted href',
-      !!href && href.indexOf('https://www.reddit.com/r/keto/submit?') === 0, (href || '').slice(0, 44));
-    t.check('submit link has rel=noopener',
-      (await page.eval(`(document.querySelector('.redditsubmit a') || {}).rel`)) === 'noopener');
+    const cta = await page.eval(`(function () {
+      var a = document.getElementById('redditsubmit');
+      return a ? { href: a.getAttribute('href'), rel: a.rel, cls: a.className,
+                   shown: !a.parentNode.hidden } : null; })()`);
+    t.check('submit link is https with a prefilled body',
+      !!cta && cta.href.indexOf('https://www.reddit.com/r/keto/submit?text=') === 0,
+      (cta && cta.href || '').slice(0, 44));
+    t.check('submit link has rel=noopener', !!cta && cta.rel === 'noopener');
     // Reddit drops absurdly long prefills; the post plus its share URL has to
     // stay comfortably inside what a browser will send.
-    t.check('prefilled submit URL stays under 4k', href.length < 4000, href.length + ' chars');
+    t.check('prefilled submit URL stays under 4k',
+      !!cta && cta.href.length < 4000, (cta && cta.href || '').length + ' chars');
     t.check('submit link is presented as the primary action',
-      (await page.eval(`(document.querySelector('.redditsubmit a') || {}).className`)) === 'btn-cta');
+      !!cta && cta.shown && /\bbtn-cta\b/.test(cta.cls), cta && cta.cls);
+    await page.close();
+  }
+
+  // Body fat is optional on the form, so everything else can be filled while
+  // kcal_min and fat_g_min are NaN. The post used to go out saying
+  // "fat NaN-199 g - never below NaN kcal".
+  {
+    const page = await Page.open(base + '/', { block: THIRD_PARTY });
+    await fillForm(page);
+    await page.waitFor(`document.data.reddit_copypaste.value.indexOf('|') > -1 ? 'ready' : null`,
+      { what: 'a complete post first' });
+    await page.set('bodyfat', '');
+    const partial = await page.waitFor(
+      `document.data.reddit_copypaste.value.indexOf('|') === -1
+         ? document.data.reddit_copypaste.value : null`,
+      { what: 'the post to withdraw itself' }).catch(e => 'still offered: ' + e.message);
+    t.check('body fat cleared: no NaN offered for pasting',
+      !/NaN|undefined/.test(partial), JSON.stringify(String(partial).slice(0, 60)));
+    t.check('body fat cleared: submit link goes back into hiding',
+      (await page.eval(`(document.querySelector('.reddit-cta') || {}).hidden`)) === true);
     await page.close();
   }
 

@@ -144,7 +144,8 @@ assert '<div class="fullwidthad"' not in html, "unexpected extra in-content ad u
 # FAQ section (its JSON-LD was already removed above)
 cut('<div id="faq">', '<div id="questions">')
 
-# questions section -> keep only the hidden copy-paste field the calc JS writes to
+# The questions section AND the embed-snippet section that now follows it
+# (the calculator JS still writes to reddit_copypaste, so keep a hidden one).
 cut('<div id="questions">', '<div id="comments">',
     replacement='''<!-- The calculator JS fills this on every recalculation; the visible
 					     /r/keto section lives on the main page only. -->

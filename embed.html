@@ -572,10 +572,10 @@
 
 		textarea.copytext {
 			width:100%;
-			/* monospace so the padded markdown table lines up here too; wrapping
-			   stays on so the long lines aren't clipped by overflow:hidden */
+			/* Pre-formatted content (the padded markdown table, the embed
+			   snippet): monospace so the columns line up here too, and
+			   overflow:auto rather than clipping the long lines. */
 			font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-			font-weight:400;
 			overflow:auto;
 			margin-bottom:-2px;
 			padding:0;			
@@ -1337,9 +1337,7 @@
 		#main p a.btn-cta, #main p a.btn-cta:hover, #main p a.btn-cta:visited {
 			display:inline-block; color:#fff; text-decoration:none;
 		}
-		/* Before the form is complete the JS empties .redditsubmit; drop the
-		   paragraph's margins with it instead of leaving a gap. */
-		.reddit-cta:has(.redditsubmit:empty) { display:none; }
+		.reddit-cta[hidden] { display:none; }
 
 		/* Reserve the in-content ad slots' height up front (the sidebar's 600px
 		   reservation lives on .sidebar-ad) so a loading ad doesn't shift the
@@ -1960,30 +1958,24 @@
 		// into a real table, but people read the raw text in the textarea first
 		// (and some paste it into places that never render markdown), so the
 		// columns have to line up as plain text too.
-		// cols: [{title, right}], rows: arrays of strings.
-		function md_table(cols, rows) {
-			var w = [], sep = [], out = [], c, i;
-			for (c = 0; c < cols.length; ++c) {
-				w[c] = cols[c].title.length;
-				for (i = 0; i < rows.length; ++i) {
-					w[c] = Math.max(w[c], rows[i][c].length);
-				}
-				sep.push(cols[c].right
-					? new Array(w[c] + 2).join("-") + ":"
-					: ":" + new Array(w[c] + 2).join("-"));
-			}
+		// The first column is left-aligned, the rest right-aligned. Widths are
+		// measured rather than hardcoded because the German titles are twice as
+		// long as the English ones.
+		function md_table(titles, rows) {
+			var w = titles.map(function (t, c) {
+				return rows.reduce(function (m, r) { return Math.max(m, r[c].length); }, t.length);
+			});
 			function line(cells) {
-				var padded = [], k, fill;
-				for (k = 0; k < cells.length; ++k) {
-					fill = new Array(w[k] - cells[k].length + 1).join(" ");
-					padded.push(cols[k].right ? fill + cells[k] : cells[k] + fill);
-				}
-				return "| " + padded.join(" | ") + " |";
+				return "| " + cells.map(function (cell, c) {
+					var fill = new Array(w[c] - cell.length + 1).join(" ");
+					return c ? fill + cell : cell + fill;
+				}).join(" | ") + " |";
 			}
-			out.push(line(cols.map(function (x) { return x.title; })));
-			out.push("|" + sep.join("|") + "|");
-			for (i = 0; i < rows.length; ++i) { out.push(line(rows[i])); }
-			return out.join("\n");
+			var sep = "|" + w.map(function (n, c) {
+				var dashes = new Array(n + 2).join("-");
+				return c ? dashes + ":" : ":" + dashes;
+			}).join("|") + "|";
+			return [line(titles), sep].concat(rows.map(line)).join("\n");
 		}
 
 		// Imperial first, metric in brackets. /r/keto is worldwide, so the post
@@ -2267,6 +2259,9 @@
 			// 1 kg = 0.453592 pound
 			// is about 31.4
 			var max_kcal_per_lb_per_day = 290 * 0.239005736 * 0.453592;
+
+			// first-month loss, formatted once for the page and the /r/keto post
+			var loss_kg_txt, loss_lbs_txt;
 			
 
 			var d = document.data;
@@ -2657,8 +2652,10 @@
 				data = calc_expected_loss_kg(30, max_kcal_per_lb_per_day, bodyfat, essential_bodyfat_kg, target_kcal, kg, height, age, sex, bmr_fact);
 				var expected_loss_kg = data[0];
 				
-				update_by_name("chosen_loss_kg", abbrNum(-expected_loss_kg, 2));
-				update_by_name("chosen_loss_lbs", abbrNum(-expected_loss_kg/0.45359237, 2));
+				loss_kg_txt = abbrNum(-expected_loss_kg, 2);
+				loss_lbs_txt = abbrNum(-expected_loss_kg/0.45359237, 2);
+				update_by_name("chosen_loss_kg", loss_kg_txt);
+				update_by_name("chosen_loss_lbs", loss_lbs_txt);
 				
 				var max_loss_kg = calc_expected_loss_kg(30, max_kcal_per_lb_per_day, bodyfat, essential_bodyfat_kg, kcal_min, kg, height, age, sex, bmr_fact)[0];
 				update_by_name("max_loss_kg", abbrNum(max_loss_kg, 2));
@@ -2691,7 +2688,10 @@
 				d.fat_max_form.value = Math.floor(fat_g_max);
 			} 
 			
-			// calculate percentage based on kcal
+			// calculate percentage based on kcal. pct_ok stays false when the
+			// block doesn't run, so both the page and the /r/keto post fall
+			// back to "-" rather than showing a nonsense split.
+			var pct_ok = false;
 			if (!isNaN(fat_g)
 				&& !isNaN(carbs_g)
 				&& !isNaN(protein_g)
@@ -2707,7 +2707,8 @@
 				var fat_cal = Math.round(target_kcal) - protein_cal - carbs_cal;
 				maintainence_fat_protein_carbs = [expenditure, fat_cal, protein_cal, carbs_cal];
 				
-				if (carbs_proc > 100 || carbs_proc < 0 || protein_proc > 100 || protein_proc < 0) {
+				pct_ok = !(carbs_proc > 100 || carbs_proc < 0 || protein_proc > 100 || protein_proc < 0);
+				if (!pct_ok) {
 					update_by_name("carbs_proc", "-");
 					update_by_name("protein_proc", "-");
 					update_by_name("fat_proc", "-");
@@ -2752,10 +2753,11 @@
 			// ready to paste straight into /r/keto — which is a real traffic
 			// source for this site, so it went out in public looking broken.
 			var reddit_ready = !(isNaN(age) || isNaN(carbs_g) || isNaN(protein_g)
-				|| isNaN(fat_g) || isNaN(target_kcal) || isNaN(expenditure));
+				|| isNaN(fat_g) || isNaN(target_kcal) || isNaN(expenditure)
+				|| isNaN(kcal_min) || isNaN(fat_g_min));
 			if (!reddit_ready) {
 				d.reddit_copypaste.value = "Fill in the calculator above and your macros will appear here, ready to paste into /r/keto.";
-				update_by_name("redditsubmit", "");
+				document.getElementById("redditsubmit").parentNode.hidden = true;
 				mark_empty_fields(d);
 				return;
 			}
@@ -2778,16 +2780,11 @@
 				level_txt += expenditure + " kcal";
 			}
 
-			// The page shows "-" instead of nonsense percentages when the chosen
-			// macros can't fit the calorie target; the post follows suit.
-			var pct_ok = !(carbs_proc > 100 || carbs_proc < 0 || protein_proc > 100 || protein_proc < 0);
-
 			// A month of loss is the figure people actually discuss, but it is
-			// only computed once the forecast has run.
+			// only computed once the forecast has run (undefined < 0 is false).
 			var loss_txt = "";
-			if (typeof expected_loss_kg === "number" && !isNaN(expected_loss_kg) && expected_loss_kg < 0) {
-				loss_txt = ", about **" + units(abbrNum(-expected_loss_kg / 0.45359237, 2) + " lb",
-					abbrNum(-expected_loss_kg, 2) + " kg") + "** off in the first month";
+			if (expected_loss_kg < 0) {
+				loss_txt = ", about **" + units(loss_lbs_txt + " lb", loss_kg_txt + " kg") + "** off in the first month";
 			}
 
 			// A blank line has to sit between the question and the rule, or
@@ -2801,7 +2798,7 @@
 				+ d.bodyfat.value + "% body fat · " + level_txt + "**" + nl + nl;
 
 			str += md_table(
-				[{title: "Macro"}, {title: "Per day", right: true}, {title: "% of kcal", right: true}],
+				["Macro", "Per day", "% of kcal"],
 				[["Net carbs", carbs_g + " g", pct_ok ? carbs_proc + "%" : "-"],
 				 ["Protein", protein_g + " g", pct_ok ? protein_proc + "%" : "-"],
 				 ["Fat", Math.round(fat_g) + " g", pct_ok ? fat_proc + "%" : "-"]]) + nl + nl;
@@ -2819,13 +2816,11 @@
 
 			d.reddit_copypaste.value = str;
 			
-			// build url. https, and the href is quoted — it was bare, which only
-			// worked because encodeURIComponent leaves no spaces to terminate the
-			// attribute on. rel=noopener because the link opens a new tab.
-			var url = "https://www.reddit.com/r/keto/submit?"
-			url += "text=" + encodeURIComponent("\n\n" + str);
-
-			update_by_name("redditsubmit", "<a class=\"btn-cta\" href=\""+url+"\" target=\"_blank\" rel=\"noopener\" onclick=\"return gatrack(this);\">Post this to /r/keto</a>");
+			// Reddit prefills the composer's body from ?text=. The button lives in
+			// the markup; only its href and visibility are ours to set.
+			var cta = document.getElementById("redditsubmit");
+			cta.href = "https://www.reddit.com/r/keto/submit?text=" + encodeURIComponent("\n\n" + str);
+			cta.parentNode.hidden = false;
 			
 			mark_empty_fields(d);
 			
